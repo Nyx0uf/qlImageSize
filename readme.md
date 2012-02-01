@@ -1,6 +1,6 @@
 # qlImageSize #
 
-This is a *QuickLook* plugin for Mac OS X Lion to display the dimensions of an image in the title bar instead of the filename, for more informations see my blog post about it : <http://www.cocoabyss.com/>
+This is a *QuickLook* plugin for Mac OS X Lion to display the dimensions of an image in the title bar instead of the filename, for more informations see my blog post about it : <http://www.cocoabyss.com/mac-os-x/images-dimensions-in-quicklook/>
 
 
 ### ARC Support ###
