@@ -1,18 +1,24 @@
 # qlImageSize #
 
-This is a *QuickLook* plugin for Mac OS X Lion to display the dimensions of an image in the title bar instead of the filename, for more informations see my blog post about it : <http://www.cocoabyss.com/mac-os-x/images-dimensions-in-quicklook/>
+This is a *QuickLook* plugin for Mac OS X Lion (10.7) to display the dimensions of an image in the title bar instead of the filename, for more informations see my blog post about it : <http://www.cocoabyss.com/mac-os-x/images-dimensions-in-quicklook/>
 
 
-### ARC Support ###
+### Build & Install ###
 
-***qlImageSize*** fully supports **ARC** out of the box.
+For those who don't want to build from the sources, you can grab the plugin here : <https://github.com/downloads/Nyx0uf/qlImageSize/qlImageSize.qlgenerator.zip>
 
+Unzip it, and place it in */Library/QuickLook* or *~/Library/QuickLook*.
 
-### Installation ###
+Perhaps you will need to restart the QuickLook server using this command :
 
-Open **qlImageSize.xcodeproj** and build the plugin, then put the ***qlImageSize.qlgenerator*** in */Library/QuickLook* or *~/Library/QuickLook*
+	qlmanage -r
 
-If you prefer you can directly download the plugin : <https://github.com/downloads/Nyx0uf/qlImageSize/qlImageSize.qlgenerator.zip>
+For the others, open **qlImageSize.xcodeproj**. If you hit the run button, it will build the plugin, place it in *~/Library/QuickLook* and restart the QuickLook server automatically.
+
+In the file **GenerateThumbnailForURL.m** you have the option to display the image type extension on the icons in the Finder. The extension is based on the Universal Type Identifier (UTI) of the file.
+
+Also, ***qlImageSize*** is **ARC** enabled.
+
 
 ### License ###
 
