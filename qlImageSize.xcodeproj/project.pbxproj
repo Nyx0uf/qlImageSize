@@ -1,0 +1,309 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1E5392C314D943DE00C8A0F8 /* GeneratePreviewForURL.c in Sources */ = {isa = PBXBuildFile; fileRef = 1E5392BF14D943DE00C8A0F8 /* GeneratePreviewForURL.c */; };
+		1E5392C414D943DE00C8A0F8 /* GenerateThumbnailForURL.c in Sources */ = {isa = PBXBuildFile; fileRef = 1E5392C014D943DE00C8A0F8 /* GenerateThumbnailForURL.c */; };
+		1E5392C514D943DE00C8A0F8 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 1E5392C114D943DE00C8A0F8 /* main.c */; };
+		1E5392C614D943DE00C8A0F8 /* Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = 1E5392C214D943DE00C8A0F8 /* Prefix.pch */; };
+		1EFA994214D9288600A09F03 /* QuickLook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EFA994114D9288600A09F03 /* QuickLook.framework */; };
+		1EFA994414D9288600A09F03 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EFA994314D9288600A09F03 /* ApplicationServices.framework */; };
+		1EFA994614D9288600A09F03 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EFA994514D9288600A09F03 /* CoreServices.framework */; };
+		1EFA994814D9288600A09F03 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EFA994714D9288600A09F03 /* CoreFoundation.framework */; };
+		1EFA995C14D941AD00A09F03 /* qlImageSize.qlgenerator in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1EFA993E14D9288600A09F03 /* qlImageSize.qlgenerator */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		1EFA995B14D9418B00A09F03 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "~/Library/QuickLook";
+			dstSubfolderSpec = 0;
+			files = (
+				1EFA995C14D941AD00A09F03 /* qlImageSize.qlgenerator in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		1E5392BF14D943DE00C8A0F8 /* GeneratePreviewForURL.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = GeneratePreviewForURL.c; path = Sources/GeneratePreviewForURL.c; sourceTree = "<group>"; };
+		1E5392C014D943DE00C8A0F8 /* GenerateThumbnailForURL.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = GenerateThumbnailForURL.c; path = Sources/GenerateThumbnailForURL.c; sourceTree = "<group>"; };
+		1E5392C114D943DE00C8A0F8 /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = main.c; path = Sources/main.c; sourceTree = "<group>"; };
+		1E5392C214D943DE00C8A0F8 /* Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Prefix.pch; path = Sources/Prefix.pch; sourceTree = "<group>"; };
+		1EFA993E14D9288600A09F03 /* qlImageSize.qlgenerator */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = qlImageSize.qlgenerator; sourceTree = BUILT_PRODUCTS_DIR; };
+		1EFA994114D9288600A09F03 /* QuickLook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickLook.framework; path = System/Library/Frameworks/QuickLook.framework; sourceTree = SDKROOT; };
+		1EFA994314D9288600A09F03 /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = System/Library/Frameworks/ApplicationServices.framework; sourceTree = SDKROOT; };
+		1EFA994514D9288600A09F03 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
+		1EFA994714D9288600A09F03 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		1EFA993914D9288600A09F03 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1EFA994214D9288600A09F03 /* QuickLook.framework in Frameworks */,
+				1EFA994414D9288600A09F03 /* ApplicationServices.framework in Frameworks */,
+				1EFA994614D9288600A09F03 /* CoreServices.framework in Frameworks */,
+				1EFA994814D9288600A09F03 /* CoreFoundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1E5392BD14D943CB00C8A0F8 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				1E5392BF14D943DE00C8A0F8 /* GeneratePreviewForURL.c */,
+				1E5392C014D943DE00C8A0F8 /* GenerateThumbnailForURL.c */,
+				1E5392C114D943DE00C8A0F8 /* main.c */,
+				1E5392C214D943DE00C8A0F8 /* Prefix.pch */,
+			);
+			name = Sources;
+			sourceTree = "<group>";
+		};
+		1EFA993114D9288600A09F03 = {
+			isa = PBXGroup;
+			children = (
+				1E5392BD14D943CB00C8A0F8 /* Sources */,
+				1EFA994014D9288600A09F03 /* Frameworks */,
+				1EFA993F14D9288600A09F03 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		1EFA993F14D9288600A09F03 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1EFA993E14D9288600A09F03 /* qlImageSize.qlgenerator */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		1EFA994014D9288600A09F03 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1EFA994114D9288600A09F03 /* QuickLook.framework */,
+				1EFA994314D9288600A09F03 /* ApplicationServices.framework */,
+				1EFA994514D9288600A09F03 /* CoreServices.framework */,
+				1EFA994714D9288600A09F03 /* CoreFoundation.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		1EFA993A14D9288600A09F03 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1E5392C614D943DE00C8A0F8 /* Prefix.pch in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		1EFA993D14D9288600A09F03 /* qlImageSize */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1EFA995814D9288600A09F03 /* Build configuration list for PBXNativeTarget "qlImageSize" */;
+			buildPhases = (
+				1EFA993814D9288600A09F03 /* Sources */,
+				1EFA993914D9288600A09F03 /* Frameworks */,
+				1EFA993A14D9288600A09F03 /* Headers */,
+				1EFA993B14D9288600A09F03 /* Resources */,
+				1EFA993C14D9288600A09F03 /* Rez */,
+				1EFA995B14D9418B00A09F03 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = qlImageSize;
+			productName = qlImageSize;
+			productReference = 1EFA993E14D9288600A09F03 /* qlImageSize.qlgenerator */;
+			productType = "com.apple.product-type.bundle";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		1EFA993314D9288600A09F03 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+				ORGANIZATIONNAME = MacGeneration;
+			};
+			buildConfigurationList = 1EFA993614D9288600A09F03 /* Build configuration list for PBXProject "qlImageSize" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 1EFA993114D9288600A09F03;
+			productRefGroup = 1EFA993F14D9288600A09F03 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				1EFA993D14D9288600A09F03 /* qlImageSize */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		1EFA993B14D9288600A09F03 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXRezBuildPhase section */
+		1EFA993C14D9288600A09F03 /* Rez */ = {
+			isa = PBXRezBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXRezBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		1EFA993814D9288600A09F03 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1E5392C314D943DE00C8A0F8 /* GeneratePreviewForURL.c in Sources */,
+				1E5392C414D943DE00C8A0F8 /* GenerateThumbnailForURL.c in Sources */,
+				1E5392C514D943DE00C8A0F8 /* main.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		1EFA995614D9288600A09F03 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		1EFA995714D9288600A09F03 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		1EFA995914D9288600A09F03 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = YES;
+				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = Sources/Prefix.pch;
+				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
+				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_SIGN_COMPARE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				INFOPLIST_FILE = Resources/Info.plist;
+				INSTALL_PATH = /Library/QuickLook;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				RUN_CLANG_STATIC_ANALYZER = YES;
+				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;
+				WRAPPER_EXTENSION = qlgenerator;
+			};
+			name = Debug;
+		};
+		1EFA995A14D9288600A09F03 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = YES;
+				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = Sources/Prefix.pch;
+				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
+				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_SIGN_COMPARE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				INFOPLIST_FILE = Resources/Info.plist;
+				INSTALL_PATH = /Library/QuickLook;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				RUN_CLANG_STATIC_ANALYZER = YES;
+				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;
+				WRAPPER_EXTENSION = qlgenerator;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1EFA993614D9288600A09F03 /* Build configuration list for PBXProject "qlImageSize" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1EFA995614D9288600A09F03 /* Debug */,
+				1EFA995714D9288600A09F03 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1EFA995814D9288600A09F03 /* Build configuration list for PBXNativeTarget "qlImageSize" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1EFA995914D9288600A09F03 /* Debug */,
+				1EFA995A14D9288600A09F03 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 1EFA993314D9288600A09F03 /* Project object */;
+}
