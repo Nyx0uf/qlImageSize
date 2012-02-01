@@ -15,7 +15,7 @@ Perhaps you will need to restart the QuickLook server using this command :
 
 For the others, open **qlImageSize.xcodeproj**. If you hit the run button, it will build the plugin, place it in *~/Library/QuickLook* and restart the QuickLook server automatically.
 
-In the file **GenerateThumbnailForURL.m** you have the option to display the image type extension on the icons in the Finder. The extension is based on the Universal Type Identifier (UTI) of the file.
+In the file **GenerateThumbnailForURL.m** you have the option to display the image type extension on the icons in the Finder. The extension is based on the Uniform Type Identifier (UTI) of the file.
 
 Also, ***qlImageSize*** is **ARC** enabled.
 
