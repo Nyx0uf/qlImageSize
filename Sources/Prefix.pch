@@ -7,3 +7,9 @@
 //  www.cococabyss.com
 //
 
+/* Release a Core Foundation object and set it to NULL */
+#define SAFE_RELEASE_CF(__POINTER) \
+do { \
+if (__POINTER != NULL) \
+CFRelease(__POINTER), __POINTER = NULL; \
+} while (0)
