@@ -3,7 +3,7 @@
 //  qlImageSize
 //
 //  Created by @Nyx0uf on 31/01/12.
-//  Copyright 2012 Benjamin Godard. All rights reserved.
+//  Copyright (c) 2012 Benjamin Godard. All rights reserved.
 //  www.cococabyss.com
 //
 
@@ -12,8 +12,8 @@
 #import <CoreServices/CoreServices.h>
 #import <QuickLook/QuickLook.h>
 #import <Foundation/Foundation.h>
-#import <sys/stat.h>
-#import <sys/types.h>
+#import "Tools.h"
+#import "NYXPNGTools.h"
 
 
 OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview, CFURLRef url, CFStringRef contentTypeUTI, CFDictionaryRef options);
@@ -28,50 +28,38 @@ OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview,
 {
 	@autoreleasepool
 	{
-		CGImageSourceRef imgSrc = CGImageSourceCreateWithURL(url, NULL);
-		if (!imgSrc)
+		/// Check if the image is a PNG
+		if (CFStringCompare(contentTypeUTI, kUTTypePNG, kCFCompareCaseInsensitive) == kCFCompareEqualTo)
 		{
-			QLPreviewRequestSetURLRepresentation(preview, url, contentTypeUTI, NULL);
-			return -1;
+			const char* path = [[(__bridge NSURL*)url path] cStringUsingEncoding:NSUTF8StringEncoding];
+			if (npt_is_apple_crushed_png(path))
+			{
+				/// Uncrush the PNG
+				unsigned int size = 0;
+				UInt8* pngData = npt_create_uncrushed_from_file(path, &size);
+				CFDataRef uncrushed = CFDataCreateWithBytesNoCopy(kCFAllocatorDefault, pngData, size, kCFAllocatorDefault);
+				if (uncrushed)
+				{
+					/// Create the properties dic
+					CFStringRef filename = CFURLCopyLastPathComponent(url);
+					CFDictionaryRef properties = createQLPreviewPropertiesForFile(url, uncrushed, filename);					
+					QLPreviewRequestSetDataRepresentation(preview, uncrushed, contentTypeUTI, properties);
+					CFRelease(properties);
+					CFRelease(filename);
+					CFRelease(uncrushed); // Will also free pngData
+				}
+				else
+					NSLog(@"[+] qlImageSize: Failed to create uncrushed png from '%@'", url);
+				return kQLReturnNoError;
+			}
 		}
-
-		/// Copy images properties
-		CFDictionaryRef imgProperties = CGImageSourceCopyPropertiesAtIndex(imgSrc, 0, NULL);
-		CFRelease(imgSrc);
-		if (!imgProperties)
-		{
-			QLPreviewRequestSetURLRepresentation(preview, url, contentTypeUTI, NULL);
-			return -1;
-		}
-		CFNumberRef w = CFDictionaryGetValue(imgProperties, kCGImagePropertyPixelWidth);
-		int width = 0;
-		CFNumberGetValue(w, kCFNumberIntType, &width);
-		CFNumberRef h = CFDictionaryGetValue(imgProperties, kCGImagePropertyPixelHeight);
-		int height = 0;
-		CFNumberGetValue(h, kCFNumberIntType, &height);
-		CFRelease(imgProperties);
-		/// Could be nice to get DPI infos with kCGImagePropertyDPIHeight & kCGImagePropertyDPIWidth
-		
-		NSString* filePath = [(__bridge NSURL*)url path];
-		struct stat st;
-		stat([filePath cStringUsingEncoding:NSUTF8StringEncoding], &st);
-		NSString* filename = [filePath lastPathComponent];
-		NSString* fmtSize = nil;
-		if (st.st_size > 1048576) // More than 1Mb
-			fmtSize = [[NSString alloc] initWithFormat:@"%.2fMb", (float)((float)st.st_size / 1048576.0f)];
-		else if (st.st_size < 1048576 && st.st_size > 1024) // 1Kb - 1Mb
-			fmtSize = [[NSString alloc] initWithFormat:@"%.2fKb", (float)((float)st.st_size / 1024.0f)];
-		else // Less than 1Kb
-			fmtSize = [[NSString alloc] initWithFormat:@"%ldb", st.st_size];
-		
-		CFTypeRef keys[1] = {kQLPreviewPropertyDisplayNameKey};
-		CFTypeRef values[1] = {CFStringCreateWithFormat(kCFAllocatorDefault, NULL, CFSTR("%@ (%dx%d - %@)"), filename, width, height, fmtSize)};
-		CFDictionaryRef properties = CFDictionaryCreate(kCFAllocatorDefault, (const void**)keys, (const void**)values, 1, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+		/// Normal PNG, or other type
+		CFStringRef filename = CFURLCopyLastPathComponent(url);
+		CFDictionaryRef properties = createQLPreviewPropertiesForFile(url, url, filename);
 		QLPreviewRequestSetURLRepresentation(preview, url, contentTypeUTI, properties);
-		
-		CFRelease(values[0]);
-		CFRelease(properties);
-		
+		SAFE_RELEASE_CF(properties);
+		CFRelease(filename);
+
 		return kQLReturnNoError;
 	}
 }
