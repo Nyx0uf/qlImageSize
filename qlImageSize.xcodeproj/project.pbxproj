@@ -8,36 +8,67 @@
 
 /* Begin PBXBuildFile section */
 		1E1559D414D96C2500268030 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E1559D314D96C2500268030 /* Foundation.framework */; };
+		1E415A9414DB223A006BF9CC /* libNYXPNGTools.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E415A9214DB223A006BF9CC /* libNYXPNGTools.dylib */; };
+		1E415A9514DB223A006BF9CC /* NYXPNGTools.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E415A9314DB223A006BF9CC /* NYXPNGTools.h */; };
+		1E415A9614DB22D7006BF9CC /* libNYXPNGTools.dylib in Copy lib */ = {isa = PBXBuildFile; fileRef = 1E415A9214DB223A006BF9CC /* libNYXPNGTools.dylib */; };
 		1E5392C314D943DE00C8A0F8 /* GeneratePreviewForURL.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E5392BF14D943DE00C8A0F8 /* GeneratePreviewForURL.m */; };
 		1E5392C414D943DE00C8A0F8 /* GenerateThumbnailForURL.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E5392C014D943DE00C8A0F8 /* GenerateThumbnailForURL.m */; };
-		1E5392C514D943DE00C8A0F8 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 1E5392C114D943DE00C8A0F8 /* main.c */; };
+		1E5392C514D943DE00C8A0F8 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E5392C114D943DE00C8A0F8 /* main.m */; };
 		1E5392C614D943DE00C8A0F8 /* Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = 1E5392C214D943DE00C8A0F8 /* Prefix.pch */; };
+		1E9EF01014DA85DE00722E95 /* Tools.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E9EF00E14DA85DE00722E95 /* Tools.h */; };
+		1E9EF01114DA85DE00722E95 /* Tools.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E9EF00F14DA85DE00722E95 /* Tools.m */; };
 		1EFA994214D9288600A09F03 /* QuickLook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EFA994114D9288600A09F03 /* QuickLook.framework */; };
 		1EFA994414D9288600A09F03 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EFA994314D9288600A09F03 /* ApplicationServices.framework */; };
 		1EFA994614D9288600A09F03 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EFA994514D9288600A09F03 /* CoreServices.framework */; };
 		1EFA994814D9288600A09F03 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EFA994714D9288600A09F03 /* CoreFoundation.framework */; };
-		1EFA995C14D941AD00A09F03 /* qlImageSize.qlgenerator in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1EFA993E14D9288600A09F03 /* qlImageSize.qlgenerator */; };
+		1EFA995C14D941AD00A09F03 /* qlImageSize.qlgenerator in Install plugin */ = {isa = PBXBuildFile; fileRef = 1EFA993E14D9288600A09F03 /* qlImageSize.qlgenerator */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		1EFA995B14D9418B00A09F03 /* CopyFiles */ = {
+		1E9EF01314DAA1EC00722E95 /* Copy pngcrush */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 6;
+			files = (
+			);
+			name = "Copy pngcrush";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1EC73E8F14DADA8A008DFBB0 /* Copy lib */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				1E415A9614DB22D7006BF9CC /* libNYXPNGTools.dylib in Copy lib */,
+			);
+			name = "Copy lib";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1EFA995B14D9418B00A09F03 /* Install plugin */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "~/Library/QuickLook";
 			dstSubfolderSpec = 0;
 			files = (
-				1EFA995C14D941AD00A09F03 /* qlImageSize.qlgenerator in CopyFiles */,
+				1EFA995C14D941AD00A09F03 /* qlImageSize.qlgenerator in Install plugin */,
 			);
+			name = "Install plugin";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		1E1559D314D96C2500268030 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		1E415A9214DB223A006BF9CC /* libNYXPNGTools.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libNYXPNGTools.dylib; sourceTree = "<group>"; };
+		1E415A9314DB223A006BF9CC /* NYXPNGTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYXPNGTools.h; sourceTree = "<group>"; };
 		1E5392BF14D943DE00C8A0F8 /* GeneratePreviewForURL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GeneratePreviewForURL.m; path = Sources/GeneratePreviewForURL.m; sourceTree = "<group>"; };
 		1E5392C014D943DE00C8A0F8 /* GenerateThumbnailForURL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GenerateThumbnailForURL.m; path = Sources/GenerateThumbnailForURL.m; sourceTree = "<group>"; };
-		1E5392C114D943DE00C8A0F8 /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = main.c; path = Sources/main.c; sourceTree = "<group>"; };
+		1E5392C114D943DE00C8A0F8 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Sources/main.m; sourceTree = "<group>"; };
 		1E5392C214D943DE00C8A0F8 /* Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Prefix.pch; path = Sources/Prefix.pch; sourceTree = "<group>"; };
+		1E9EF00E14DA85DE00722E95 /* Tools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Tools.h; path = Sources/Tools.h; sourceTree = "<group>"; };
+		1E9EF00F14DA85DE00722E95 /* Tools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Tools.m; path = Sources/Tools.m; sourceTree = "<group>"; };
 		1EFA993E14D9288600A09F03 /* qlImageSize.qlgenerator */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = qlImageSize.qlgenerator; sourceTree = BUILT_PRODUCTS_DIR; };
 		1EFA994114D9288600A09F03 /* QuickLook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickLook.framework; path = System/Library/Frameworks/QuickLook.framework; sourceTree = SDKROOT; };
 		1EFA994314D9288600A09F03 /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = System/Library/Frameworks/ApplicationServices.framework; sourceTree = SDKROOT; };
@@ -55,27 +86,48 @@
 				1EFA994414D9288600A09F03 /* ApplicationServices.framework in Frameworks */,
 				1EFA994614D9288600A09F03 /* CoreServices.framework in Frameworks */,
 				1EFA994814D9288600A09F03 /* CoreFoundation.framework in Frameworks */,
+				1E415A9414DB223A006BF9CC /* libNYXPNGTools.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1E415A9114DB223A006BF9CC /* NYXPNGTools */ = {
+			isa = PBXGroup;
+			children = (
+				1E415A9214DB223A006BF9CC /* libNYXPNGTools.dylib */,
+				1E415A9314DB223A006BF9CC /* NYXPNGTools.h */,
+			);
+			name = NYXPNGTools;
+			path = libs/NYXPNGTools;
+			sourceTree = "<group>";
+		};
 		1E5392BD14D943CB00C8A0F8 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
 				1E5392BF14D943DE00C8A0F8 /* GeneratePreviewForURL.m */,
 				1E5392C014D943DE00C8A0F8 /* GenerateThumbnailForURL.m */,
-				1E5392C114D943DE00C8A0F8 /* main.c */,
+				1E5392C114D943DE00C8A0F8 /* main.m */,
 				1E5392C214D943DE00C8A0F8 /* Prefix.pch */,
+				1E9EF00E14DA85DE00722E95 /* Tools.h */,
+				1E9EF00F14DA85DE00722E95 /* Tools.m */,
 			);
 			name = Sources;
+			sourceTree = "<group>";
+		};
+		1E9EF01414DAA25200722E95 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Resources;
 			sourceTree = "<group>";
 		};
 		1EFA993114D9288600A09F03 = {
 			isa = PBXGroup;
 			children = (
 				1E5392BD14D943CB00C8A0F8 /* Sources */,
+				1E9EF01414DAA25200722E95 /* Resources */,
 				1EFA994014D9288600A09F03 /* Frameworks */,
 				1EFA993F14D9288600A09F03 /* Products */,
 			);
@@ -92,6 +144,7 @@
 		1EFA994014D9288600A09F03 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1E415A9114DB223A006BF9CC /* NYXPNGTools */,
 				1E1559D314D96C2500268030 /* Foundation.framework */,
 				1EFA994114D9288600A09F03 /* QuickLook.framework */,
 				1EFA994314D9288600A09F03 /* ApplicationServices.framework */,
@@ -109,6 +162,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				1E5392C614D943DE00C8A0F8 /* Prefix.pch in Headers */,
+				1E9EF01014DA85DE00722E95 /* Tools.h in Headers */,
+				1E415A9514DB223A006BF9CC /* NYXPNGTools.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -122,9 +177,9 @@
 				1EFA993814D9288600A09F03 /* Sources */,
 				1EFA993914D9288600A09F03 /* Frameworks */,
 				1EFA993A14D9288600A09F03 /* Headers */,
-				1EFA993B14D9288600A09F03 /* Resources */,
-				1EFA993C14D9288600A09F03 /* Rez */,
-				1EFA995B14D9418B00A09F03 /* CopyFiles */,
+				1EC73E8F14DADA8A008DFBB0 /* Copy lib */,
+				1E9EF01314DAA1EC00722E95 /* Copy pngcrush */,
+				1EFA995B14D9418B00A09F03 /* Install plugin */,
 			);
 			buildRules = (
 			);
@@ -161,26 +216,6 @@
 		};
 /* End PBXProject section */
 
-/* Begin PBXResourcesBuildPhase section */
-		1EFA993B14D9288600A09F03 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXResourcesBuildPhase section */
-
-/* Begin PBXRezBuildPhase section */
-		1EFA993C14D9288600A09F03 /* Rez */ = {
-			isa = PBXRezBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXRezBuildPhase section */
-
 /* Begin PBXSourcesBuildPhase section */
 		1EFA993814D9288600A09F03 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -188,7 +223,8 @@
 			files = (
 				1E5392C314D943DE00C8A0F8 /* GeneratePreviewForURL.m in Sources */,
 				1E5392C414D943DE00C8A0F8 /* GenerateThumbnailForURL.m in Sources */,
-				1E5392C514D943DE00C8A0F8 /* main.c in Sources */,
+				1E5392C514D943DE00C8A0F8 /* main.m in Sources */,
+				1E9EF01114DA85DE00722E95 /* Tools.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -257,6 +293,12 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				INFOPLIST_FILE = Resources/Info.plist;
 				INSTALL_PATH = /Library/QuickLook;
+				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks/";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/libs\"",
+					"\"$(SRCROOT)/libs/NYXPNGTools\"",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;
@@ -279,6 +321,12 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				INFOPLIST_FILE = Resources/Info.plist;
 				INSTALL_PATH = /Library/QuickLook;
+				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks/";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/libs\"",
+					"\"$(SRCROOT)/libs/NYXPNGTools\"",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;
