@@ -1,6 +1,8 @@
 # qlImageSize #
 
-This is a *QuickLook* plugin for Mac OS X Lion (10.7) to display the dimensions of an image in the title bar instead of the filename, for more informations see my blog post about it : <http://www.cocoabyss.com/mac-os-x/images-dimensions-in-quicklook/>
+This is a *QuickLook* plugin for Mac OS X Lion (10.7) to display the dimensions of an image and its size in the title bar. It also displays iPhone crushed PNG in the finder on the fly without creation of any temporary files.
+
+for more informations see my blog post about it : <http://www.cocoabyss.com/mac-os-x/images-dimensions-in-quicklook/>
 
 
 ### Build & Install ###
