@@ -2,7 +2,7 @@
 //  Tools.m
 //  qlImageSize
 //
-//  Created by @Nyx0uf on 2/2/12.
+//  Created by @Nyx0uf on 02/02/12.
 //  Copyright (c) 2012 Benjamin Godard. All rights reserved.
 //  www.cococabyss.com
 //

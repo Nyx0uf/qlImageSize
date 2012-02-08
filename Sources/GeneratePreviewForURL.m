@@ -32,24 +32,35 @@ OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview,
 		if (CFStringCompare(contentTypeUTI, kUTTypePNG, kCFCompareCaseInsensitive) == kCFCompareEqualTo)
 		{
 			const char* path = [[(__bridge NSURL*)url path] cStringUsingEncoding:NSUTF8StringEncoding];
-			if (npt_is_apple_crushed_png(path))
+			int error = 0;
+			if (npt_is_apple_crushed_png(path, &error))
 			{
 				/// Uncrush the PNG
 				unsigned int size = 0;
-				UInt8* pngData = npt_create_uncrushed_from_file(path, &size);
-				CFDataRef uncrushed = CFDataCreateWithBytesNoCopy(kCFAllocatorDefault, pngData, size, kCFAllocatorDefault);
-				if (uncrushed)
+				UInt8* pngData = npt_create_uncrushed_from_file(path, &size, &error);
+				if (!pngData)
 				{
-					/// Create the properties dic
-					CFStringRef filename = CFURLCopyLastPathComponent(url);
-					CFDictionaryRef properties = createQLPreviewPropertiesForFile(url, uncrushed, filename);					
-					QLPreviewRequestSetDataRepresentation(preview, uncrushed, contentTypeUTI, properties);
-					CFRelease(properties);
-					CFRelease(filename);
-					CFRelease(uncrushed); // Will also free pngData
+					NSLog(@"[+] qlImageSize: Failed to create uncrushed png from '%@' : %s", url, npt_error_message(error));
 				}
 				else
-					NSLog(@"[+] qlImageSize: Failed to create uncrushed png from '%@'", url);
+				{
+					CFDataRef uncrushed = CFDataCreateWithBytesNoCopy(kCFAllocatorDefault, pngData, size, kCFAllocatorDefault);
+					if (uncrushed)
+					{
+						/// Create the properties dic
+						CFStringRef filename = CFURLCopyLastPathComponent(url);
+						CFDictionaryRef properties = createQLPreviewPropertiesForFile(url, uncrushed, filename);					
+						QLPreviewRequestSetDataRepresentation(preview, uncrushed, contentTypeUTI, properties);
+						CFRelease(properties);
+						CFRelease(filename);
+						CFRelease(uncrushed); // Will also free pngData
+					}
+					else
+					{
+						free(pngData);
+						NSLog(@"[+] qlImageSize: Failed to create uncrushed png from '%@'", url);
+					}
+				}
 				return kQLReturnNoError;
 			}
 		}
