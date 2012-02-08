@@ -16,18 +16,28 @@
  *	@function npt_is_apple_crushed_png
  *	@abstract Check if the given PNG file is Apple's crushed
  *	@param path [in] : Path to the PNG file
+ *  @param error [out] : Error code, use npt_error_message() for a description
  *	@return 1 = Apple's crushed
  */
-extern int npt_is_apple_crushed_png(const char* path);
+extern int npt_is_apple_crushed_png(const char* path, int* error);
 
 /*!
  *	@function npt_create_uncrushed_from_file
  *	@abstract Attempt to uncrush an Apple's iOS PNG file
  *	@param path [in] : Path to the crushed PNG file
  *	@param size [out] : Size of the returned buffer, 0 in case of error
+ *	@param error [out] : Error code, use npt_error_message() for a description
  *	@return Buffer containing the uncrushed PNG data
  *	@discussion If return value is != NULL, the caller MUST free the data
  */
-extern unsigned char* npt_create_uncrushed_from_file(const char* path, unsigned int* size);
+extern unsigned char* npt_create_uncrushed_from_file(const char* path, unsigned int* size, int* error);
+
+/*!
+ *	@function npt_error_message
+ *	@abstract Returns the error string correponsing to the error code
+ *	@param error [in] : Error code
+ *	@return Corresponding error message
+ */
+extern char* npt_error_message(const int error);
 
 #endif /* __NYXPNGTOOLS_H_ */
