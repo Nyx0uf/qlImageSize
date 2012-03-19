@@ -4,7 +4,7 @@
 //
 //  Created by Nyx0uf on 02/02/12.
 //  Copyright (c) 2012 Benjamin Godard. All rights reserved.
-//  www.cocoabyss.com
+//  www.cocoaintheshell.com
 //
 
 
@@ -13,11 +13,20 @@
 
 
 /*!
+ *	@function npt_is_png
+ *	@abstract Check if the file is a PNG
+ *	@param path [in] : Path to file
+ *	@param error [out] : Error code, use npt_error_message() for a description
+ *	@return 1 = Valid PNG file, 0 = Error or not PNG
+ */
+extern int npt_is_png(const char* path, int* error);
+
+/*!
  *	@function npt_is_apple_crushed_png
  *	@abstract Check if the given PNG file is Apple's crushed
  *	@param path [in] : Path to the PNG file
- *  @param error [out] : Error code, use npt_error_message() for a description
- *	@return 1 = Apple's crushed
+ *	@param error [out] : Error code, use npt_error_message() for a description
+ *	@return 1 = Apple's crushed, 0 = error or not Apple's PNG
  */
 extern int npt_is_apple_crushed_png(const char* path, int* error);
 
