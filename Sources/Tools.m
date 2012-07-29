@@ -52,7 +52,7 @@ CFDictionaryRef createQLPreviewPropertiesForFile(CFURLRef url, CFTypeRef src, CF
 	else if (st.st_size < 1048576 && st.st_size > 1024) // 1Kb - 1Mb
 		fmtSize = [[NSString alloc] initWithFormat:@"%.2fKb", (float)((float)st.st_size / 1024.0f)];
 	else // Less than 1Kb
-		fmtSize = [[NSString alloc] initWithFormat:@"%ldb", st.st_size];
+		fmtSize = [[NSString alloc] initWithFormat:@"%lldb", st.st_size];
 
 	/// Create the properties dic
 	CFTypeRef keys[1] = {kQLPreviewPropertyDisplayNameKey};
