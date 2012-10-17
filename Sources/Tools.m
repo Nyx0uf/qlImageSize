@@ -3,8 +3,8 @@
 //  qlImageSize
 //
 //  Created by @Nyx0uf on 02/02/12.
-//  Copyright (c) 2012 Benjamin Godard. All rights reserved.
-//  www.cococabyss.com
+//  Copyright (c) 2012 Nyx0uf. All rights reserved.
+//  www.cocoaintheshell.com
 //
 
 
@@ -44,7 +44,7 @@ CFDictionaryRef createQLPreviewPropertiesForFile(CFURLRef url, CFTypeRef src, CF
 
 	/// Get the filesize, because it's not always present in the image properties dictionary :/
 	struct stat st;
-	stat([[(__bridge NSURL*)url path] cStringUsingEncoding:NSUTF8StringEncoding], &st);
+	stat([[(__bridge NSURL*)url path] UTF8String], &st);
 	/// Create the display size format
 	NSString* fmtSize = nil;
 	if (st.st_size > 1048576) // More than 1Mb
@@ -58,6 +58,6 @@ CFDictionaryRef createQLPreviewPropertiesForFile(CFURLRef url, CFTypeRef src, CF
 	CFTypeRef keys[1] = {kQLPreviewPropertyDisplayNameKey};
 	CFTypeRef values[1] = {CFStringCreateWithFormat(kCFAllocatorDefault, NULL, CFSTR("%@ (%dx%d - %@)"), name, width, height, fmtSize)}; // bla.png (64x64 - 137b)
 	CFDictionaryRef properties = CFDictionaryCreate(kCFAllocatorDefault, (const void**)keys, (const void**)values, 1, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
-	SAFE_RELEASE_CF(values[0]);
+	CFRelease(values[0]);
 	return properties;
 }

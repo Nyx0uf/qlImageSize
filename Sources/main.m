@@ -8,7 +8,6 @@
 //==============================================================================
 
 
-#include <CoreFoundation/CoreFoundation.h>
 #include <CoreFoundation/CFPlugInCOM.h>
 #include <CoreServices/CoreServices.h>
 #include <QuickLook/QuickLook.h>
@@ -194,7 +193,7 @@ ULONG QuickLookGeneratorPluginRelease(void *thisInstance)
 // -----------------------------------------------------------------------------
 //  QuickLookGeneratorPluginFactory
 // -----------------------------------------------------------------------------
-void *QuickLookGeneratorPluginFactory(CFAllocatorRef allocator,CFUUIDRef typeID)
+void *QuickLookGeneratorPluginFactory(CFAllocatorRef __unused allocator,CFUUIDRef typeID)
 {
     QuickLookGeneratorPluginType *result;
     CFUUIDRef                 uuid;

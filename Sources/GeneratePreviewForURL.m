@@ -3,17 +3,19 @@
 //  qlImageSize
 //
 //  Created by @Nyx0uf on 31/01/12.
-//  Copyright (c) 2012 Benjamin Godard. All rights reserved.
-//  www.cococabyss.com
+//  Copyright (c) 2012 Nyx0uf. All rights reserved.
+//  www.cocoaintheshell.com
 //
 
 
-#import <CoreFoundation/CoreFoundation.h>
 #import <CoreServices/CoreServices.h>
 #import <QuickLook/QuickLook.h>
 #import <Foundation/Foundation.h>
 #import "Tools.h"
+
+#if __MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_10_8
 #import "NYXPNGTools.h"
+#endif /* __MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_10_8 */
 
 
 OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview, CFURLRef url, CFStringRef contentTypeUTI, CFDictionaryRef options);
@@ -28,6 +30,7 @@ OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview,
 {
 	@autoreleasepool
 	{
+#if __MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_10_8
 		/// Check if the image is a PNG
 		if (CFStringCompare(contentTypeUTI, kUTTypePNG, kCFCompareCaseInsensitive) == kCFCompareEqualTo)
 		{
@@ -40,7 +43,7 @@ OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview,
 				UInt8* pngData = npt_create_uncrushed_from_file(path, &size, &error);
 				if (!pngData)
 				{
-					NSLog(@"[+] qlImageSize: Failed to create uncrushed png from '%@' : %s", url, npt_error_message(error));
+					NSLog(@"[-] qlImageSize: Failed to create uncrushed png from '%@' : %s", url, npt_error_message(error));
 				}
 				else
 				{
@@ -58,17 +61,18 @@ OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview,
 					else
 					{
 						free(pngData);
-						NSLog(@"[+] qlImageSize: Failed to create uncrushed png from '%@'", url);
+						NSLog(@"[-] qlImageSize: Failed to create uncrushed png from '%@'", url);
 					}
 				}
 				return kQLReturnNoError;
 			}
 		}
+#endif /* __MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_10_8 */
 		/// Normal PNG, or other type
 		CFStringRef filename = CFURLCopyLastPathComponent(url);
 		CFDictionaryRef properties = createQLPreviewPropertiesForFile(url, url, filename);
 		QLPreviewRequestSetURLRepresentation(preview, url, contentTypeUTI, properties);
-		SAFE_RELEASE_CF(properties);
+		CFRelease(properties);
 		CFRelease(filename);
 
 		return kQLReturnNoError;
@@ -77,5 +81,4 @@ OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview,
 
 void CancelPreviewGeneration(void *thisInterface, QLPreviewRequestRef preview)
 {
-	// Implement only if supported
 }

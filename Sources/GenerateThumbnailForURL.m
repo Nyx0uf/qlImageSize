@@ -3,18 +3,19 @@
 //  qlImageSize
 //
 //  Created by @Nyx0uf on 31/01/12.
-//  Copyright (c) 2012 Benjamin Godard. All rights reserved.
-//  www.cococabyss.com
+//  Copyright (c) 2012 Nyx0uf. All rights reserved.
+//  www.cocoaintheshell.com
 //
 
 
-#import <CoreFoundation/CoreFoundation.h>
 #import <CoreServices/CoreServices.h>
 #import <QuickLook/QuickLook.h>
 #import <Foundation/Foundation.h>
 #import "Tools.h"
-#import "NYXPNGTools.h"
 
+#if __MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_10_8
+#import "NYXPNGTools.h"
+#endif /* __MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_10_8 */
 
 /// Comment this line if you don't want the type displayed inside the icon
 #define kNyxDisplayTypeInIcon
@@ -45,10 +46,11 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
 		CFTypeRef keys[1] = {kQLThumbnailPropertyExtensionKey};
 		CFTypeRef values[1] = {(__bridge CFStringRef)extension};
 		properties = CFDictionaryCreate(kCFAllocatorDefault, (const void**)keys, (const void**)values, 1, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
-#endif
+#endif /* kNyxDisplayTypeInIcon */
 		/// Check if the image is a PNG
 		if (CFStringCompare(contentTypeUTI, kUTTypePNG, kCFCompareCaseInsensitive) == kCFCompareEqualTo)
 		{
+#if __MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_10_8
 			const char* path = [[(__bridge NSURL*)url path] cStringUsingEncoding:NSUTF8StringEncoding];
 			int error = 0;
 			if (npt_is_apple_crushed_png(path, &error))
@@ -77,13 +79,16 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
 			}
 			else
 				QLThumbnailRequestSetImageAtURL(thumbnail, url, properties);
+#else
+			QLThumbnailRequestSetImageAtURL(thumbnail, url, properties);
+#endif /* __MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_10_8 */
 		}
 		else
 			QLThumbnailRequestSetImageAtURL(thumbnail, url, properties);
 		
 #ifdef kNyxDisplayTypeInIcon
-		SAFE_RELEASE_CF(properties);
-#endif
+		CFRelease(properties);
+#endif /* kNyxDisplayTypeInIcon */
 
 		return kQLReturnNoError;
 	}
@@ -91,5 +96,4 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
 
 void CancelThumbnailGeneration(void *thisInterface, QLThumbnailRequestRef thumbnail)
 {
-	// Implement only if supported
 }

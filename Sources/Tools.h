@@ -3,8 +3,8 @@
 //  qlImageSize
 //
 //  Created by @Nyx0uf on 02/02/12.
-//  Copyright (c) 2012 Benjamin Godard. All rights reserved.
-//  www.cococabyss.com
+//  Copyright (c) 2012 Nyx0uf. All rights reserved.
+//  www.cocoaintheshell.com
 //
 
 

@@ -1,21 +1,13 @@
 //
-//  GeneratePreviewForURL.c
+//  Prefix.pch
 //  qlImageSize
 //
 //  Created by @Nyx0uf on 31/01/12.
-//  Copyright (c) 2012 Benjamin Godard. All rights reserved.
-//  www.cococabyss.com
+//  Copyright (c) 2012 Nyx0uf. All rights reserved.
+//  www.cocoaintheshell.com
 //
 
 #import <CoreFoundation/CoreFoundation.h>
-//#import <Foundation/Foundation.h>
-
-/* Release a Core Foundation object and set it to NULL */
-#define SAFE_RELEASE_CF(__POINTER) \
-do { \
-if (__POINTER != NULL) \
-CFRelease(__POINTER), __POINTER = NULL; \
-} while (0)
 
 
 #ifndef __has_feature      // Optional.
