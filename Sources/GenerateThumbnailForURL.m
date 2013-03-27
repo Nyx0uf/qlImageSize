@@ -8,14 +8,16 @@
 //
 
 
-#import <CoreServices/CoreServices.h>
 #import <QuickLook/QuickLook.h>
-#import <Foundation/Foundation.h>
-#import "Tools.h"
+#import <Foundation/NSDictionary.h>
+#import <Foundation/NSArray.h>
+#import <Foundation/NSURL.h>
 
-#if __MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_10_8
+
+#if (__MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_10_8)
 #import "NYXPNGTools.h"
 #endif /* __MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_10_8 */
+
 
 /// Comment this line if you don't want the type displayed inside the icon
 #define kNyxDisplayTypeInIcon
@@ -29,33 +31,40 @@ void CancelThumbnailGeneration(void* thisInterface, QLThumbnailRequestRef thumbn
 
    This function's job is to create thumbnail for designated file as fast as possible
    ----------------------------------------------------------------------------- */
-OSStatus GenerateThumbnailForURL(void* thisInterface, QLThumbnailRequestRef thumbnail, CFURLRef url, CFStringRef contentTypeUTI, CFDictionaryRef options, CGSize maxSize)
+OSStatus GenerateThumbnailForURL(__unused void* thisInterface, QLThumbnailRequestRef thumbnail, CFURLRef url, CFStringRef contentTypeUTI, __unused CFDictionaryRef options, __unused CGSize maxSize)
 {
 	@autoreleasepool
 	{
 		CFDictionaryRef properties = NULL;
 #ifdef kNyxDisplayTypeInIcon
-		/// Get the UTI properties
+		// Get the UTI properties
 		NSDictionary* utiDeclarations = (__bridge_transfer NSDictionary*)UTTypeCopyDeclaration(contentTypeUTI);
 
-		/// Get the extensions corresponding to the image UTI, for some UTI there can be more than 1 extension (ex image.jpeg = jpeg, jpg...)
+		// Get the extensions corresponding to the image UTI, for some UTI there can be more than 1 extension (ex image.jpeg = jpeg, jpg...)
 		id extensions = utiDeclarations[(__bridge NSString*)kUTTypeTagSpecificationKey][(__bridge NSString*)kUTTagClassFilenameExtension];
 		NSString* extension = ([extensions isKindOfClass:[NSArray class]]) ? extensions[0] : extensions;
 
-		/// Create the properties dic
+		// Create the properties dic
 		CFTypeRef keys[1] = {kQLThumbnailPropertyExtensionKey};
 		CFTypeRef values[1] = {(__bridge CFStringRef)extension};
 		properties = CFDictionaryCreate(kCFAllocatorDefault, (const void**)keys, (const void**)values, 1, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
 #endif /* kNyxDisplayTypeInIcon */
-		/// Check if the image is a PNG
+		// Check if the image is a PNG
 		if (CFStringCompare(contentTypeUTI, kUTTypePNG, kCFCompareCaseInsensitive) == kCFCompareEqualTo)
 		{
-#if __MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_10_8
+#if (__MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_10_8)
 			const char* path = [[(__bridge NSURL*)url path] cStringUsingEncoding:NSUTF8StringEncoding];
 			int error = 0;
 			if (npt_is_apple_crushed_png(path, &error))
 			{
-				/// Uncrush the PNG
+				if (QLThumbnailRequestIsCancelled(thumbnail))
+				{
+#ifdef kNyxDisplayTypeInIcon
+					CFRelease(properties);
+#endif /* kNyxDisplayTypeInIcon */
+					return kQLReturnNoError;
+				}
+				// Uncrush the PNG
 				unsigned int size = 0;
 				UInt8* pngData = npt_create_uncrushed_from_file(path, &size, &error);
 				if (!pngData)
@@ -64,6 +73,14 @@ OSStatus GenerateThumbnailForURL(void* thisInterface, QLThumbnailRequestRef thum
 				}
 				else
 				{
+					if (QLThumbnailRequestIsCancelled(thumbnail))
+					{
+#ifdef kNyxDisplayTypeInIcon
+						CFRelease(properties);
+#endif /* kNyxDisplayTypeInIcon */
+						free(pngData);
+						return kQLReturnNoError;
+					}
 					CFDataRef uncrushed = CFDataCreateWithBytesNoCopy(kCFAllocatorDefault, pngData, size, kCFAllocatorDefault);
 					if (uncrushed)
 					{
@@ -94,6 +111,6 @@ OSStatus GenerateThumbnailForURL(void* thisInterface, QLThumbnailRequestRef thum
 	}
 }
 
-void CancelThumbnailGeneration(void* thisInterface, QLThumbnailRequestRef thumbnail)
+void CancelThumbnailGeneration(__unused void* thisInterface, __unused QLThumbnailRequestRef thumbnail)
 {
 }
