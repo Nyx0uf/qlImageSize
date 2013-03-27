@@ -9,15 +9,10 @@
 
 #import <CoreFoundation/CoreFoundation.h>
 
-
-#ifndef __has_feature      // Optional.
-#define __has_feature(x) 0 // Compatibility with non-clang compilers.
+#if (__MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_10_7)
+	#error "Must target at least Mac OS X 10.7"
 #endif
 
-#ifndef CF_RETURNS_RETAINED
-#if __has_feature(attribute_cf_returns_retained)
-#define CF_RETURNS_RETAINED __attribute__((cf_returns_retained))
-#else
-#define CF_RETURNS_RETAINED
-#endif
+#ifdef DEBUG
+	#warning "To enable logging --> defaults write -g QLEnableLogging NO"
 #endif
