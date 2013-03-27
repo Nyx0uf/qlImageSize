@@ -28,7 +28,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>1</string>
 	<key>CFBundleVersion</key>
-	<string>1.2.1</string>
+	<string>1.3.0</string>
 	<key>CFPlugInDynamicRegisterFunction</key>
 	<string></string>
 	<key>CFPlugInDynamicRegistration</key>
@@ -48,7 +48,7 @@
 	<key>CFPlugInUnloadFunction</key>
 	<string></string>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright © 2012 Nyx0uf. All rights reserved.</string>
+	<string>Copyright © 2013 Nyx0uf. All rights reserved.</string>
 	<key>QLNeedsToBeRunInMainThread</key>
 	<false/>
 	<key>QLPreviewHeight</key>
@@ -56,8 +56,6 @@
 	<key>QLPreviewWidth</key>
 	<real>800</real>
 	<key>QLSupportsConcurrentRequests</key>
-	<false/>
-	<key>QLThumbnailMinimumSize</key>
-	<real>17</real>
+	<true/>
 </dict>
 </plist>
