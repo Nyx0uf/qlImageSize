@@ -8,49 +8,56 @@
 //
 
 
-#import <CoreServices/CoreServices.h>
 #import <QuickLook/QuickLook.h>
-#import <Foundation/Foundation.h>
 #import "Tools.h"
 
-#if __MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_10_8
+
+#if (__MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_10_8)
 #import "NYXPNGTools.h"
+#import <Foundation/NSURL.h>
 #endif /* __MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_10_8 */
 
 
-OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview, CFURLRef url, CFStringRef contentTypeUTI, CFDictionaryRef options);
-void CancelPreviewGeneration(void *thisInterface, QLPreviewRequestRef preview);
+OSStatus GeneratePreviewForURL(void* thisInterface, QLPreviewRequestRef preview, CFURLRef url, CFStringRef contentTypeUTI, CFDictionaryRef options);
+void CancelPreviewGeneration(void* thisInterface, QLPreviewRequestRef preview);
 
 /* -----------------------------------------------------------------------------
    Generate a preview for file
 
    This function's job is to create preview for designated file
    ----------------------------------------------------------------------------- */
-OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview, CFURLRef url, CFStringRef contentTypeUTI, CFDictionaryRef options)
+OSStatus GeneratePreviewForURL(__unused void* thisInterface, QLPreviewRequestRef preview, CFURLRef url, CFStringRef contentTypeUTI, __unused CFDictionaryRef options)
 {
 	@autoreleasepool
 	{
-#if __MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_10_8
-		/// Check if the image is a PNG
+#if (__MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_10_8)
+		// Check if the image is a PNG
 		if (CFStringCompare(contentTypeUTI, kUTTypePNG, kCFCompareCaseInsensitive) == kCFCompareEqualTo)
 		{
 			const char* path = [[(__bridge NSURL*)url path] cStringUsingEncoding:NSUTF8StringEncoding];
 			int error = 0;
 			if (npt_is_apple_crushed_png(path, &error))
 			{
-				/// Uncrush the PNG
+				if (QLPreviewRequestIsCancelled(preview))
+					return kQLReturnNoError;
+				// Uncrush the PNG
 				unsigned int size = 0;
 				UInt8* pngData = npt_create_uncrushed_from_file(path, &size, &error);
-				if (!pngData)
+				if (NULL == pngData)
 				{
 					NSLog(@"[-] qlImageSize: Failed to create uncrushed png from '%@' : %s", url, npt_error_message(error));
 				}
 				else
 				{
-					CFDataRef uncrushed = CFDataCreateWithBytesNoCopy(kCFAllocatorDefault, pngData, size, kCFAllocatorDefault);
-					if (uncrushed)
+					if (QLPreviewRequestIsCancelled(preview))
 					{
-						/// Create the properties dic
+						free(pngData);
+						return kQLReturnNoError;
+					}
+					CFDataRef uncrushed = CFDataCreateWithBytesNoCopy(kCFAllocatorDefault, pngData, size, kCFAllocatorDefault);
+					if (uncrushed != NULL)
+					{
+						// Create the properties dic
 						CFStringRef filename = CFURLCopyLastPathComponent(url);
 						CFDictionaryRef properties = createQLPreviewPropertiesForFile(url, uncrushed, filename);					
 						QLPreviewRequestSetDataRepresentation(preview, uncrushed, contentTypeUTI, properties);
@@ -68,7 +75,7 @@ OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview,
 			}
 		}
 #endif /* __MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_10_8 */
-		/// Normal PNG, or other type
+		// As of 10.8 crushed PNGs are natively handled, so the stuff above is useless
 		CFStringRef filename = CFURLCopyLastPathComponent(url);
 		CFDictionaryRef properties = createQLPreviewPropertiesForFile(url, url, filename);
 		QLPreviewRequestSetURLRepresentation(preview, url, contentTypeUTI, properties);
@@ -79,6 +86,6 @@ OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview,
 	}
 }
 
-void CancelPreviewGeneration(void *thisInterface, QLPreviewRequestRef preview)
+void CancelPreviewGeneration(__unused void* thisInterface, __unused QLPreviewRequestRef preview)
 {
 }
