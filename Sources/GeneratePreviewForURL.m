@@ -111,7 +111,7 @@ OSStatus GeneratePreviewForURL(__unused void* thisInterface, QLPreviewRequestRef
 			// Draw text
 			const CGFloat x = (imgSize.width < minSize.width) ? 0.0f : (imgSize.width - minSize.width) * 0.5f;
 			CGContextShowTextAtPoint(ctx, x, 0.0f, [strDimensions cStringUsingEncoding:NSASCIIStringEncoding], [strDimensions length]);
-			// Will render the bitmap into the QL window, but no titlebar modification, it will need to convert the img as a CFData blob etc, too lazy atm.
+			// Will render the bitmap into the QL window, but no titlebar modification, don't know if it's actually possible
 			QLPreviewRequestFlushContext(preview, ctx);
 			CGContextRelease(ctx);
 		}
