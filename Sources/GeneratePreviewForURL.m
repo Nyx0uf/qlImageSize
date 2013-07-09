@@ -19,6 +19,9 @@
 #endif /* __MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_10_8 */
 
 
+#define NYX_FONTSIZE 18.0f
+
+
 OSStatus GeneratePreviewForURL(void* thisInterface, QLPreviewRequestRef preview, CFURLRef url, CFStringRef contentTypeUTI, CFDictionaryRef options);
 void CancelPreviewGeneration(void* thisInterface, QLPreviewRequestRef preview);
 
@@ -76,7 +79,7 @@ OSStatus GeneratePreviewForURL(__unused void* thisInterface, QLPreviewRequestRef
 			}
 		}
 #endif /* __MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_10_8 */
-		// As of 10.8 crushed PNGs are natively handled, so the stuff above is useless
+		/* As of 10.8 crushed PNGs are natively handled, so the stuff above is useless */
 		CFStringRef filename = CFURLCopyLastPathComponent(url);
 	
 		// Kinda ugly but whatever
@@ -84,18 +87,33 @@ OSStatus GeneratePreviewForURL(__unused void* thisInterface, QLPreviewRequestRef
 		CGImageRef cgImg = NULL;
 		CFDictionaryRef properties = createQLPreviewPropertiesForFile(url, url, filename, &imgSize, &cgImg);
 
-		// Bitmap context render the size at the bottom, 20px height margin for text should be good
-		CGContextRef ctx = QLPreviewRequestCreateContext(preview, (CGSize){.width = imgSize.width, .height = imgSize.height + 20.0f}, true, NULL);
+		// Create the string containing dimensions
+		NSString* strDimensions = [[NSString alloc] initWithFormat:@"%.fx%.f", imgSize.width, imgSize.height];
+
+		// Minimum size for the string
+		CGSize minSize = [strDimensions sizeWithAttributes:@{NSFontAttributeName : [NSFont fontWithName:@"Helvetica" size:NYX_FONTSIZE]}];
+		minSize.width = ceil(minSize.width);
+		minSize.height = ceil(minSize.height);
+		// Bitmap context dimensions, 20px height margin for text should be good
+		const CGSize sizeCtx = (CGSize){.width = ((imgSize.width < minSize.width) ? minSize.width : imgSize.width), .height = ((imgSize.height < minSize.height) ? minSize.height : imgSize.height) + 20.0f};
+
+		// Bitmap context render the size at the bottom
+		CGContextRef ctx = QLPreviewRequestCreateContext(preview, sizeCtx, true, NULL);
 		if (ctx != NULL)
 		{
-			// Draw image
-			CGContextDrawImage(ctx, (CGRect){.origin.x = 0.0f, .origin.y = 20.0f, .size = imgSize}, cgImg);
-			// string Fonts/color
-			NSString* strSize = [[NSString alloc] initWithFormat:@"%.fx%.f", imgSize.width, imgSize.height];
-			const CGSize rSize = [strSize sizeWithAttributes:@{NSFontAttributeName : [NSFont systemFontOfSize:18.0f]}];
-			CGContextSetFillColor(ctx, (CGFloat[4]){0.0f, 0.0f, 0.0f, 1.0f});
-			const CGFloat x = (imgSize.width - rSize.width) * 0.5f;
-			CGContextShowTextAtPoint(ctx, x, 0.0f, [strSize cStringUsingEncoding:NSASCIIStringEncoding], [strSize length]);
+			// Draw image at top, x-centered
+			if (imgSize.width < minSize.width)
+				CGContextDrawImage(ctx, (CGRect){.origin.x = (minSize.width - imgSize.width) * 0.5f, .origin.y = 20.0f, .size = imgSize}, cgImg);
+			else
+				CGContextDrawImage(ctx, (CGRect){.origin.x = 0.0f, .origin.y = 20.0f, .size = imgSize}, cgImg);
+			// Select font/color
+			CGColorRef blackColor = CGColorCreateGenericRGB(0.0f, 0.0f, 0.0f, 1.0f);
+			CGContextSetFillColorWithColor(ctx, blackColor);
+			CGContextSelectFont(ctx, "Helvetica", NYX_FONTSIZE, kCGEncodingMacRoman);
+			CGColorRelease(blackColor);
+			// Draw text
+			const CGFloat x = (imgSize.width < minSize.width) ? 0.0f : (imgSize.width - minSize.width) * 0.5f;
+			CGContextShowTextAtPoint(ctx, x, 0.0f, [strDimensions cStringUsingEncoding:NSASCIIStringEncoding], [strDimensions length]);
 			// Will render the bitmap into the QL window, but no titlebar modification, it will need to convert the img as a CFData blob etc, too lazy atm.
 			QLPreviewRequestFlushContext(preview, ctx);
 			CGContextRelease(ctx);
