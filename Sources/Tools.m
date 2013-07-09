@@ -24,9 +24,11 @@ CFDictionaryRef createQLPreviewPropertiesForFile(CFURLRef url, CFTypeRef src, CF
 
 	// Copy images properties
 	CFDictionaryRef imgProperties = CGImageSourceCopyPropertiesAtIndex(imgSrc, 0, NULL);
-	CFRelease(imgSrc);
 	if (NULL == imgProperties)
+	{
+		CFRelease(imgSrc);
 		return NULL;
+	}
 
 	// Get image width
 	CFNumberRef w = CFDictionaryGetValue(imgProperties, kCGImagePropertyPixelWidth);
@@ -37,6 +39,15 @@ CFDictionaryRef createQLPreviewPropertiesForFile(CFURLRef url, CFTypeRef src, CF
 	int height = 0;
 	CFNumberGetValue(h, kCFNumberIntType, &height);
 	CFRelease(imgProperties);
+
+	if (imgSize != NULL)
+		*imgSize = (CGSize){.width = width, .height = height};
+
+	if (img != NULL)
+	{
+		*img = CGImageSourceCreateImageAtIndex(imgSrc, 0, NULL);
+	}
+	CFRelease(imgSrc);
 
 	// Get the filesize, because it's not always present in the image properties dictionary :/
 	struct stat st;
