@@ -15,7 +15,7 @@
 #import <QuickLook/QLGenerator.h> // For kQLPreviewPropertyDisplayNameKey
 
 
-CFDictionaryRef createQLPreviewPropertiesForFile(CFURLRef url, CFTypeRef src, CFStringRef name)
+CFDictionaryRef createQLPreviewPropertiesForFile(CFURLRef url, CFTypeRef src, CFStringRef name, CGSize* imgSize, CGImageRef* img)
 {
 	// Create the image source
 	CGImageSourceRef imgSrc = (CFGetTypeID(src) == CFDataGetTypeID()) ? CGImageSourceCreateWithData(src, NULL) : CGImageSourceCreateWithURL(src, NULL);

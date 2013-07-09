@@ -10,11 +10,12 @@
 
 #import <QuickLook/QuickLook.h>
 #import "Tools.h"
+#import <Foundation/NSURL.h>
+#import <AppKit/AppKit.h>
 
 
 #if (__MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_10_8)
 #import "NYXPNGTools.h"
-#import <Foundation/NSURL.h>
 #endif /* __MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_10_8 */
 
 
@@ -59,7 +60,7 @@ OSStatus GeneratePreviewForURL(__unused void* thisInterface, QLPreviewRequestRef
 					{
 						// Create the properties dic
 						CFStringRef filename = CFURLCopyLastPathComponent(url);
-						CFDictionaryRef properties = createQLPreviewPropertiesForFile(url, uncrushed, filename);					
+						CFDictionaryRef properties = createQLPreviewPropertiesForFile(url, uncrushed, filename, NULL, NULL);
 						QLPreviewRequestSetDataRepresentation(preview, uncrushed, contentTypeUTI, properties);
 						CFRelease(properties);
 						CFRelease(filename);
@@ -77,8 +78,35 @@ OSStatus GeneratePreviewForURL(__unused void* thisInterface, QLPreviewRequestRef
 #endif /* __MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_10_8 */
 		// As of 10.8 crushed PNGs are natively handled, so the stuff above is useless
 		CFStringRef filename = CFURLCopyLastPathComponent(url);
-		CFDictionaryRef properties = createQLPreviewPropertiesForFile(url, url, filename);
-		QLPreviewRequestSetURLRepresentation(preview, url, contentTypeUTI, properties);
+	
+		// Kinda ugly but whatever
+		CGSize imgSize;
+		CGImageRef cgImg = NULL;
+		CFDictionaryRef properties = createQLPreviewPropertiesForFile(url, url, filename, &imgSize, &cgImg);
+
+		// Bitmap context render the size at the bottom, 20px height margin for text should be good
+		CGContextRef ctx = QLPreviewRequestCreateContext(preview, (CGSize){.width = imgSize.width, .height = imgSize.height + 20.0f}, true, NULL);
+		if (ctx != NULL)
+		{
+			// Draw image
+			CGContextDrawImage(ctx, (CGRect){.origin.x = 0.0f, .origin.y = 20.0f, .size = imgSize}, cgImg);
+			// string Fonts/color
+			NSString* strSize = [[NSString alloc] initWithFormat:@"%.fx%.f", imgSize.width, imgSize.height];
+			const CGSize rSize = [strSize sizeWithAttributes:@{NSFontAttributeName : [NSFont systemFontOfSize:18.0f]}];
+			CGContextSetFillColor(ctx, (CGFloat[4]){0.0f, 0.0f, 0.0f, 1.0f});
+			const CGFloat x = (imgSize.width - rSize.width) * 0.5f;
+			CGContextShowTextAtPoint(ctx, x, 0.0f, [strSize cStringUsingEncoding:NSASCIIStringEncoding], [strSize length]);
+			// Will render the bitmap into the QL window, but no titlebar modification, it will need to convert the img as a CFData blob etc, too lazy atm.
+			QLPreviewRequestFlushContext(preview, ctx);
+			CGContextRelease(ctx);
+		}
+		else
+		{
+			// Some kind of error, fallback
+			QLPreviewRequestSetURLRepresentation(preview, url, contentTypeUTI, properties);
+		}
+
+		CGImageRelease(cgImg);
 		CFRelease(properties);
 		CFRelease(filename);
 

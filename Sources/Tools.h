@@ -8,4 +8,8 @@
 //
 
 
-CF_RETURNS_RETAINED CFDictionaryRef createQLPreviewPropertiesForFile(CFURLRef url, CFTypeRef src, CFStringRef name);
+#import <CoreGraphics/CGImage.h>
+#import <CoreGraphics/CGGeometry.h>
+
+
+CF_RETURNS_RETAINED CFDictionaryRef createQLPreviewPropertiesForFile(CFURLRef url, CFTypeRef src, CFStringRef name, CGSize* imgSize, CGImageRef* img);
