@@ -94,18 +94,15 @@ OSStatus GeneratePreviewForURL(__unused void* thisInterface, QLPreviewRequestRef
 		CGSize minSize = [strDimensions sizeWithAttributes:@{NSFontAttributeName : [NSFont fontWithName:@"Helvetica" size:NYX_FONTSIZE]}];
 		minSize.width = ceil(minSize.width);
 		minSize.height = ceil(minSize.height);
-		// Bitmap context dimensions, 20px height margin for text should be good
-		const CGSize sizeCtx = (CGSize){.width = ((imgSize.width < minSize.width) ? minSize.width : imgSize.width), .height = ((imgSize.height < minSize.height) ? minSize.height : imgSize.height) + 20.0f};
+		// Bitmap context dimensions
+		const CGSize sizeCtx = (CGSize){.width = ((imgSize.width < minSize.width) ? minSize.width : imgSize.width), .height = imgSize.height + minSize.height};
 
 		// Bitmap context render the size at the bottom
 		CGContextRef ctx = QLPreviewRequestCreateContext(preview, sizeCtx, true, NULL);
 		if (ctx != NULL)
 		{
 			// Draw image at top, x-centered
-			if (imgSize.width < minSize.width)
-				CGContextDrawImage(ctx, (CGRect){.origin.x = (minSize.width - imgSize.width) * 0.5f, .origin.y = 20.0f, .size = imgSize}, cgImg);
-			else
-				CGContextDrawImage(ctx, (CGRect){.origin.x = 0.0f, .origin.y = 20.0f, .size = imgSize}, cgImg);
+			CGContextDrawImage(ctx, (CGRect){.origin.x = (imgSize.width < minSize.width) ? (minSize.width - imgSize.width) * 0.5f : 0.0f, .origin.y = minSize.height, .size = imgSize}, cgImg);
 			// Select font/color
 			CGColorRef blackColor = CGColorCreateGenericRGB(0.0f, 0.0f, 0.0f, 1.0f);
 			CGContextSetFillColorWithColor(ctx, blackColor);
