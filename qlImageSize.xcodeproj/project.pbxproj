@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1E1559D414D96C2500268030 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E1559D314D96C2500268030 /* Foundation.framework */; };
+		1E2331CA1781BC1600ACF19C /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E2331C91781BC1600ACF19C /* AppKit.framework */; };
 		1E415A9414DB223A006BF9CC /* libNYXPNGTools.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E415A9214DB223A006BF9CC /* libNYXPNGTools.dylib */; };
 		1E415A9514DB223A006BF9CC /* NYXPNGTools.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E415A9314DB223A006BF9CC /* NYXPNGTools.h */; };
 		1E415A9614DB22D7006BF9CC /* libNYXPNGTools.dylib in Copy lib */ = {isa = PBXBuildFile; fileRef = 1E415A9214DB223A006BF9CC /* libNYXPNGTools.dylib */; };
@@ -61,6 +62,7 @@
 
 /* Begin PBXFileReference section */
 		1E1559D314D96C2500268030 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		1E2331C91781BC1600ACF19C /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		1E415A9214DB223A006BF9CC /* libNYXPNGTools.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libNYXPNGTools.dylib; sourceTree = "<group>"; };
 		1E415A9314DB223A006BF9CC /* NYXPNGTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYXPNGTools.h; sourceTree = "<group>"; };
 		1E5392BF14D943DE00C8A0F8 /* GeneratePreviewForURL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GeneratePreviewForURL.m; path = Sources/GeneratePreviewForURL.m; sourceTree = "<group>"; };
@@ -81,6 +83,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1E2331CA1781BC1600ACF19C /* AppKit.framework in Frameworks */,
 				1E1559D414D96C2500268030 /* Foundation.framework in Frameworks */,
 				1EFA994214D9288600A09F03 /* QuickLook.framework in Frameworks */,
 				1EFA994414D9288600A09F03 /* ApplicationServices.framework in Frameworks */,
@@ -149,6 +152,7 @@
 				1EFA994114D9288600A09F03 /* QuickLook.framework */,
 				1EFA994314D9288600A09F03 /* ApplicationServices.framework */,
 				1EFA994514D9288600A09F03 /* CoreServices.framework */,
+				1E2331C91781BC1600ACF19C /* AppKit.framework */,
 				1EFA994714D9288600A09F03 /* CoreFoundation.framework */,
 			);
 			name = Frameworks;
