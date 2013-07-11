@@ -20,6 +20,7 @@
 
 
 #define NYX_FONTSIZE 18.0f
+#define NYX_BOTTOM_MARGIN 2.0f
 
 
 OSStatus GeneratePreviewForURL(void* thisInterface, QLPreviewRequestRef preview, CFURLRef url, CFStringRef contentTypeUTI, CFDictionaryRef options);
@@ -65,8 +66,10 @@ OSStatus GeneratePreviewForURL(__unused void* thisInterface, QLPreviewRequestRef
 						CFStringRef filename = CFURLCopyLastPathComponent(url);
 						CFDictionaryRef properties = createQLPreviewPropertiesForFile(url, uncrushed, filename, NULL, NULL);
 						QLPreviewRequestSetDataRepresentation(preview, uncrushed, contentTypeUTI, properties);
-						CFRelease(properties);
-						CFRelease(filename);
+						if (properties != NULL)
+							CFRelease(properties);
+						if (filename != NULL)
+							CFRelease(filename);
 						CFRelease(uncrushed); // Will also free pngData
 					}
 					else
@@ -91,26 +94,27 @@ OSStatus GeneratePreviewForURL(__unused void* thisInterface, QLPreviewRequestRef
 		NSString* strDimensions = [[NSString alloc] initWithFormat:@"%.fx%.f", imgSize.width, imgSize.height];
 
 		// Minimum size for the string
-		CGSize minSize = [strDimensions sizeWithAttributes:@{NSFontAttributeName : [NSFont fontWithName:@"Helvetica" size:NYX_FONTSIZE]}];
+		NSFont* font = [NSFont systemFontOfSize:NYX_FONTSIZE];
+		CGSize minSize = [strDimensions sizeWithAttributes:@{NSFontAttributeName : font}];
 		minSize.width = ceil(minSize.width);
 		minSize.height = ceil(minSize.height);
-		// Bitmap context dimensions
-		const CGSize sizeCtx = (CGSize){.width = ((imgSize.width < minSize.width) ? minSize.width : imgSize.width), .height = imgSize.height + minSize.height};
+		// Bitmap context dimensions (2pt bottom margin)
+		const CGSize sizeCtx = (CGSize){.width = ((imgSize.width < minSize.width) ? minSize.width : imgSize.width), .height = imgSize.height + minSize.height + NYX_BOTTOM_MARGIN};
 
 		// Bitmap context render the size at the bottom
 		CGContextRef ctx = QLPreviewRequestCreateContext(preview, sizeCtx, true, NULL);
 		if (ctx != NULL)
 		{
 			// Draw image at top, x-centered
-			CGContextDrawImage(ctx, (CGRect){.origin.x = (imgSize.width < minSize.width) ? (minSize.width - imgSize.width) * 0.5f : 0.0f, .origin.y = minSize.height, .size = imgSize}, cgImg);
-			// Select font/color
+			CGContextDrawImage(ctx, (CGRect){.origin.x = (imgSize.width < minSize.width) ? (minSize.width - imgSize.width) * 0.5f : 0.0f, .origin.y = minSize.height + NYX_BOTTOM_MARGIN, .size = imgSize}, cgImg);
+			// Set font/color
 			CGColorRef blackColor = CGColorCreateGenericRGB(0.0f, 0.0f, 0.0f, 1.0f);
 			CGContextSetFillColorWithColor(ctx, blackColor);
-			CGContextSelectFont(ctx, "Helvetica", NYX_FONTSIZE, kCGEncodingMacRoman);
+			CGContextSelectFont(ctx, [[font fontName] cStringUsingEncoding:NSUTF8StringEncoding], NYX_FONTSIZE, kCGEncodingMacRoman);
 			CGColorRelease(blackColor);
 			// Draw text
 			const CGFloat x = (imgSize.width < minSize.width) ? 0.0f : (imgSize.width - minSize.width) * 0.5f;
-			CGContextShowTextAtPoint(ctx, x, 0.0f, [strDimensions cStringUsingEncoding:NSASCIIStringEncoding], [strDimensions length]);
+			CGContextShowTextAtPoint(ctx, x, NYX_BOTTOM_MARGIN, [strDimensions cStringUsingEncoding:NSASCIIStringEncoding], [strDimensions length]);
 			// Will render the bitmap into the QL window, but no titlebar modification, don't know if it's actually possible
 			QLPreviewRequestFlushContext(preview, ctx);
 			CGContextRelease(ctx);
@@ -122,8 +126,10 @@ OSStatus GeneratePreviewForURL(__unused void* thisInterface, QLPreviewRequestRef
 		}
 
 		CGImageRelease(cgImg);
-		CFRelease(properties);
-		CFRelease(filename);
+		if (properties != NULL)
+			CFRelease(properties);
+		if (filename != NULL)
+			CFRelease(filename);
 
 		return kQLReturnNoError;
 	}
