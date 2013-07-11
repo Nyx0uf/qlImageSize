@@ -60,7 +60,8 @@ OSStatus GenerateThumbnailForURL(__unused void* thisInterface, QLThumbnailReques
 				if (QLThumbnailRequestIsCancelled(thumbnail))
 				{
 #ifdef kNyxDisplayTypeInIcon
-					CFRelease(properties);
+					if (properties != NULL)
+						CFRelease(properties);
 #endif /* kNyxDisplayTypeInIcon */
 					return kQLReturnNoError;
 				}
@@ -76,7 +77,8 @@ OSStatus GenerateThumbnailForURL(__unused void* thisInterface, QLThumbnailReques
 					if (QLThumbnailRequestIsCancelled(thumbnail))
 					{
 #ifdef kNyxDisplayTypeInIcon
-						CFRelease(properties);
+						if (properties != NULL)
+							CFRelease(properties);
 #endif /* kNyxDisplayTypeInIcon */
 						free(pngData);
 						return kQLReturnNoError;
@@ -104,7 +106,8 @@ OSStatus GenerateThumbnailForURL(__unused void* thisInterface, QLThumbnailReques
 			QLThumbnailRequestSetImageAtURL(thumbnail, url, properties);
 		
 #ifdef kNyxDisplayTypeInIcon
-		CFRelease(properties);
+		if (properties != NULL)
+			CFRelease(properties);
 #endif /* kNyxDisplayTypeInIcon */
 
 		return kQLReturnNoError;
