@@ -4,12 +4,12 @@ This is a *QuickLook* plugin for Mac OS X *10.7* / *10.8* to display the dimensi
 
 Since *10.8* iPhone's PNG are correctly displayed in the Finder, but before they were not, so in *10.7* this plugin also correctly display them.
 
-for more informations see my blog post about it : <http://www.cocoaintheshell.com/2012/02/quicklook-images-dimensions/>
+for more informations see my [blog post about it](http://www.cocoaintheshell.com/2012/02/quicklook-images-dimensions/ "Images dimensions in QuickLook").
 
 
 ### Build & Install ###
 
-For those who don't want to build from the sources, you can grab the plugin here : <http://repo.whine.fr/qlImageSize.qlgenerator.zip>
+For those who don't want to build from the sources, you can grab the plugin [here](http://repo.whine.fr/qlImageSize.qlgenerator.zip).
 
 Unzip it, and place it in */Library/QuickLook* or *~/Library/QuickLook*.
 
@@ -21,13 +21,11 @@ For the others, open **qlImageSize.xcodeproj**. If you hit the run button, it wi
 
 In the file **GenerateThumbnailForURL.m** you have the option to display the image type extension on the icons in the Finder. The extension is based on the Uniform Type Identifier (UTI) of the file.
 
-Also, ***qlImageSize*** is **ARC** enabled.
-
 
 ### License ###
 
 ***qlImageSize*** is released under the *Simplified BSD license*, see **LICENSE.txt**.
 
-Blog : <http://www.cocoaintheshell.com/>
+Blog : [Cocoa in the Shell](http://www.cocoaintheshell.com "Cocoa in the Shell")
 
-Twitter : @Nyx0uf
+Twitter : [@Nyx0uf](https://twitter.com/Nyx0uf)
