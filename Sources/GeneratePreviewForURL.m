@@ -64,8 +64,8 @@ OSStatus GeneratePreviewForURL(__unused void* thisInterface, QLPreviewRequestRef
 							QLPreviewRequestSetDataRepresentation(preview, uncrushed, contentTypeUTI, NULL);
 						else
 						{
-							const CGSize imgSize = (CGSize){.width = [(__bridge NSNumber*)CFDictionaryGetValue(properties, @"nyx.width") integerValue], .height = [(__bridge NSNumber*)CFDictionaryGetValue(properties, @"nyx.height") integerValue]};
-							CFNumberRef n = CFDictionaryGetValue(properties, @"nyx.size");
+							const CGSize imgSize = (CGSize){.width = [(__bridge NSNumber*)CFDictionaryGetValue(properties, NYX_KEY_IMGWIDTH) integerValue], .height = [(__bridge NSNumber*)CFDictionaryGetValue(properties, NYX_KEY_IMGHEIGHT) integerValue]};
+							CFNumberRef n = CFDictionaryGetValue(properties, NYX_KEY_IMGSIZE);
 							int64_t siz = 0;
 							CFNumberGetValue(n, kCFNumberSInt64Type, &size);
 							NSString* fmtSize = nil;
@@ -110,7 +110,7 @@ OSStatus GeneratePreviewForURL(__unused void* thisInterface, QLPreviewRequestRef
 		}
 
 		// Create the string containing dimensions
-		const CGSize imgSize = (CGSize){.width = [(__bridge NSNumber*)CFDictionaryGetValue(properties, @"nyx.width") integerValue], .height = [(__bridge NSNumber*)CFDictionaryGetValue(properties, @"nyx.height") integerValue]};
+		const CGSize imgSize = (CGSize){.width = [(__bridge NSNumber*)CFDictionaryGetValue(properties, NYX_KEY_IMGWIDTH) integerValue], .height = [(__bridge NSNumber*)CFDictionaryGetValue(properties, NYX_KEY_IMGHEIGHT) integerValue]};
 		NSString* strDimensions = [[NSString alloc] initWithFormat:@"%.fx%.f", imgSize.width, imgSize.height];
 
 		// Minimum size for the string
@@ -122,7 +122,7 @@ OSStatus GeneratePreviewForURL(__unused void* thisInterface, QLPreviewRequestRef
 		const CGSize sizeCtx = (CGSize){.width = ((imgSize.width < minSize.width) ? minSize.width : imgSize.width), .height = imgSize.height + minSize.height + NYX_BOTTOM_MARGIN};
 
 		// Create a local properties dic to update titlebar
-		CFNumberRef n = CFDictionaryGetValue(properties, @"nyx.size");
+		CFNumberRef n = CFDictionaryGetValue(properties, NYX_KEY_IMGSIZE);
 		int64_t size = 0;
 		CFNumberGetValue(n, kCFNumberSInt64Type, &size);
 		NSString* fmtSize = nil;
@@ -144,7 +144,7 @@ OSStatus GeneratePreviewForURL(__unused void* thisInterface, QLPreviewRequestRef
 		CGContextRef ctx = QLPreviewRequestCreateContext(preview, sizeCtx, true, props);
 		if (ctx != NULL)
 		{
-			CGImageRef cgImg = (CGImageRef)CFDictionaryGetValue(properties, @"nyx.repr");
+			CGImageRef cgImg = (CGImageRef)CFDictionaryGetValue(properties, NYX_KEY_IMGREPR);
 			// Draw image at top, x-centered
 			CGContextDrawImage(ctx, (CGRect){.origin.x = (imgSize.width < minSize.width) ? (minSize.width - imgSize.width) * 0.5f : 0.0f, .origin.y = minSize.height + NYX_BOTTOM_MARGIN, .size = imgSize}, cgImg);
 			// Set font/color

@@ -60,13 +60,13 @@ CF_RETURNS_RETAINED CFDictionaryRef properties_for_file(CFTypeRef src, CFURLRef 
 	
 	// Get the filesize, because it's not always present in the image properties dictionary :/
 	UInt8 buf[4096] = {0x00};
-	CFURLGetFileSystemRepresentation(url, true, buf, 4095);
+	CFURLGetFileSystemRepresentation(url, true, buf, 4096);
 	struct stat st;
 	stat((const char*)buf, &st);
 
 	// Create the properties dic
 	const CFIndex MAXVALS = 4;
-	CFTypeRef keys[MAXVALS] = {@"nyx.width", @"nyx.height", @"nyx.size", @"nyx.repr"};
+	CFTypeRef keys[MAXVALS] = {NYX_KEY_IMGWIDTH, NYX_KEY_IMGHEIGHT, NYX_KEY_IMGSIZE, NYX_KEY_IMGREPR};
 	CFTypeRef values[MAXVALS] = {pWidth, pHeight, CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt64Type, &(st.st_size)), imgRef};
 	CFDictionaryRef properties = CFDictionaryCreate(kCFAllocatorDefault, (const void**)keys, (const void**)values, MAXVALS, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
 	CFRelease(values[2]);
