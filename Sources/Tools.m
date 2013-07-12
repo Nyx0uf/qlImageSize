@@ -11,7 +11,7 @@
 #import "Tools.h"
 #import <sys/stat.h>
 #import <sys/types.h>
-#import <QuickLook/QLGenerator.h> // For kQLPreviewPropertyDisplayNameKey
+#import <ImageIO/ImageIO.h>
 
 
 CF_RETURNS_RETAINED CFDictionaryRef properties_for_file(CFTypeRef src, CFURLRef url)
