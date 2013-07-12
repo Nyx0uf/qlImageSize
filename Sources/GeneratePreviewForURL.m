@@ -77,7 +77,7 @@ OSStatus GeneratePreviewForURL(__unused void* thisInterface, QLPreviewRequestRef
 								fmtSize = [[NSString alloc] initWithFormat:@"%lldb", siz];
 							CFStringRef filename = CFURLCopyLastPathComponent(url);
 							CFTypeRef keys[1] = {kQLPreviewPropertyDisplayNameKey};
-							// WIDTHxHEIGHT | name.ext | 25.01Kb
+							// WIDTHxHEIGHT | filename | 25.01Kb
 							CFTypeRef values[1] = {CFStringCreateWithFormat(kCFAllocatorDefault, NULL, CFSTR("%dx%d | %@ | %@"), (int)imgSize.width, (int)imgSize.height, filename, fmtSize)};
 							CFDictionaryRef props = CFDictionaryCreate(kCFAllocatorDefault, (const void**)keys, (const void**)values, 1, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
 							CFRelease(values[0]);
@@ -134,7 +134,7 @@ OSStatus GeneratePreviewForURL(__unused void* thisInterface, QLPreviewRequestRef
 			fmtSize = [[NSString alloc] initWithFormat:@"%lldb", size];
 		CFStringRef filename = CFURLCopyLastPathComponent(url);
 		CFTypeRef keys[1] = {kQLPreviewPropertyDisplayNameKey};
-		// WIDTHxHEIGHT | name.ext | 25.01Kb
+		// WIDTHxHEIGHT | filename | 25.01Kb
 		CFTypeRef values[1] = {CFStringCreateWithFormat(kCFAllocatorDefault, NULL, CFSTR("%dx%d | %@ | %@"), (int)imgSize.width, (int)imgSize.height, filename, fmtSize)};
 		CFDictionaryRef props = CFDictionaryCreate(kCFAllocatorDefault, (const void**)keys, (const void**)values, 1, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
 		CFRelease(values[0]);
@@ -145,7 +145,7 @@ OSStatus GeneratePreviewForURL(__unused void* thisInterface, QLPreviewRequestRef
 		if (ctx != NULL)
 		{
 			CGImageRef cgImg = (CGImageRef)CFDictionaryGetValue(properties, NYX_KEY_IMGREPR);
-			// Draw image at top, x-centered
+			// Draw image at top, X-centered
 			CGContextDrawImage(ctx, (CGRect){.origin.x = (imgSize.width < minSize.width) ? (minSize.width - imgSize.width) * 0.5f : 0.0f, .origin.y = minSize.height + NYX_BOTTOM_MARGIN, .size = imgSize}, cgImg);
 			// Set font/color
 			CGColorRef blackColor = CGColorCreateGenericRGB(0.0f, 0.0f, 0.0f, 1.0f);
@@ -155,14 +155,13 @@ OSStatus GeneratePreviewForURL(__unused void* thisInterface, QLPreviewRequestRef
 			// Draw text
 			const CGFloat x = (imgSize.width < minSize.width) ? 0.0f : (imgSize.width - minSize.width) * 0.5f;
 			CGContextShowTextAtPoint(ctx, x, NYX_BOTTOM_MARGIN, [strDimensions cStringUsingEncoding:NSASCIIStringEncoding], [strDimensions length]);
-			// Will render the bitmap into the QL window, but no titlebar modification, don't know if it's actually possible
+			// Will render the bitmap into the QL window
 			QLPreviewRequestFlushContext(preview, ctx);
 			CGContextRelease(ctx);
 		}
 		else
 		{
-			// Some kind of error, fallback
-			// As we have a property dic, we can update the titlebar
+			// Some kind of error, fallback, as we have a property dic, we can update the titlebar
 			QLPreviewRequestSetURLRepresentation(preview, url, contentTypeUTI, props);
 		}
 
