@@ -10,7 +10,7 @@
 
 #import <QuickLook/QuickLook.h>
 #import "Tools.h"
-#import <Foundation/NSURL.h>
+#import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
 
 
@@ -26,11 +26,7 @@
 OSStatus GeneratePreviewForURL(void* thisInterface, QLPreviewRequestRef preview, CFURLRef url, CFStringRef contentTypeUTI, CFDictionaryRef options);
 void CancelPreviewGeneration(void* thisInterface, QLPreviewRequestRef preview);
 
-/* -----------------------------------------------------------------------------
-   Generate a preview for file
 
-   This function's job is to create preview for designated file
-   ----------------------------------------------------------------------------- */
 OSStatus GeneratePreviewForURL(__unused void* thisInterface, QLPreviewRequestRef preview, CFURLRef url, CFStringRef contentTypeUTI, __unused CFDictionaryRef options)
 {
 	@autoreleasepool
@@ -63,13 +59,34 @@ OSStatus GeneratePreviewForURL(__unused void* thisInterface, QLPreviewRequestRef
 					if (uncrushed != NULL)
 					{
 						// Create the properties dic
-						CFStringRef filename = CFURLCopyLastPathComponent(url);
-						CFDictionaryRef properties = createQLPreviewPropertiesForFile(url, uncrushed, filename, NULL, NULL);
-						QLPreviewRequestSetDataRepresentation(preview, uncrushed, contentTypeUTI, properties);
-						if (properties != NULL)
+						CFDictionaryRef properties = properties_for_file(uncrushed, url);
+						if (NULL == properties)
+							QLPreviewRequestSetDataRepresentation(preview, uncrushed, contentTypeUTI, NULL);
+						else
+						{
+							const CGSize imgSize = (CGSize){.width = [(__bridge NSNumber*)CFDictionaryGetValue(properties, @"nyx.width") integerValue], .height = [(__bridge NSNumber*)CFDictionaryGetValue(properties, @"nyx.height") integerValue]};
+							CFNumberRef n = CFDictionaryGetValue(properties, @"nyx.size");
+							int64_t siz = 0;
+							CFNumberGetValue(n, kCFNumberSInt64Type, &size);
+							NSString* fmtSize = nil;
+							if (siz > 1048576) // More than 1Mb
+								fmtSize = [[NSString alloc] initWithFormat:@"%.1fMb", (float)((float)siz / 1048576.0f)];
+							else if ((siz < 1048576) && (siz > 1024)) // 1Kb - 1Mb
+								fmtSize = [[NSString alloc] initWithFormat:@"%.2fKb", (float)((float)siz / 1024.0f)];
+							else // Less than 1Kb
+								fmtSize = [[NSString alloc] initWithFormat:@"%lldb", siz];
+							CFStringRef filename = CFURLCopyLastPathComponent(url);
+							CFTypeRef keys[1] = {kQLPreviewPropertyDisplayNameKey};
+							// WIDTHxHEIGHT | name.ext | 25.01Kb
+							CFTypeRef values[1] = {CFStringCreateWithFormat(kCFAllocatorDefault, NULL, CFSTR("%dx%d | %@ | %@"), (int)imgSize.width, (int)imgSize.height, filename, fmtSize)};
+							CFDictionaryRef props = CFDictionaryCreate(kCFAllocatorDefault, (const void**)keys, (const void**)values, 1, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+							CFRelease(values[0]);
+							QLPreviewRequestSetDataRepresentation(preview, uncrushed, contentTypeUTI, props);
+							CFRelease(props);
 							CFRelease(properties);
-						if (filename != NULL)
-							CFRelease(filename);
+							if (filename != NULL)
+								CFRelease(filename);
+						}
 						CFRelease(uncrushed); // Will also free pngData
 					}
 					else
@@ -83,14 +100,17 @@ OSStatus GeneratePreviewForURL(__unused void* thisInterface, QLPreviewRequestRef
 		}
 #endif /* __MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_10_8 */
 		/* As of 10.8 crushed PNGs are natively handled, so the stuff above is useless */
-		CFStringRef filename = CFURLCopyLastPathComponent(url);
 	
-		// Kinda ugly but whatever
-		CGSize imgSize;
-		CGImageRef cgImg = NULL;
-		CFDictionaryRef properties = createQLPreviewPropertiesForFile(url, url, filename, &imgSize, &cgImg);
+		CFDictionaryRef properties = properties_for_file(url, url);
+		if (NULL == properties)
+		{
+			// Some kind of error, fallback & abort
+			QLPreviewRequestSetURLRepresentation(preview, url, contentTypeUTI, NULL);
+			return kQLReturnNoError;
+		}
 
 		// Create the string containing dimensions
+		const CGSize imgSize = (CGSize){.width = [(__bridge NSNumber*)CFDictionaryGetValue(properties, @"nyx.width") integerValue], .height = [(__bridge NSNumber*)CFDictionaryGetValue(properties, @"nyx.height") integerValue]};
 		NSString* strDimensions = [[NSString alloc] initWithFormat:@"%.fx%.f", imgSize.width, imgSize.height];
 
 		// Minimum size for the string
@@ -101,10 +121,30 @@ OSStatus GeneratePreviewForURL(__unused void* thisInterface, QLPreviewRequestRef
 		// Bitmap context dimensions (2pt bottom margin)
 		const CGSize sizeCtx = (CGSize){.width = ((imgSize.width < minSize.width) ? minSize.width : imgSize.width), .height = imgSize.height + minSize.height + NYX_BOTTOM_MARGIN};
 
-		// Bitmap context render the size at the bottom
-		CGContextRef ctx = QLPreviewRequestCreateContext(preview, sizeCtx, true, NULL);
+		// Create a local properties dic to update titlebar
+		CFNumberRef n = CFDictionaryGetValue(properties, @"nyx.size");
+		int64_t size = 0;
+		CFNumberGetValue(n, kCFNumberSInt64Type, &size);
+		NSString* fmtSize = nil;
+		if (size > 1048576) // More than 1Mb
+			fmtSize = [[NSString alloc] initWithFormat:@"%.1fMb", (float)((float)size / 1048576.0f)];
+		else if ((size < 1048576) && (size > 1024)) // 1Kb - 1Mb
+			fmtSize = [[NSString alloc] initWithFormat:@"%.2fKb", (float)((float)size / 1024.0f)];
+		else // Less than 1Kb
+			fmtSize = [[NSString alloc] initWithFormat:@"%lldb", size];
+		CFStringRef filename = CFURLCopyLastPathComponent(url);
+		CFTypeRef keys[1] = {kQLPreviewPropertyDisplayNameKey};
+		// WIDTHxHEIGHT | name.ext | 25.01Kb
+		CFTypeRef values[1] = {CFStringCreateWithFormat(kCFAllocatorDefault, NULL, CFSTR("%dx%d | %@ | %@"), (int)imgSize.width, (int)imgSize.height, filename, fmtSize)};
+		CFDictionaryRef props = CFDictionaryCreate(kCFAllocatorDefault, (const void**)keys, (const void**)values, 1, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+		CFRelease(values[0]);
+		CFRelease(filename);
+	
+		// Bitmap context, render the size at the bottom
+		CGContextRef ctx = QLPreviewRequestCreateContext(preview, sizeCtx, true, props);
 		if (ctx != NULL)
 		{
+			CGImageRef cgImg = (CGImageRef)CFDictionaryGetValue(properties, @"nyx.repr");
 			// Draw image at top, x-centered
 			CGContextDrawImage(ctx, (CGRect){.origin.x = (imgSize.width < minSize.width) ? (minSize.width - imgSize.width) * 0.5f : 0.0f, .origin.y = minSize.height + NYX_BOTTOM_MARGIN, .size = imgSize}, cgImg);
 			// Set font/color
@@ -122,14 +162,14 @@ OSStatus GeneratePreviewForURL(__unused void* thisInterface, QLPreviewRequestRef
 		else
 		{
 			// Some kind of error, fallback
-			QLPreviewRequestSetURLRepresentation(preview, url, contentTypeUTI, properties);
+			// As we have a property dic, we can update the titlebar
+			QLPreviewRequestSetURLRepresentation(preview, url, contentTypeUTI, props);
 		}
 
-		CGImageRelease(cgImg);
-		if (properties != NULL)
-			CFRelease(properties);
-		if (filename != NULL)
-			CFRelease(filename);
+		if (props != NULL)
+			CFRelease(props);
+
+		CFRelease(properties);
 
 		return kQLReturnNoError;
 	}
