@@ -14,5 +14,5 @@
 
 CF_RETURNS_RETAINED CFDictionaryRef createQLPreviewPropertiesForFile(CFURLRef url, CFTypeRef src, CFStringRef name, CGSize* imgSize, CGImageRef* img);
 
-CF_RETURNS_RETAINED CFDictionaryRef properties_for_file(CFURLRef url);
+CF_RETURNS_RETAINED CFDictionaryRef properties_for_file(CFTypeRef src, CFURLRef url);
 

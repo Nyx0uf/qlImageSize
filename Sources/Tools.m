@@ -69,10 +69,10 @@ CFDictionaryRef createQLPreviewPropertiesForFile(CFURLRef url, CFTypeRef src, CF
 	return properties;
 }
 
-CF_RETURNS_RETAINED CFDictionaryRef properties_for_file(CFURLRef url)
+CF_RETURNS_RETAINED CFDictionaryRef properties_for_file(CFTypeRef src, CFURLRef url)
 {
 	// Create the image source
-	CGImageSourceRef imgSrc = CGImageSourceCreateWithURL(url, NULL);
+	CGImageSourceRef imgSrc = (CFGetTypeID(src) == CFDataGetTypeID()) ? CGImageSourceCreateWithData(src, NULL) : CGImageSourceCreateWithURL(src, NULL);
 	if (NULL == imgSrc)
 		return NULL;
 	
