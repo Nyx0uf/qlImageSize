@@ -31,12 +31,12 @@ CF_RETURNS_RETAINED CFDictionaryRef properties_for_file(CFTypeRef src, CFURLRef 
 	
 	// Get image width
 	CFNumberRef pWidth = CFDictionaryGetValue(imgProperties, kCGImagePropertyPixelWidth);
-	int width = 0;
-	CFNumberGetValue(pWidth, kCFNumberIntType, &width);
+	//int width = 0;
+	//CFNumberGetValue(pWidth, kCFNumberIntType, &width);
 	// Get image height
 	CFNumberRef pHeight = CFDictionaryGetValue(imgProperties, kCGImagePropertyPixelHeight);
-	int height = 0;
-	CFNumberGetValue(pHeight, kCFNumberIntType, &height);
+	//int height = 0;
+	//CFNumberGetValue(pHeight, kCFNumberIntType, &height);
 	CFRelease(imgProperties);
 
 	//CGRect imgFrame = (CGRect){.origin.x = 0.0f, .origin.y = 0.0f, .size.width = width, .size.height = height};
@@ -59,14 +59,13 @@ CF_RETURNS_RETAINED CFDictionaryRef properties_for_file(CFTypeRef src, CFURLRef 
 	CFRelease(imgSrc);
 	
 	// Get the filesize, because it's not always present in the image properties dictionary :/
-	struct stat st;
 	UInt8 buf[4096] = {0x00};
 	CFURLGetFileSystemRepresentation(url, true, buf, 4095);
+	struct stat st;
 	stat((const char*)buf, &st);
 
 	// Create the properties dic
 	const CFIndex MAXVALS = 4;
-	
 	CFTypeRef keys[MAXVALS] = {@"nyx.width", @"nyx.height", @"nyx.size", @"nyx.repr"};
 	CFTypeRef values[MAXVALS] = {pWidth, pHeight, CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt64Type, &(st.st_size)), imgRef};
 	CFDictionaryRef properties = CFDictionaryCreate(kCFAllocatorDefault, (const void**)keys, (const void**)values, MAXVALS, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
