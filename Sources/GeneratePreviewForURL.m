@@ -9,14 +9,9 @@
 
 
 #import <QuickLook/QuickLook.h>
-#import "Tools.h"
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
-
-
-#if (__MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_10_8)
-#import "NYXPNGTools.h"
-#endif /* __MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_10_8 */
+#import "Tools.h"
 
 
 #define NYX_FONTSIZE 18.0f
@@ -31,76 +26,6 @@ OSStatus GeneratePreviewForURL(__unused void* thisInterface, QLPreviewRequestRef
 {
 	@autoreleasepool
 	{
-#if (__MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_10_8)
-		// Check if the image is a PNG
-		if (CFStringCompare(contentTypeUTI, kUTTypePNG, kCFCompareCaseInsensitive) == kCFCompareEqualTo)
-		{
-			const char* path = [[(__bridge NSURL*)url path] cStringUsingEncoding:NSUTF8StringEncoding];
-			int error = 0;
-			if (npt_is_apple_crushed_png(path, &error))
-			{
-				if (QLPreviewRequestIsCancelled(preview))
-					return kQLReturnNoError;
-				// Uncrush the PNG
-				unsigned int size = 0;
-				UInt8* pngData = npt_create_uncrushed_from_file(path, &size, &error);
-				if (NULL == pngData)
-				{
-					NSLog(@"[-] qlImageSize: Failed to create uncrushed png from '%@' : %s", url, npt_error_message(error));
-				}
-				else
-				{
-					if (QLPreviewRequestIsCancelled(preview))
-					{
-						free(pngData);
-						return kQLReturnNoError;
-					}
-					CFDataRef uncrushed = CFDataCreateWithBytesNoCopy(kCFAllocatorDefault, pngData, size, kCFAllocatorDefault);
-					if (uncrushed != NULL)
-					{
-						// Create the properties dic
-						CFDictionaryRef properties = properties_for_file(uncrushed, url);
-						if (NULL == properties)
-							QLPreviewRequestSetDataRepresentation(preview, uncrushed, contentTypeUTI, NULL);
-						else
-						{
-							const CGSize imgSize = (CGSize){.width = [(__bridge NSNumber*)CFDictionaryGetValue(properties, NYX_KEY_IMGWIDTH) integerValue], .height = [(__bridge NSNumber*)CFDictionaryGetValue(properties, NYX_KEY_IMGHEIGHT) integerValue]};
-							CFNumberRef n = CFDictionaryGetValue(properties, NYX_KEY_IMGSIZE);
-							int64_t siz = 0;
-							CFNumberGetValue(n, kCFNumberSInt64Type, &size);
-							NSString* fmtSize = nil;
-							if (siz > 1048576) // More than 1Mb
-								fmtSize = [[NSString alloc] initWithFormat:@"%.1fMb", (float)((float)siz / 1048576.0f)];
-							else if ((siz < 1048576) && (siz > 1024)) // 1Kb - 1Mb
-								fmtSize = [[NSString alloc] initWithFormat:@"%.2fKb", (float)((float)siz / 1024.0f)];
-							else // Less than 1Kb
-								fmtSize = [[NSString alloc] initWithFormat:@"%lldb", siz];
-							CFStringRef filename = CFURLCopyLastPathComponent(url);
-							CFTypeRef keys[1] = {kQLPreviewPropertyDisplayNameKey};
-							// WIDTHxHEIGHT | filename | 25.01Kb
-							CFTypeRef values[1] = {CFStringCreateWithFormat(kCFAllocatorDefault, NULL, CFSTR("%dx%d | %@ | %@"), (int)imgSize.width, (int)imgSize.height, filename, fmtSize)};
-							CFDictionaryRef props = CFDictionaryCreate(kCFAllocatorDefault, (const void**)keys, (const void**)values, 1, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
-							CFRelease(values[0]);
-							QLPreviewRequestSetDataRepresentation(preview, uncrushed, contentTypeUTI, props);
-							CFRelease(props);
-							CFRelease(properties);
-							if (filename != NULL)
-								CFRelease(filename);
-						}
-						CFRelease(uncrushed); // Will also free pngData
-					}
-					else
-					{
-						free(pngData);
-						NSLog(@"[-] qlImageSize: Failed to create uncrushed png from '%@'", url);
-					}
-				}
-				return kQLReturnNoError;
-			}
-		}
-#endif /* __MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_10_8 */
-		/* As of 10.8 crushed PNGs are natively handled, so the stuff above is useless */
-	
 		CFDictionaryRef properties = properties_for_file(url, url);
 		if (NULL == properties)
 		{
