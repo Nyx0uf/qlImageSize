@@ -9,11 +9,11 @@ for more informations see my [blog post about it](http://www.cocoaintheshell.com
 
 ### Build & Install ###
 
-For those who don't want to build from the sources, you can grab the plugin [here](http://repo.whine.fr/qlImageSize.qlgenerator.zip).
+For those who don't want to build from the sources, here are the links for the plugin: [Lion (10.7)](http://repo.whine.fr/qlImageSize.qlgenerator-10.7.zip) [Moutain Lion (10.8)](http://repo.whine.fr/qlImageSize.qlgenerator-10.8.zip) 
 
 Unzip it, and place it in */Library/QuickLook* or *~/Library/QuickLook*.
 
-Perhaps you will need to restart the *QuickLook* server using this command :
+Perhaps you will need to restart the *QuickLook* by running this command in the Terminal :
 
 	qlmanage -r
 
