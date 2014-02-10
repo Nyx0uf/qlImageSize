@@ -29,3 +29,13 @@ In the file **GenerateThumbnailForURL.m** you have the option to display the ima
 Blog : [Cocoa in the Shell](http://www.cocoaintheshell.com "Cocoa in the Shell")
 
 Twitter : [@Nyx0uf](https://twitter.com/Nyx0uf)
+
+------
+
+### About Mavericks (OS X 10.9) ###
+
+I am aware that qlImageSize does not fully work on Mavericks. By fully I mean it works for certain types like *tga*,*bmp*,*psd*,*tif* but not for the common ones *jpg*,*png*,*gif*.
+
+it is a known bug in the OS and I can't do anything about it, but I encourage you to fill a bug to Apple (http://bugreport.apple.com)
+
+For more informations, see https://github.com/Nyx0uf/qlImageSize/issues/4
