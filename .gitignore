@@ -6,3 +6,5 @@
 .DS_Store
 
 *.xcuserstate
+
+/qlImageSize.xcodeproj/project.xcworkspace/xcshareddata/
