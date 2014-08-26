@@ -9,8 +9,8 @@
 
 #import <CoreFoundation/CoreFoundation.h>
 
-#if (__MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_10_7)
-	#error "Must target at least Mac OS X 10.7"
+#if (__MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_10_8)
+	#error "Must target at least Mac OS X 10.8"
 #endif
 
 #ifdef DEBUG
