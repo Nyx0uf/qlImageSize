@@ -14,10 +14,6 @@
 #import "Tools.h"
 
 
-#define NYX_FONTSIZE 18.0f
-#define NYX_BOTTOM_MARGIN 2.0f
-
-
 OSStatus GeneratePreviewForURL(void* thisInterface, QLPreviewRequestRef preview, CFURLRef url, CFStringRef contentTypeUTI, CFDictionaryRef options);
 void CancelPreviewGeneration(void* thisInterface, QLPreviewRequestRef preview);
 
