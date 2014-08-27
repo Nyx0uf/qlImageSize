@@ -13,6 +13,4 @@
 	#error "Must target at least Mac OS X 10.8"
 #endif
 
-#ifdef DEBUG
-	#warning "To enable logging --> defaults write -g QLEnableLogging NO"
-#endif
+// To enable logging --> defaults write -g QLEnableLogging NO
