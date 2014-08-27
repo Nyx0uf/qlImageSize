@@ -1,19 +1,29 @@
 # qlImageSize
 
-This is a **QuickLook** plugin for Mac OS X *10.7* / *10.8* to display the dimensions of an image and its file size in the title bar.
-
-Since *10.8* iPhone's PNG are correctly displayed in the Finder, but before they were not, so in *10.7* this plugin also correctly display them.
+This is a **QuickLook** plugin for OS X *10.8* / *10.9* to display the dimensions of an image and its file size in the title bar.
 
 for more informations see my [blog post about it](http://www.cocoaintheshell.com/2012/02/quicklook-images-dimensions/ "Images dimensions in QuickLook").
+
+This plugin also displays non-standard image formats like [WebP](https://developers.google.com/speed/webp/ "WebP") and [Portable Pixmap](http://en.wikipedia.org/wiki/Netpbm_format "Netpbm").
+In order to handle **WebP**, you must install the library, the easiest way is using [Homebrew](http://brew.sh "Homebrew") :
+
+	brew install webp
+
+
+If you have **Pixelmator** installed, its own QuickLook plugin might get in the way, so the easiest way is to remove it by deleting the Library/QuickLook folder in the Pixelmator.app bundle.
+
+![qlImageSize in action](http://static.whine.fr/images/2014/qlimagesize1.jpg)
+
+![qlImageSize WebP & PPM preview](http://static.whine.fr/images/2014/qlimagesize2.jpg)
 
 
 ### Installation
 
 Download the plugin here :
 
-[- Lion (10.7)](http://repo.whine.fr/qlImageSize.qlgenerator-10.7.zip "qlImageSize for 10.7")
+[- 10.7 (Lion)](http://repo.whine.fr/qlImageSize.qlgenerator-10.7.zip "qlImageSize for 10.7")
 
-[- Moutain Lion / Mavericks (10.8 / 10.9)](http://repo.whine.fr/qlImageSize.qlgenerator-10.8.zip "qlImageSize for 10.8+")
+[- 10.8+ (Moutain Lion / Mavericks / Yosemite)](http://repo.whine.fr/qlImageSize.qlgenerator-10.8.zip "qlImageSize for 10.8+")
 
 Unzip it, and place it in */Library/QuickLook* or *~/Library/QuickLook*.
 
@@ -33,7 +43,7 @@ Twitter : [@Nyx0uf](https://twitter.com/Nyx0uf "Nyx0uf on Twitter")
 
 ------
 
-### About Mavericks (OS X 10.9) ###
+### About Mavericks (OS X 10.9)
 
 I am aware that qlImageSize does not fully work on Mavericks. By fully I mean it works for certain types like *tga*,*bmp*,*psd*,*tif* but not for the common ones *jpg*,*png*,*gif*.
 
