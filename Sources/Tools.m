@@ -115,6 +115,7 @@ CF_RETURNS_RETAINED CGImageRef decode_webp(CFURLRef url, size_t* width, size_t* 
 	CGContextRelease(bmContext);
 	return imgRef;
 #else
+	NSLog(@"[!] qlImageSize was build without libwebp support...\n");
 	return NULL;
 #endif
 }
@@ -163,7 +164,7 @@ static void* _decode_pbm(__unused const uint8_t* bytes, __unused const size_t si
 {
 	// TODO: FIX cause it's bugged :>
 	// format, where • is a separator (space, tab, newline)
-	// P4•WIDTH•HEIGHT)
+	// P4•WIDTH•HEIGHT
 
 	// Get width
 	size_t index = 3, i = 0;
@@ -204,7 +205,7 @@ static void* _decode_pbm(__unused const uint8_t* bytes, __unused const size_t si
 static void* _decode_pgm(const uint8_t* bytes, const size_t size, size_t* width, size_t* height)
 {
 	// format, where • is a separator (space, tab, newline)
-	// P5•WIDTH•HEIGHT•MAX_GRAY_VAL)
+	// P5•WIDTH•HEIGHT•MAX_GRAY_VAL
 
 	// Get width
 	size_t index = 3, i = 0;
@@ -233,7 +234,6 @@ static void* _decode_pgm(const uint8_t* bytes, const size_t size, size_t* width,
 		cmaxg[i++] = c;
 	}
 	const size_t maxg = (size_t)atol(cmaxg);
-	//NSLog(@"WIDTH = %zu | HEIGHT = %zu | MAXG = %zu", *width, *height, maxg);
 	if (maxg > 255)
 		return NULL; // 16-bit, ignore.
 
@@ -265,7 +265,7 @@ static void* _decode_pgm(const uint8_t* bytes, const size_t size, size_t* width,
 static void* _decode_ppm(const uint8_t* bytes, const size_t size, size_t* width, size_t* height)
 {
 	// format, where • is a separator (space, tab, newline)
-	// P6•WIDTH•HEIGHT•MAX_VAL)
+	// P6•WIDTH•HEIGHT•MAX_VAL
 
 	// Get width
 	size_t index = 3, i = 0;
@@ -294,7 +294,6 @@ static void* _decode_ppm(const uint8_t* bytes, const size_t size, size_t* width,
 		cmaxg[i++] = c;
 	}
 	const size_t maxg = (size_t)atol(cmaxg);
-	//NSLog(@"WIDTH = %zu | HEIGHT = %zu | MAXG = %zu", *width, *height, maxg);
 	if (maxg > 255)
 		return NULL; // 16-bit, ignore.
 
@@ -345,7 +344,7 @@ static void* _get_webp_handle(void)
 	static void* handle = NULL;
 	static dispatch_once_t onceToken;
 	dispatch_once(&onceToken, ^{
-		handle = dlopen("/usr/local/lib/libwebp.dylib", RTLD_LOCAL | RTLD_NOW);
+		handle = dlopen("/usr/local/lib/libwebp.dylib", RTLD_LOCAL | RTLD_LAZY);
 		if (handle != NULL)
 		{
 			*(void**)(&webp_fptr_init) = dlsym(handle, "WebPInitDecoderConfigInternal");
