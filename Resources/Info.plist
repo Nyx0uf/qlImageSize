@@ -12,6 +12,8 @@
 			<key>LSItemContentTypes</key>
 			<array>
 				<string>public.image</string>
+				<string>public.webp</string>
+				<string>com.google.webp</string>
 			</array>
 		</dict>
 	</array>
@@ -28,7 +30,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>1</string>
 	<key>CFBundleVersion</key>
-	<string>1.4.1</string>
+	<string>2.0</string>
 	<key>CFPlugInDynamicRegisterFunction</key>
 	<string></string>
 	<key>CFPlugInDynamicRegistration</key>
