@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1E1559D414D96C2500268030 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E1559D314D96C2500268030 /* Foundation.framework */; };
-		1E2331CA1781BC1600ACF19C /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E2331C91781BC1600ACF19C /* AppKit.framework */; };
+		1E45F05219ADC94F00139309 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E45F05119ADC94F00139309 /* Accelerate.framework */; };
 		1E5392C314D943DE00C8A0F8 /* GeneratePreviewForURL.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E5392BF14D943DE00C8A0F8 /* GeneratePreviewForURL.m */; };
 		1E5392C414D943DE00C8A0F8 /* GenerateThumbnailForURL.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E5392C014D943DE00C8A0F8 /* GenerateThumbnailForURL.m */; };
 		1E5392C514D943DE00C8A0F8 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E5392C114D943DE00C8A0F8 /* main.m */; };
@@ -39,6 +39,7 @@
 /* Begin PBXFileReference section */
 		1E1559D314D96C2500268030 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1E2331C91781BC1600ACF19C /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		1E45F05119ADC94F00139309 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		1E5392BF14D943DE00C8A0F8 /* GeneratePreviewForURL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GeneratePreviewForURL.m; path = Sources/GeneratePreviewForURL.m; sourceTree = "<group>"; };
 		1E5392C014D943DE00C8A0F8 /* GenerateThumbnailForURL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GenerateThumbnailForURL.m; path = Sources/GenerateThumbnailForURL.m; sourceTree = "<group>"; };
 		1E5392C114D943DE00C8A0F8 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Sources/main.m; sourceTree = "<group>"; };
@@ -57,7 +58,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1E2331CA1781BC1600ACF19C /* AppKit.framework in Frameworks */,
+				1E45F05219ADC94F00139309 /* Accelerate.framework in Frameworks */,
 				1E1559D414D96C2500268030 /* Foundation.framework in Frameworks */,
 				1EFA994214D9288600A09F03 /* QuickLook.framework in Frameworks */,
 				1EFA994414D9288600A09F03 /* ApplicationServices.framework in Frameworks */,
@@ -110,6 +111,7 @@
 		1EFA994014D9288600A09F03 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1E45F05119ADC94F00139309 /* Accelerate.framework */,
 				1E1559D314D96C2500268030 /* Foundation.framework */,
 				1EFA994114D9288600A09F03 /* QuickLook.framework */,
 				1EFA994314D9288600A09F03 /* ApplicationServices.framework */,
@@ -257,9 +259,14 @@
 				CLANG_ANALYZER_SECURITY_FLOATLOOPCOUNTER = YES;
 				CLANG_ANALYZER_SECURITY_INSECUREAPI_RAND = YES;
 				CLANG_ANALYZER_SECURITY_INSECUREAPI_STRCPY = YES;
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = YES;
+				CLANG_WARN_OBJC_EXPLICIT_OWNERSHIP_TYPE = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_RECEIVER_WEAK = YES;
+				CLANG_WARN_OBJC_REPEATED_USE_OF_WEAK = YES;
 				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -267,6 +274,7 @@
 				GCC_PREFIX_HEADER = Sources/Prefix.pch;
 				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
 				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
+				GCC_UNROLL_LOOPS = YES;
 				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = YES;
@@ -283,13 +291,10 @@
 				GCC_WARN_UNUSED_PARAMETER = YES;
 				INFOPLIST_FILE = Resources/Info.plist;
 				INSTALL_PATH = /Library/QuickLook;
-				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks/";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/libs\"",
-					"\"$(SRCROOT)/libs/NYXPNGTools\"",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;
@@ -303,9 +308,14 @@
 				CLANG_ANALYZER_SECURITY_FLOATLOOPCOUNTER = YES;
 				CLANG_ANALYZER_SECURITY_INSECUREAPI_RAND = YES;
 				CLANG_ANALYZER_SECURITY_INSECUREAPI_STRCPY = YES;
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = YES;
+				CLANG_WARN_OBJC_EXPLICIT_OWNERSHIP_TYPE = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_RECEIVER_WEAK = YES;
+				CLANG_WARN_OBJC_REPEATED_USE_OF_WEAK = YES;
 				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -313,6 +323,7 @@
 				GCC_PREFIX_HEADER = Sources/Prefix.pch;
 				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
 				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
+				GCC_UNROLL_LOOPS = YES;
 				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = YES;
@@ -329,13 +340,10 @@
 				GCC_WARN_UNUSED_PARAMETER = YES;
 				INFOPLIST_FILE = Resources/Info.plist;
 				INSTALL_PATH = /Library/QuickLook;
-				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks/";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/libs\"",
-					"\"$(SRCROOT)/libs/NYXPNGTools\"",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;
