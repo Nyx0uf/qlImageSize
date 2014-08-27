@@ -7,11 +7,11 @@
 //  www.cocoaintheshell.com
 //
 
-
-#define NYX_KEY_IMGWIDTH @"nyx.width"
-#define NYX_KEY_IMGHEIGHT @"nyx.height"
-#define NYX_KEY_IMGSIZE @"nyx.size"
-#define NYX_KEY_IMGREPR @"nyx.repr"
+#import <Foundation/Foundation.h>
 
 
-CF_RETURNS_RETAINED CFDictionaryRef properties_for_file(CFTypeRef src, CFURLRef url);
+void properties_for_file(CFURLRef url, size_t* width, size_t* height, size_t* fileSize);
+
+CF_RETURNS_RETAINED CGImageRef decode_webp(CFURLRef url, size_t* width, size_t* height, size_t* fileSize);
+
+CF_RETURNS_RETAINED CGImageRef decode_portable_pixmap(CFURLRef url, size_t* width, size_t* height, size_t* fileSize);
