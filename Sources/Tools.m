@@ -74,6 +74,7 @@ void properties_for_file(CFURLRef url, size_t* width, size_t* height, size_t* fi
 
 CF_RETURNS_RETAINED CGImageRef decode_webp(CFURLRef url, size_t* width, size_t* height, size_t* fileSize)
 {
+	*width = 0, *height = 0, *fileSize = 0;
 #ifdef NYX_HAVE_WEBP
 	NSData* data = [[NSData alloc] initWithContentsOfURL:(__bridge NSURL*)url];
 	if (nil == data)
@@ -168,22 +169,18 @@ static void* _decode_pbm(__unused const uint8_t* bytes, __unused const size_t si
 
 	// Get width
 	size_t index = 3, i = 0;
-	char cwidth[8] = {0x00};
+	char ctmp[8] = {0x00};
 	char c = 0x00;
 	while ((c = (char)bytes[index++]) && (c != ' ' && c != '\r' && c != '\n' && c != '\t'))
-	{
-		cwidth[i++] = c;
-	}
-	*width = (size_t)atol(cwidth);
+		ctmp[i++] = c;
+	*width = (size_t)atol(ctmp);
 
 	// Get height
 	i = 0;
-	char cheight[8] = {0x00};
+	memset(ctmp, 0x00, 8);
 	while ((c = (char)bytes[index++]) && (c != ' ' && c != '\r' && c != '\n' && c != '\t'))
-	{
-		cheight[i++] = c;
-	}
-	*height = (size_t)atol(cheight);
+		ctmp[i++] = c;
+	*height = (size_t)atol(ctmp);
 
 	// 1 byte = 8 px
 	rgb_pixel* buf = (rgb_pixel*)malloc(((size - index + 1) * 8) * 3);
@@ -209,38 +206,32 @@ static void* _decode_pgm(const uint8_t* bytes, const size_t size, size_t* width,
 
 	// Get width
 	size_t index = 3, i = 0;
-	char cwidth[8] = {0x00};
+	char ctmp[8] = {0x00};
 	char c = 0x00;
 	while ((c = (char)bytes[index++]) && (c != ' ' && c != '\r' && c != '\n' && c != '\t'))
-	{
-		cwidth[i++] = c;
-	}
-	*width = (size_t)atol(cwidth);
+		ctmp[i++] = c;
+	*width = (size_t)atol(ctmp);
 
 	// Get height
 	i = 0;
-	char cheight[8] = {0x00};
+	memset(ctmp, 0x00, 8);
 	while ((c = (char)bytes[index++]) && (c != ' ' && c != '\r' && c != '\n' && c != '\t'))
-	{
-		cheight[i++] = c;
-	}
-	*height = (size_t)atol(cheight);
+		ctmp[i++] = c;
+	*height = (size_t)atol(ctmp);
 
-	// Get max gray component value (max is 65535)
+	// Get max gray value (max is 65535), but we only handle 8-bit so over 255 is a no-no
 	i = 0;
-	char cmaxg[8] = {0x00};
+	memset(ctmp, 0x00, 8);
 	while ((c = (char)bytes[index++]) && (c != ' ' && c != '\r' && c != '\n' && c != '\t'))
-	{
-		cmaxg[i++] = c;
-	}
-	const size_t maxg = (size_t)atol(cmaxg);
-	if (maxg > 255)
+		ctmp[i++] = c;
+	const size_t maxVal = (size_t)atol(ctmp);
+	if (maxVal > 255)
 		return NULL; // 16-bit, ignore.
 
 	// Convert to RGB
-	const size_t siz = (size - index + 1);
-	rgb_pixel* buf = (rgb_pixel*)malloc(sizeof(rgb_pixel) * siz);
-	const float ratio = (float)maxg / 255.0f;
+	const size_t acutalSize = (size - index + 1);
+	rgb_pixel* buf = (rgb_pixel*)malloc(sizeof(rgb_pixel) * acutalSize);
+	const float ratio = (float)maxVal / 255.0f;
 	i = 0;
 	if ((int)ratio == 1)
 	{
@@ -269,51 +260,45 @@ static void* _decode_ppm(const uint8_t* bytes, const size_t size, size_t* width,
 
 	// Get width
 	size_t index = 3, i = 0;
-	char cwidth[8] = {0x00};
+	char ctmp[8] = {0x00};
 	char c = 0x00;
 	while ((c = (char)bytes[index++]) && (c != ' ' && c != '\r' && c != '\n' && c != '\t'))
-	{
-		cwidth[i++] = c;
-	}
-	*width = (size_t)atol(cwidth);
+		ctmp[i++] = c;
+	*width = (size_t)atol(ctmp);
 
 	// Get height
 	i = 0;
-	char cheight[8] = {0x00};
+	memset(ctmp, 0x00, 8);
 	while ((c = (char)bytes[index++]) && (c != ' ' && c != '\r' && c != '\n' && c != '\t'))
-	{
-		cheight[i++] = c;
-	}
-	*height = (size_t)atol(cheight);
+		ctmp[i++] = c;
+	*height = (size_t)atol(ctmp);
 
-	// Get max gray component value (max is 65535)
+	// Get max component value (max is 65535), but we only handle 8-bit so over 255 is a no-no
 	i = 0;
-	char cmaxg[8] = {0x00};
+	memset(ctmp, 0x00, 8);
 	while ((c = (char)bytes[index++]) && (c != ' ' && c != '\r' && c != '\n' && c != '\t'))
-	{
-		cmaxg[i++] = c;
-	}
-	const size_t maxg = (size_t)atol(cmaxg);
-	if (maxg > 255)
+		ctmp[i++] = c;
+	const size_t maxVal = (size_t)atol(ctmp);
+	if (maxVal > 255)
 		return NULL; // 16-bit, ignore.
 
 	void* buf = NULL;
-	const size_t siz = (size - index + 1);
-	const float ratio = (float)maxg / 255.0f;
+	const size_t acutalSize = (size - index + 1);
+	const float ratio = (float)maxVal / 255.0f;
 	if ((int)ratio == 1)
 	{
 		// Got the same ratio, just have to make a copy
-		buf = (uint8_t*)malloc(sizeof(uint8_t) * siz);
-		memcpy(buf, &(bytes[index]), siz);
+		buf = (uint8_t*)malloc(sizeof(uint8_t) * acutalSize);
+		memcpy(buf, &(bytes[index]), acutalSize);
 	}
 	else
 	{
 		// Moronic case, whoever does this deserve to die
-		float* dataAsFloat = (float*)malloc(sizeof(float) * siz);
-		buf = (uint8_t*)malloc(sizeof(uint8_t) * siz);
-		vDSP_vfltu8(&(bytes[index]), 1, dataAsFloat, 1, siz);
-		vDSP_vsdiv(dataAsFloat, 1, &ratio, dataAsFloat, 1, siz);
-		vDSP_vfixu8(dataAsFloat, 1, buf, 1, siz);
+		float* dataAsFloat = (float*)malloc(sizeof(float) * acutalSize);
+		buf = (uint8_t*)malloc(sizeof(uint8_t) * acutalSize);
+		vDSP_vfltu8(&(bytes[index]), 1, dataAsFloat, 1, acutalSize);
+		vDSP_vsdiv(dataAsFloat, 1, &ratio, dataAsFloat, 1, acutalSize);
+		vDSP_vfixu8(dataAsFloat, 1, buf, 1, acutalSize);
 		free(dataAsFloat);
 		/*buf = (rgb_pixel*)malloc(siz);
 		i = 0;
