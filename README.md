@@ -10,7 +10,7 @@ In order to handle **WebP**, you must install the library, the easiest way is us
 	brew install webp
 
 
-If you have **Pixelmator** installed, its own QuickLook plugin might get in the way, so the easiest way is to remove it by deleting the Library/QuickLook folder in the Pixelmator.app bundle.
+If you have **Pixelmator** installed, its own QuickLook plugin might get in the way. To fix this you need to edit the file `/Applications/Pixelmator.app/Contents/Library/QuickLook/PixelmatorLook.qlgenerator/Contents/Info.plist` and remove the dict entry that handles **webp**.
 
 ![qlImageSize in action](http://static.whine.fr/images/2014/qlimagesize1.jpg)
 
