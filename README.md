@@ -4,11 +4,15 @@ This is a **QuickLook** plugin for OS X *10.8+* to display the dimensions of an 
 
 For more detailed and technical informations see my [blog post about it](http://www.cocoaintheshell.com/2012/02/quicklook-images-dimensions/ "Images dimensions in QuickLook").
 
-This plugin also displays non-standard image formats like [WebP](https://developers.google.com/speed/webp/ "WebP") and [Portable Pixmap](http://en.wikipedia.org/wiki/Netpbm_format "Netpbm").
+This plugin also displays non-standard image formats like :
 
-In order to handle **WebP**, you must install the library, the easiest way is using [Homebrew](http://brew.sh "Homebrew") :
+- [WebP](https://developers.google.com/speed/webp/ "WebP")
+- [Portable Pixmap](http://en.wikipedia.org/wiki/Netpbm_format "Netpbm")
+- [bpg](http://bellard.org/bpg/ "bpg")
 
-	> brew install webp
+In order to handle **WebP** and **bpg**, you must install the libraries, the easiest way is using [Homebrew](http://brew.sh "Homebrew") :
+
+	> brew install webp libbpg
 
 
 If you are a **Pixelmator** user, its own *QuickLook* plugin might get in the way. To fix this you need to edit the file `/Applications/Pixelmator.app/Contents/Library/QuickLook/PixelmatorLook.qlgenerator/Contents/Info.plist` and remove the dict entry that handles **webp**.

@@ -37,10 +37,10 @@ OSStatus GenerateThumbnailForURL(__unused void* thisInterface, QLThumbnailReques
 	properties = CFDictionaryCreate(kCFAllocatorDefault, (const void**)keys, (const void**)values, 1, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
 #endif
 
-	// Check by extension because it's highly unprobable that an UTI for pixmap is declared
+	// Check by extension because it's highly unprobable that an UTI for these formats is declared
 	// the simplest way to declare one is creating a dummy automator app and adding imported/exported UTI conforming to public.image
 	NSString* urlExtension = [[(__bridge NSURL*)url pathExtension] lowercaseString];
-	if ([urlExtension isEqualToString:@"webp"] || [urlExtension isEqualToString:@"pgm"] || [urlExtension isEqualToString:@"ppm"] || [urlExtension isEqualToString:@"pbm"])
+	if ([urlExtension isEqualToString:@"webp"] || [urlExtension isEqualToString:@"pgm"] || [urlExtension isEqualToString:@"ppm"] || [urlExtension isEqualToString:@"pbm"] || [urlExtension isEqualToString:@"bpg"])
 	{
 		if (!QLThumbnailRequestIsCancelled(thumbnail))
 		{
@@ -49,6 +49,8 @@ OSStatus GenerateThumbnailForURL(__unused void* thisInterface, QLThumbnailReques
 			CGImageRef imgRef = NULL;
 			if ([urlExtension isEqualToString:@"webp"])
 				imgRef = decode_webp(url, &width, &height, &fileSize);
+			else if ([urlExtension isEqualToString:@"bpg"])
+				imgRef = decode_bpg(url, &width, &height, &fileSize);
 			else
 				imgRef = decode_portable_pixmap(url, &width, &height, &fileSize);
 

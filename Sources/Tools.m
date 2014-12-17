@@ -13,6 +13,10 @@
 #import <sys/types.h>
 #import <ImageIO/ImageIO.h>
 #import <Accelerate/Accelerate.h>
+#import <CommonCrypto/CommonDigest.h>
+
+
+#define NYX_CACHE_DIRECTORY @"/tmp/qlimagesize/"
 
 
 typedef struct _nyx_rgb_pixel_struct {
@@ -22,7 +26,7 @@ typedef struct _nyx_rgb_pixel_struct {
 } rgb_pixel;
 
 
-/* WebP stuff, if build fail comment the following line */
+/* WebP stuff, if build fail comment the following line, or check the following path */
 #define NYX_HAVE_WEBP 1
 #ifdef NYX_HAVE_WEBP
 #include <dlfcn.h>
@@ -39,6 +43,7 @@ static void* _decode_pbm(const uint8_t* bytes, const size_t size, size_t* width,
 static void* _decode_pgm(const uint8_t* bytes, const size_t size, size_t* width, size_t* height);
 static void* _decode_ppm(const uint8_t* bytes, const size_t size, size_t* width, size_t* height);
 static size_t _get_file_size(CFURLRef url);
+static NSString* _md5String(NSString* string);
 
 
 #pragma mark - Public
@@ -119,6 +124,42 @@ CF_RETURNS_RETAINED CGImageRef decode_webp(CFURLRef url, size_t* width, size_t* 
 	NSLog(@"[!] qlImageSize was build without libwebp support...\n");
 	return NULL;
 #endif
+}
+
+CF_RETURNS_RETAINED CGImageRef decode_bpg(CFURLRef url, size_t* width, size_t* height, size_t* fileSize)
+{
+	*width = 0, *height = 0, *fileSize = 0;
+
+	// Create a directory to hold generated thumbnails
+	NSString* filepath = [(__bridge NSURL*)url path];
+	NSFileManager* fileManager = [[NSFileManager alloc] init];
+	if (![fileManager fileExistsAtPath:NYX_CACHE_DIRECTORY])
+		[fileManager createDirectoryAtPath:NYX_CACHE_DIRECTORY withIntermediateDirectories:YES attributes:nil error:nil];
+	
+	// Create output path
+	NSString* md5 = _md5String(filepath);
+	NSString* thumbnailPath = [NYX_CACHE_DIRECTORY stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.png", md5]];
+	
+	// Create PNG only once, cause it's freaking slow
+	if (![fileManager fileExistsAtPath:thumbnailPath])
+	{
+		NSTask* task = [[NSTask alloc] init];
+		[task setLaunchPath:@"/usr/local/bin/bpgdec"];
+		[task setArguments:@[@"-o", thumbnailPath, filepath]];
+		[task launch];
+		[task waitUntilExit];
+	}
+	
+	// Create CGImage
+	CGImageSourceRef imgSrc = CGImageSourceCreateWithURL((__bridge CFURLRef)[NSURL fileURLWithPath:thumbnailPath], NULL);
+	if (NULL == imgSrc)
+		return NULL;
+	CGImageRef imgRef = CGImageSourceCreateImageAtIndex(imgSrc, 0, NULL);
+	*width = CGImageGetWidth(imgRef);
+	*height = CGImageGetHeight(imgRef);
+	*fileSize = _get_file_size(url);
+	CFRelease(imgSrc);
+	return imgRef;
 }
 
 CF_RETURNS_RETAINED CGImageRef decode_portable_pixmap(CFURLRef url, size_t* width, size_t* height, size_t* fileSize)
@@ -321,6 +362,16 @@ static size_t _get_file_size(CFURLRef url)
 	struct stat st;
 	stat((const char*)buf, &st);
 	return (size_t)st.st_size;
+}
+
+static NSString* _md5String(NSString* string)
+{
+	uint8_t digest[CC_MD5_DIGEST_LENGTH];
+	CC_MD5([string UTF8String], (CC_LONG)[string length], digest);
+	NSMutableString* ret = [[NSMutableString alloc] init];
+	for (NSUInteger i = 0; i < CC_MD5_DIGEST_LENGTH; i++)
+		[ret appendFormat:@"%02x", (int)(digest[i])];
+	return [ret copy];
 }
 
 #ifdef NYX_HAVE_WEBP

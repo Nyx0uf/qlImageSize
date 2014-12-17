@@ -20,10 +20,10 @@ CF_RETURNS_RETAINED static CFDictionaryRef _create_properties(CFURLRef url, cons
 OSStatus GeneratePreviewForURL(__unused void* thisInterface, QLPreviewRequestRef preview, CFURLRef url, CFStringRef contentTypeUTI, __unused CFDictionaryRef options)
 {
 	NSString* urlExtension = [[(__bridge NSURL*)url pathExtension] lowercaseString];
-	if ([urlExtension isEqualToString:@"webp"] || [urlExtension isEqualToString:@"pgm"] || [urlExtension isEqualToString:@"ppm"] || [urlExtension isEqualToString:@"pbm"])
+	if ([urlExtension isEqualToString:@"webp"] || [urlExtension isEqualToString:@"pgm"] || [urlExtension isEqualToString:@"ppm"] || [urlExtension isEqualToString:@"pbm"] || [urlExtension isEqualToString:@"bpg"])
 	{
 		// Non-standard images (not supported by the OS by default)
-		// Check by extension because it's highly unprobable that an UTI for pixmap is declared
+		// Check by extension because it's highly unprobable that an UTI for these formats is declared
 
 		// 1. decode the image
 		if (!QLPreviewRequestIsCancelled(preview))
@@ -32,6 +32,8 @@ OSStatus GeneratePreviewForURL(__unused void* thisInterface, QLPreviewRequestRef
 			CGImageRef imgRef = NULL;
 			if ([urlExtension isEqualToString:@"webp"])
 				imgRef = decode_webp(url, &width, &height, &fileSize);
+			else if ([urlExtension isEqualToString:@"bpg"])
+				imgRef = decode_bpg(url, &width, &height, &fileSize);
 			else
 				imgRef = decode_portable_pixmap(url, &width, &height, &fileSize);
 
