@@ -10,9 +10,9 @@ This plugin also displays non-standard image formats like :
 - [Portable Pixmap](http://en.wikipedia.org/wiki/Netpbm_format "Netpbm")
 - [bpg](http://bellard.org/bpg/ "bpg")
 
-In order to handle **WebP** and **bpg**, you must install the libraries, the easiest way is using [Homebrew](http://brew.sh "Homebrew") :
+In order to handle **WebP**, you must install the library, the easiest way is using [Homebrew](http://brew.sh "Homebrew") :
 
-	> brew install webp libbpg
+	> brew install webp
 
 
 If you are a **Pixelmator** user, its own *QuickLook* plugin might get in the way. To fix this you need to edit the file `/Applications/Pixelmator.app/Contents/Library/QuickLook/PixelmatorLook.qlgenerator/Contents/Info.plist` and remove the dict entry that handles **webp**.

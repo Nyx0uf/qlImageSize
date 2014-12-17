@@ -14,6 +14,7 @@
 #import <ImageIO/ImageIO.h>
 #import <Accelerate/Accelerate.h>
 #import <CommonCrypto/CommonDigest.h>
+#import "libbpg.h"
 
 
 #define NYX_CACHE_DIRECTORY @"/tmp/qlimagesize/"
@@ -43,7 +44,6 @@ static void* _decode_pbm(const uint8_t* bytes, const size_t size, size_t* width,
 static void* _decode_pgm(const uint8_t* bytes, const size_t size, size_t* width, size_t* height);
 static void* _decode_ppm(const uint8_t* bytes, const size_t size, size_t* width, size_t* height);
 static size_t _get_file_size(CFURLRef url);
-static NSString* _md5String(NSString* string);
 
 
 #pragma mark - Public
@@ -130,35 +130,63 @@ CF_RETURNS_RETAINED CGImageRef decode_bpg(CFURLRef url, size_t* width, size_t* h
 {
 	*width = 0, *height = 0, *fileSize = 0;
 
-	// Create a directory to hold generated thumbnails
-	NSString* filepath = [(__bridge NSURL*)url path];
-	NSFileManager* fileManager = [[NSFileManager alloc] init];
-	if (![fileManager fileExistsAtPath:NYX_CACHE_DIRECTORY])
-		[fileManager createDirectoryAtPath:NYX_CACHE_DIRECTORY withIntermediateDirectories:YES attributes:nil error:nil];
-	
-	// Create output path
-	NSString* md5 = _md5String(filepath);
-	NSString* thumbnailPath = [NYX_CACHE_DIRECTORY stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.png", md5]];
-	
-	// Create PNG only once, cause it's freaking slow
-	if (![fileManager fileExistsAtPath:thumbnailPath])
-	{
-		NSTask* task = [[NSTask alloc] init];
-		[task setLaunchPath:@"/usr/local/bin/bpgdec"];
-		[task setArguments:@[@"-o", thumbnailPath, filepath]];
-		[task launch];
-		[task waitUntilExit];
-	}
-	
-	// Create CGImage
-	CGImageSourceRef imgSrc = CGImageSourceCreateWithURL((__bridge CFURLRef)[NSURL fileURLWithPath:thumbnailPath], NULL);
-	if (NULL == imgSrc)
+	// Open the file, get its size and read it
+	FILE* f = fopen([[(__bridge NSURL*)url path] UTF8String], "rb");
+	if (NULL == f)
 		return NULL;
-	CGImageRef imgRef = CGImageSourceCreateImageAtIndex(imgSrc, 0, NULL);
-	*width = CGImageGetWidth(imgRef);
-	*height = CGImageGetHeight(imgRef);
-	*fileSize = _get_file_size(url);
-	CFRelease(imgSrc);
+
+	fseek(f, 0, SEEK_END);
+	const size_t buf_len = (size_t)ftell(f);
+	*fileSize = buf_len;
+	fseek(f, 0, SEEK_SET);
+	
+	uint8_t* buffer = (uint8_t*)malloc(buf_len);
+	const size_t nb = fread(buffer, 1, buf_len, f);
+	fclose(f);
+	if (nb != buf_len)
+	{
+		free(buffer);
+		return NULL;
+	}
+
+	// Decode image
+	BPGDecoderContext* img = bpg_decoder_open();
+	int ret = bpg_decoder_decode(img, buffer, (int)buf_len);
+	free(buffer);
+	if (ret < 0)
+	{
+		bpg_decoder_close(img);
+		return NULL;
+	}
+
+	// Get image infos
+	BPGImageInfo img_info_s, *img_info = &img_info_s;
+	bpg_decoder_get_info(img, img_info);
+	const size_t w = (size_t)img_info->width;
+	const size_t h = (size_t)img_info->height;
+	*width = w;
+	*height = h;
+	
+	// Always output in RGBA format
+	const size_t stride = 4 * w;
+	const size_t size = stride * h;
+	uint8_t* final = (uint8_t*)malloc(size);
+	size_t idx = 0;
+	bpg_decoder_start(img, BPG_OUTPUT_FORMAT_RGBA32);
+	for (size_t y = 0; y < h; y++)
+	{
+		bpg_decoder_get_line(img, final + idx);
+		idx += stride;
+	}
+	bpg_decoder_close(img);
+
+	// Create CGImage
+	CGDataProviderRef dp = CGDataProviderCreateWithCFData((__bridge CFDataRef)[[NSData alloc] initWithBytesNoCopy:final length:size freeWhenDone:NO]);
+	CGColorSpaceRef cs = CGColorSpaceCreateDeviceRGB();
+	CGImageRef imgRef = CGImageCreate(w, h, 8, 32, stride, cs, kCGBitmapByteOrderDefault | kCGImageAlphaNone, dp, NULL, true, kCGRenderingIntentDefault);
+	CGColorSpaceRelease(cs);
+	CGDataProviderRelease(dp);
+	free(final);
 	return imgRef;
 }
 
@@ -362,16 +390,6 @@ static size_t _get_file_size(CFURLRef url)
 	struct stat st;
 	stat((const char*)buf, &st);
 	return (size_t)st.st_size;
-}
-
-static NSString* _md5String(NSString* string)
-{
-	uint8_t digest[CC_MD5_DIGEST_LENGTH];
-	CC_MD5([string UTF8String], (CC_LONG)[string length], digest);
-	NSMutableString* ret = [[NSMutableString alloc] init];
-	for (NSUInteger i = 0; i < CC_MD5_DIGEST_LENGTH; i++)
-		[ret appendFormat:@"%02x", (int)(digest[i])];
-	return [ret copy];
 }
 
 #ifdef NYX_HAVE_WEBP
