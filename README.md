@@ -2,7 +2,7 @@
 
 This is a **QuickLook** plugin for OS X *10.8+* to display the dimensions of an image and its file size in the title bar.
 
-![qlImageSize preview window](http://static.whine.fr/images/2014/qlimagesize1.jpg)
+![qlImageSize preview window](http://static.whine.fr/images/2014/qlimagesize4.jpg)
 
 This plugin can also preview and generate Finder thumbnails for unsupported images formats like :
 
