@@ -58,7 +58,7 @@ void properties_for_file(CFURLRef url, size_t* width, size_t* height, size_t* fi
 	CFRelease(imgProperties);
 
 	CFRelease(imgSrc);
-	
+
 	// Get the filesize, because it's not always present in the image properties dictionary :/
 	*fileSize = _get_file_size(url);
 }
@@ -76,10 +76,10 @@ CF_RETURNS_RETAINED CGImageRef decode_webp(CFURLRef url, size_t* width, size_t* 
 	WebPDecoderConfig config;
 	if (!WebPInitDecoderConfig(&config))
 		return NULL;
-	
+
 	if (WebPGetFeatures(dataPtr, size, &config.input) != VP8_STATUS_OK)
 		return NULL;
-	
+
 	config.output.colorspace = MODE_rgbA;
 	if (WebPDecode(dataPtr, size, &config) != VP8_STATUS_OK)
 		return NULL;
@@ -112,7 +112,7 @@ CF_RETURNS_RETAINED CGImageRef decode_bpg(CFURLRef url, size_t* width, size_t* h
 	const size_t buf_len = (size_t)ftell(f);
 	*fileSize = buf_len;
 	fseek(f, 0, SEEK_SET);
-	
+
 	uint8_t* buffer = (uint8_t*)malloc(buf_len);
 	const size_t nb = fread(buffer, 1, buf_len, f);
 	fclose(f);
@@ -139,7 +139,7 @@ CF_RETURNS_RETAINED CGImageRef decode_bpg(CFURLRef url, size_t* width, size_t* h
 	const size_t h = (size_t)img_info->height;
 	*width = w;
 	*height = h;
-	
+
 	// Always output in RGBA format
 	const size_t stride = 4 * w;
 	const size_t size = stride * h;
