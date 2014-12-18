@@ -9,8 +9,15 @@
 /* Begin PBXBuildFile section */
 		1E1559D414D96C2500268030 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E1559D314D96C2500268030 /* Foundation.framework */; };
 		1E45F05219ADC94F00139309 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E45F05119ADC94F00139309 /* Accelerate.framework */; };
-		1EC980101A41BBB40008195F /* libbpg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EC9800E1A41BBB40008195F /* libbpg.a */; };
-		1EC980111A41BBB40008195F /* libbpg.h in Headers */ = {isa = PBXBuildFile; fileRef = 1EC9800F1A41BBB40008195F /* libbpg.h */; };
+		1EB0E7291A42D0D3005F0A92 /* libbpg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EB0E71F1A42D0D3005F0A92 /* libbpg.a */; };
+		1EB0E72A1A42D0D3005F0A92 /* libbpg.h in Headers */ = {isa = PBXBuildFile; fileRef = 1EB0E7201A42D0D3005F0A92 /* libbpg.h */; };
+		1EB0E72B1A42D0D3005F0A92 /* decode.h in Headers */ = {isa = PBXBuildFile; fileRef = 1EB0E7221A42D0D3005F0A92 /* decode.h */; };
+		1EB0E72C1A42D0D3005F0A92 /* demux.h in Headers */ = {isa = PBXBuildFile; fileRef = 1EB0E7231A42D0D3005F0A92 /* demux.h */; };
+		1EB0E72D1A42D0D3005F0A92 /* encode.h in Headers */ = {isa = PBXBuildFile; fileRef = 1EB0E7241A42D0D3005F0A92 /* encode.h */; };
+		1EB0E72E1A42D0D3005F0A92 /* libwebp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EB0E7251A42D0D3005F0A92 /* libwebp.a */; };
+		1EB0E72F1A42D0D3005F0A92 /* mux.h in Headers */ = {isa = PBXBuildFile; fileRef = 1EB0E7261A42D0D3005F0A92 /* mux.h */; };
+		1EB0E7301A42D0D3005F0A92 /* mux_types.h in Headers */ = {isa = PBXBuildFile; fileRef = 1EB0E7271A42D0D3005F0A92 /* mux_types.h */; };
+		1EB0E7311A42D0D3005F0A92 /* types.h in Headers */ = {isa = PBXBuildFile; fileRef = 1EB0E7281A42D0D3005F0A92 /* types.h */; };
 		1EC980181A41C5F80008195F /* GeneratePreviewForURL.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EC980121A41C5F80008195F /* GeneratePreviewForURL.m */; };
 		1EC980191A41C5F80008195F /* GenerateThumbnailForURL.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EC980131A41C5F80008195F /* GenerateThumbnailForURL.m */; };
 		1EC9801A1A41C5F80008195F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EC980141A41C5F80008195F /* main.m */; };
@@ -42,8 +49,15 @@
 		1E1559D314D96C2500268030 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1E2331C91781BC1600ACF19C /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		1E45F05119ADC94F00139309 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
-		1EC9800E1A41BBB40008195F /* libbpg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libbpg.a; sourceTree = "<group>"; };
-		1EC9800F1A41BBB40008195F /* libbpg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libbpg.h; sourceTree = "<group>"; };
+		1EB0E71F1A42D0D3005F0A92 /* libbpg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libbpg.a; sourceTree = "<group>"; };
+		1EB0E7201A42D0D3005F0A92 /* libbpg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libbpg.h; sourceTree = "<group>"; };
+		1EB0E7221A42D0D3005F0A92 /* decode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = decode.h; sourceTree = "<group>"; };
+		1EB0E7231A42D0D3005F0A92 /* demux.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = demux.h; sourceTree = "<group>"; };
+		1EB0E7241A42D0D3005F0A92 /* encode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = encode.h; sourceTree = "<group>"; };
+		1EB0E7251A42D0D3005F0A92 /* libwebp.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libwebp.a; sourceTree = "<group>"; };
+		1EB0E7261A42D0D3005F0A92 /* mux.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mux.h; sourceTree = "<group>"; };
+		1EB0E7271A42D0D3005F0A92 /* mux_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mux_types.h; sourceTree = "<group>"; };
+		1EB0E7281A42D0D3005F0A92 /* types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = types.h; sourceTree = "<group>"; };
 		1EC980121A41C5F80008195F /* GeneratePreviewForURL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GeneratePreviewForURL.m; path = src/GeneratePreviewForURL.m; sourceTree = "<group>"; };
 		1EC980131A41C5F80008195F /* GenerateThumbnailForURL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GenerateThumbnailForURL.m; path = src/GenerateThumbnailForURL.m; sourceTree = "<group>"; };
 		1EC980141A41C5F80008195F /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = src/main.m; sourceTree = "<group>"; };
@@ -65,8 +79,9 @@
 				1E45F05219ADC94F00139309 /* Accelerate.framework in Frameworks */,
 				1E1559D414D96C2500268030 /* Foundation.framework in Frameworks */,
 				1EFA994214D9288600A09F03 /* QuickLook.framework in Frameworks */,
-				1EC980101A41BBB40008195F /* libbpg.a in Frameworks */,
+				1EB0E7291A42D0D3005F0A92 /* libbpg.a in Frameworks */,
 				1EFA994414D9288600A09F03 /* ApplicationServices.framework in Frameworks */,
+				1EB0E72E1A42D0D3005F0A92 /* libwebp.a in Frameworks */,
 				1EFA994614D9288600A09F03 /* CoreServices.framework in Frameworks */,
 				1EFA994814D9288600A09F03 /* CoreFoundation.framework in Frameworks */,
 			);
@@ -88,11 +103,34 @@
 			name = src;
 			sourceTree = "<group>";
 		};
+		1EB0E71E1A42D0D3005F0A92 /* libbpg */ = {
+			isa = PBXGroup;
+			children = (
+				1EB0E71F1A42D0D3005F0A92 /* libbpg.a */,
+				1EB0E7201A42D0D3005F0A92 /* libbpg.h */,
+			);
+			path = libbpg;
+			sourceTree = "<group>";
+		};
+		1EB0E7211A42D0D3005F0A92 /* libwebp */ = {
+			isa = PBXGroup;
+			children = (
+				1EB0E7221A42D0D3005F0A92 /* decode.h */,
+				1EB0E7231A42D0D3005F0A92 /* demux.h */,
+				1EB0E7241A42D0D3005F0A92 /* encode.h */,
+				1EB0E7251A42D0D3005F0A92 /* libwebp.a */,
+				1EB0E7261A42D0D3005F0A92 /* mux.h */,
+				1EB0E7271A42D0D3005F0A92 /* mux_types.h */,
+				1EB0E7281A42D0D3005F0A92 /* types.h */,
+			);
+			path = libwebp;
+			sourceTree = "<group>";
+		};
 		1EC9800D1A41BBB40008195F /* deps */ = {
 			isa = PBXGroup;
 			children = (
-				1EC9800E1A41BBB40008195F /* libbpg.a */,
-				1EC9800F1A41BBB40008195F /* libbpg.h */,
+				1EB0E71E1A42D0D3005F0A92 /* libbpg */,
+				1EB0E7211A42D0D3005F0A92 /* libwebp */,
 			);
 			path = deps;
 			sourceTree = "<group>";
@@ -136,9 +174,15 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1EB0E72A1A42D0D3005F0A92 /* libbpg.h in Headers */,
 				1EC9801C1A41C5F80008195F /* Tools.h in Headers */,
-				1EC980111A41BBB40008195F /* libbpg.h in Headers */,
+				1EB0E72D1A42D0D3005F0A92 /* encode.h in Headers */,
+				1EB0E72C1A42D0D3005F0A92 /* demux.h in Headers */,
+				1EB0E72B1A42D0D3005F0A92 /* decode.h in Headers */,
 				1EC9801B1A41C5F80008195F /* Prefix.pch in Headers */,
+				1EB0E7311A42D0D3005F0A92 /* types.h in Headers */,
+				1EB0E72F1A42D0D3005F0A92 /* mux.h in Headers */,
+				1EB0E7301A42D0D3005F0A92 /* mux_types.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -303,6 +347,8 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/deps",
+					"$(PROJECT_DIR)/deps/libbpg",
+					"$(PROJECT_DIR)/deps/libwebp",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				OTHER_LDFLAGS = "";
@@ -355,6 +401,8 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/deps",
+					"$(PROJECT_DIR)/deps/libbpg",
+					"$(PROJECT_DIR)/deps/libwebp",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				OTHER_LDFLAGS = "";

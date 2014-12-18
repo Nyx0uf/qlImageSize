@@ -6,16 +6,12 @@ For more detailed and technical informations see my [blog post about it](http://
 
 This plugin can also preview and generate Finder thumbnails for unsupported images formats like :
 
-- [WebP](https://developers.google.com/speed/webp/ "WebP")
-- [Portable Pixmap](http://en.wikipedia.org/wiki/Netpbm_format "Netpbm")
 - [bpg](http://bellard.org/bpg/ "bpg")
-
-In order to handle **WebP**, you must install the library, the easiest way is using [Homebrew](http://brew.sh "Homebrew") :
-
-	brew install webp
+- [Portable Pixmap](http://en.wikipedia.org/wiki/Netpbm_format "Netpbm")
+- [WebP](https://developers.google.com/speed/webp/ "WebP")
 
 
-If you are a **Pixelmator** user, its own QuickLook plugin might get in the way. To fix this you need to edit the file `/Applications/Pixelmator.app/Contents/Library/QuickLook/PixelmatorLook.qlgenerator/Contents/Info.plist` and remove the dict entry that handles **webp**.
+If you are a **Pixelmator** user, its own QuickLook plugin might get in the way when previewing **WebP** files. To fix this you need to edit the file `/Applications/Pixelmator.app/Contents/Library/QuickLook/PixelmatorLook.qlgenerator/Contents/Info.plist` and remove the dict entry that handles **webp**.
 
 ![qlImageSize in action](http://static.whine.fr/images/2014/qlimagesize3.jpg)
 

@@ -15,9 +15,7 @@
 #import <Accelerate/Accelerate.h>
 #import <CommonCrypto/CommonDigest.h>
 #import "libbpg.h"
-
-
-#define NYX_CACHE_DIRECTORY @"/tmp/qlimagesize/"
+#import "decode.h"
 
 
 typedef struct _nyx_rgb_pixel_struct {
@@ -26,18 +24,6 @@ typedef struct _nyx_rgb_pixel_struct {
 	uint8_t b;
 } rgb_pixel;
 
-
-/* WebP stuff, if build fail comment the following line, or check the following path */
-#define NYX_HAVE_WEBP 1
-#ifdef NYX_HAVE_WEBP
-#include <dlfcn.h>
-#include </usr/local/include/webp/decode.h>
-static int (*webp_fptr_init)(WebPDecoderConfig*, int);
-static VP8StatusCode (*webp_fptr_features)(const uint8_t*, size_t, WebPBitstreamFeatures*, int);
-static VP8StatusCode (*webp_fptr_decode)(const uint8_t*, size_t, WebPDecoderConfig*);
-static void (*webp_fptr_free)(WebPDecBuffer*);
-static void* _get_webp_handle(void);
-#endif
 
 /* Private functions declarations */
 static void* _decode_pbm(const uint8_t* bytes, const size_t size, size_t* width, size_t* height);
@@ -80,31 +66,22 @@ void properties_for_file(CFURLRef url, size_t* width, size_t* height, size_t* fi
 CF_RETURNS_RETAINED CGImageRef decode_webp(CFURLRef url, size_t* width, size_t* height, size_t* fileSize)
 {
 	*width = 0, *height = 0, *fileSize = 0;
-#ifdef NYX_HAVE_WEBP
 	NSData* data = [[NSData alloc] initWithContentsOfURL:(__bridge NSURL*)url];
 	if (nil == data)
 		return NULL;
-	
-	// get libwebp handle and functions
-	void* handle = _get_webp_handle();
-	if (!handle)
-	{
-		NSLog(@"[!] no libwebp handle, aborting...\n");
-		return NULL;
-	}
 
 	// Decode image
 	const void* dataPtr = [data bytes];
 	const size_t size = [data length];
 	WebPDecoderConfig config;
-	if (!(*webp_fptr_init)(&config, WEBP_DECODER_ABI_VERSION))
+	if (!WebPInitDecoderConfig(&config))
 		return NULL;
 	
-	if ((*webp_fptr_features)(dataPtr, size, &config.input, WEBP_DECODER_ABI_VERSION) != VP8_STATUS_OK)
+	if (WebPGetFeatures(dataPtr, size, &config.input) != VP8_STATUS_OK)
 		return NULL;
 	
 	config.output.colorspace = MODE_rgbA;
-	if ((*webp_fptr_decode)(dataPtr, size, &config) != VP8_STATUS_OK)
+	if (WebPDecode(dataPtr, size, &config) != VP8_STATUS_OK)
 		return NULL;
 
 	// Get properties
@@ -116,14 +93,10 @@ CF_RETURNS_RETAINED CGImageRef decode_webp(CFURLRef url, size_t* width, size_t* 
 	CGColorSpaceRef cs = CGColorSpaceCreateDeviceRGB();
 	CGContextRef bmContext = CGBitmapContextCreate(config.output.u.RGBA.rgba, (size_t)config.input.width, (size_t)config.input.height, 8, 4 * (size_t)config.input.width, cs, kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedLast);
 	CGColorSpaceRelease(cs);
-	(*webp_fptr_free)(&config.output);
+	WebPFreeDecBuffer(&config.output);
 	CGImageRef imgRef = CGBitmapContextCreateImage(bmContext);
 	CGContextRelease(bmContext);
 	return imgRef;
-#else
-	NSLog(@"[!] qlImageSize was build without libwebp support...\n");
-	return NULL;
-#endif
 }
 
 CF_RETURNS_RETAINED CGImageRef decode_bpg(CFURLRef url, size_t* width, size_t* height, size_t* fileSize)
@@ -391,36 +364,3 @@ static size_t _get_file_size(CFURLRef url)
 	stat((const char*)buf, &st);
 	return (size_t)st.st_size;
 }
-
-#ifdef NYX_HAVE_WEBP
-static void* _get_webp_handle(void)
-{
-	static void* handle = NULL;
-	static dispatch_once_t onceToken;
-	dispatch_once(&onceToken, ^{
-		handle = dlopen("/usr/local/lib/libwebp.dylib", RTLD_LOCAL | RTLD_LAZY);
-		if (handle != NULL)
-		{
-			*(void**)(&webp_fptr_init) = dlsym(handle, "WebPInitDecoderConfigInternal");
-			*(void**)(&webp_fptr_features) = dlsym(handle, "WebPGetFeaturesInternal");
-			*(void**)(&webp_fptr_decode) = dlsym(handle, "WebPDecode");
-			*(void**)(&webp_fptr_free) = dlsym(handle, "WebPFreeDecBuffer");
-			if (NULL == webp_fptr_init || NULL == webp_fptr_features || NULL == webp_fptr_decode || NULL == webp_fptr_free)
-			{
-				NSLog(@"[!] Fail to dlsym() functions...\nWebPInitDecoderConfigInternal = %p\nWebPGetFeaturesInternal = %p\nWebPDecode = %p\nWebPFreeDecBuffer = %p\n%s\n", webp_fptr_init, webp_fptr_features, webp_fptr_decode, webp_fptr_free, dlerror());
-				webp_fptr_init = NULL;
-				webp_fptr_features = NULL;
-				webp_fptr_decode = NULL;
-				webp_fptr_free = NULL;
-				dlclose(handle);
-				handle = NULL;
-			}
-		}
-		else
-		{
-			NSLog(@"[!] Fail to dlopen(/usr/local/lib/libwebp.dylib)...\n%s\n", dlerror());
-		}
-	});
-	return handle;
-}
-#endif
