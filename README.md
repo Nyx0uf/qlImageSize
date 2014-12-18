@@ -2,7 +2,7 @@
 
 This is a **QuickLook** plugin for OS X *10.8+* to display the dimensions of an image and its file size in the title bar.
 
-For more detailed and technical informations see my [blog post about it](http://cocoaintheshell.com/2012/02/quicklook-images-dimensions/ "Images dimensions in QuickLook").
+![qlImageSize preview window](http://static.whine.fr/images/2014/qlimagesize1.jpg)
 
 This plugin can also preview and generate Finder thumbnails for unsupported images formats like :
 
@@ -10,12 +10,11 @@ This plugin can also preview and generate Finder thumbnails for unsupported imag
 - [Portable Pixmap](http://en.wikipedia.org/wiki/Netpbm_format "Netpbm")
 - [WebP](https://developers.google.com/speed/webp/ "WebP")
 
+![qlImageSize thumbnails generation](http://static.whine.fr/images/2014/qlimagesize3.jpg)
+
+![qlImageSize WebP and PPM preview](http://static.whine.fr/images/2014/qlimagesize2.jpg)
 
 If you are a **Pixelmator** user, its own QuickLook plugin might get in the way when previewing **WebP** files. To fix this you need to edit the file `/Applications/Pixelmator.app/Contents/Library/QuickLook/PixelmatorLook.qlgenerator/Contents/Info.plist` and remove the dict entry that handles **webp**.
-
-![qlImageSize in action](http://static.whine.fr/images/2014/qlimagesize3.jpg)
-
-![qlImageSize WebP & PPM preview](http://static.whine.fr/images/2014/qlimagesize2.jpg)
 
 
 ### Installation
