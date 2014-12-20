@@ -31,7 +31,7 @@ It's a **Spotlight** plugin to display informations of unsupported images (**Web
 
 ### Uninstall
 
-- Launch Terminal.app (in Applications/Utilities)
+- Launch Terminal.app (in `/Applications/Utilities`)
 - Copy and paste the following line into the Terminal :
 
 `sudo rm -rf "/Library/Application Support/qlimagesize" "/Library/QuickLook/qlImageSize.qlgenerator" "/Library/Spotlight/mdImageSize.mdimporter"`
