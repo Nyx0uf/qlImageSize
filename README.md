@@ -17,16 +17,18 @@ This plugin can also preview and generate Finder thumbnails for unsupported imag
 If you are a **Pixelmator** user, its own QuickLook plugin might get in the way when previewing **WebP** files. To fix this you need to edit the file `/Applications/Pixelmator.app/Contents/Library/QuickLook/PixelmatorLook.qlgenerator/Contents/Info.plist` and remove the dict entry that handles **webp**.
 
 
+# mdImageSize
+
+It's a **Spotlight** plugin to display informations of unsupported images (**WebP**, **bpg**, **Portable Pixmap**) in the Finder's inspector window.
+
+![mdImageSize](http://static.whine.fr/images/2014/mdimagesize1.jpg)
+
+
 ### Installation
 
-Download the plugin [here](http://repo.whine.fr/qlImageSize.qlgenerator-10.8.zip "qlImageSize for 10.8+").
+Download the `.pkg` [here](http://repo.whine.fr/qlImageSize.pkg "qlImageSize for 10.8+").
 
-Unzip it, and place it in `/Library/QuickLook` or `~/Library/QuickLook`.
-
-You will need to restart the *QuickLook daemon* by running these commands in your Terminal :
-
-	qlmanage -r
-	qlmanage -r cache
+Just run it, and you are done. Note that you will be asked for your admin password.
 
 
 ### License
