@@ -28,9 +28,11 @@ typedef struct BPGDecoderContext BPGDecoderContext;
 
 typedef enum {
     BPG_FORMAT_GRAY,
-    BPG_FORMAT_420,
-    BPG_FORMAT_422,
+    BPG_FORMAT_420, /* chroma at offset (0.5, 0.5) (JPEG) */
+    BPG_FORMAT_422, /* chroma at offset (0.5, 0) (JPEG) */
     BPG_FORMAT_444,
+    BPG_FORMAT_420_VIDEO, /* chroma at offset (0, 0.5) (MPEG2) */
+    BPG_FORMAT_422_VIDEO, /* chroma at offset (0, 0) (MPEG2) */
 } BPGImageFormatEnum;
 
 typedef enum {
