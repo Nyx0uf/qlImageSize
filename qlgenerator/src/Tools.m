@@ -102,26 +102,25 @@ CF_RETURNS_RETAINED CGImageRef decode_webp(CFURLRef url, size_t* width, size_t* 
 
 	// Read file
 	uint8_t* buffer = NULL;
-	const size_t size = read_file([[(__bridge NSURL*)url path] UTF8String], &buffer);
-	if (0 == size)
+	*fileSize = read_file([[(__bridge NSURL*)url path] UTF8String], &buffer);
+	if (0 == (*fileSize))
 	{
 		free(buffer);
 		return NULL;
 	}
 
 	// Get image infos
-	if (WebPGetFeatures(buffer, size, &config.input) != VP8_STATUS_OK)
+	if (WebPGetFeatures(buffer, *fileSize, &config.input) != VP8_STATUS_OK)
 	{
 		free(buffer);
 		return NULL;
 	}
 	*width = (size_t)config.input.width;
 	*height = (size_t)config.input.height;
-	*fileSize = size;
 
 	// Decode image, always RGBA
 	config.output.colorspace = MODE_rgbA;
-	if (WebPDecode(buffer, size, &config) != VP8_STATUS_OK)
+	if (WebPDecode(buffer, *fileSize, &config) != VP8_STATUS_OK)
 	{
 		free(buffer);
 		return NULL;
@@ -144,8 +143,8 @@ CF_RETURNS_RETAINED CGImageRef decode_bpg(CFURLRef url, size_t* width, size_t* h
 
 	// Read file
 	uint8_t* buffer = NULL;
-	const size_t size = read_file([[(__bridge NSURL*)url path] UTF8String], &buffer);
-	if (0 == size)
+	*fileSize = read_file([[(__bridge NSURL*)url path] UTF8String], &buffer);
+	if (0 == (*fileSize))
 	{
 		free(buffer);
 		return NULL;
@@ -153,7 +152,7 @@ CF_RETURNS_RETAINED CGImageRef decode_bpg(CFURLRef url, size_t* width, size_t* h
 
 	// Decode image
 	BPGDecoderContext* img = bpg_decoder_open();
-	int ret = bpg_decoder_decode(img, buffer, (int)size);
+	int ret = bpg_decoder_decode(img, buffer, (int)(*fileSize));
 	free(buffer);
 	if (ret < 0)
 	{
@@ -198,13 +197,12 @@ CF_RETURNS_RETAINED CGImageRef decode_portable_pixmap(CFURLRef url, size_t* widt
 
 	// Read file
 	uint8_t* buffer = NULL;
-	const size_t size = read_file([[(__bridge NSURL*)url path] UTF8String], &buffer);
-	if (0 == size)
+	*fileSize = read_file([[(__bridge NSURL*)url path] UTF8String], &buffer);
+	if (0 == (*fileSize))
 	{
 		free(buffer);
 		return NULL;
 	}
-	*fileSize = size;
 
 	// Identify type (handle binary only)
 	if ((char)buffer[0] != 'P')
@@ -214,16 +212,20 @@ CF_RETURNS_RETAINED CGImageRef decode_portable_pixmap(CFURLRef url, size_t* widt
 	uint8_t* rgbBuffer = NULL;
 	const char idd = (char)buffer[1];
 	if (idd == '4'/* || idd == '1'*/) // pbm
-		rgbBuffer = _decode_pbm(buffer, size, width, height);
+		rgbBuffer = _decode_pbm(buffer, *fileSize, width, height);
 	else if (idd == '5'/* || idd == '2'*/) // pgm
-		rgbBuffer = _decode_pgm(buffer, size, width, height);
+		rgbBuffer = _decode_pgm(buffer, *fileSize, width, height);
 	else if (idd == '6'/* || idd == '3'*/) // ppm
-		rgbBuffer = _decode_ppm(buffer, size, width, height);
+		rgbBuffer = _decode_ppm(buffer, *fileSize, width, height);
 	else
+	{
+		free(buffer);
 		return NULL;
+	}
+	free(buffer);
 
 	// Create CGImage
-	CGDataProviderRef dp = CGDataProviderCreateWithCFData((__bridge CFDataRef)[[NSData alloc] initWithBytesNoCopy:rgbBuffer length:size * 3 freeWhenDone:NO]);
+	CGDataProviderRef dp = CGDataProviderCreateWithCFData((__bridge CFDataRef)[[NSData alloc] initWithBytesNoCopy:rgbBuffer length:((*fileSize) * 3) freeWhenDone:NO]);
 	CGColorSpaceRef cs = CGColorSpaceCreateDeviceRGB();
 	CGImageRef imgRef = CGImageCreate(*width, *height, 8, 24, 3 * *width, cs, kCGBitmapByteOrderDefault | kCGImageAlphaNone, dp, NULL, true, kCGRenderingIntentDefault);
 	CGColorSpaceRelease(cs);
@@ -233,7 +235,7 @@ CF_RETURNS_RETAINED CGImageRef decode_portable_pixmap(CFURLRef url, size_t* widt
 }
 
 #pragma mark - Private
-static void* _decode_pbm(__unused const uint8_t* bytes, __unused const size_t size, __unused size_t* width, __unused size_t* height)
+static void* _decode_pbm(const uint8_t* bytes, __unused const size_t size, __unused size_t* width, __unused size_t* height)
 {
 	// TODO: FIX cause it's bugged :>
 	// format, where • is a separator (space, tab, newline)
