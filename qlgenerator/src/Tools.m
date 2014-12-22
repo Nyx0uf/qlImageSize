@@ -182,7 +182,7 @@ CF_RETURNS_RETAINED CGImageRef decode_bpg(CFURLRef url, size_t* width, size_t* h
 	bpg_decoder_close(bpg_ctx);
 
 	// Create CGImage
-	CGDataProviderRef data_provider = CGDataProviderCreateWithCFData((__bridge CFDataRef)[[NSData alloc] initWithBytesNoCopy:rgb_buffer length:img_size freeWhenDone:NO]);
+	CGDataProviderRef data_provider = CGDataProviderCreateWithData(NULL, rgb_buffer, img_size, NULL);
 	CGColorSpaceRef color_space = CGColorSpaceCreateDeviceRGB();
 	CGImageRef img_ref = CGImageCreate(w, h, 8, 32, stride, color_space, kCGBitmapByteOrderDefault | kCGImageAlphaNone, data_provider, NULL, true, kCGRenderingIntentDefault);
 	CGColorSpaceRelease(color_space);
@@ -225,7 +225,7 @@ CF_RETURNS_RETAINED CGImageRef decode_portable_pixmap(CFURLRef url, size_t* widt
 	free(buffer);
 
 	// Create CGImage
-	CGDataProviderRef data_provider = CGDataProviderCreateWithCFData((__bridge CFDataRef)[[NSData alloc] initWithBytesNoCopy:rgb_buffer length:((*file_size) * 3) freeWhenDone:NO]);
+	CGDataProviderRef data_provider = CGDataProviderCreateWithData(NULL, rgb_buffer, ((*file_size) * 3), NULL);
 	CGColorSpaceRef color_space = CGColorSpaceCreateDeviceRGB();
 	CGImageRef img_ref = CGImageCreate(*width, *height, 8, 24, 3 * *width, color_space, kCGBitmapByteOrderDefault | kCGImageAlphaNone, data_provider, NULL, true, kCGRenderingIntentDefault);
 	CGColorSpaceRelease(color_space);
