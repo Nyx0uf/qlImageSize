@@ -19,6 +19,9 @@
 		1E7F11A11A45B5C300EA2767 /* Tools.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E7F11991A45B5C300EA2767 /* Tools.m */; };
 		1E7F11A21A45B65B00EA2767 /* GetMetadataForFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E7F118E1A45B5C300EA2767 /* GetMetadataForFile.m */; };
 		1E7F11A31A45B65D00EA2767 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 1E7F118F1A45B5C300EA2767 /* main.c */; };
+		1E936F431A47535D004FE69A /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EFA994314D9288600A09F03 /* ApplicationServices.framework */; };
+		1E936F441A47535E004FE69A /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EFA994714D9288600A09F03 /* CoreFoundation.framework */; };
+		1E936F451A475366004FE69A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E1559D314D96C2500268030 /* Foundation.framework */; };
 		1EB0E7291A42D0D3005F0A92 /* libbpg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EB0E71F1A42D0D3005F0A92 /* libbpg.a */; };
 		1EB0E72A1A42D0D3005F0A92 /* libbpg.h in Headers */ = {isa = PBXBuildFile; fileRef = 1EB0E7201A42D0D3005F0A92 /* libbpg.h */; };
 		1EB0E72B1A42D0D3005F0A92 /* decode.h in Headers */ = {isa = PBXBuildFile; fileRef = 1EB0E7221A42D0D3005F0A92 /* decode.h */; };
@@ -87,6 +90,9 @@
 			files = (
 				1E7F116A1A45A56300EA2767 /* libwebp.a in Frameworks */,
 				1E7F116B1A45B08E00EA2767 /* libbpg.a in Frameworks */,
+				1E936F431A47535D004FE69A /* ApplicationServices.framework in Frameworks */,
+				1E936F441A47535E004FE69A /* CoreFoundation.framework in Frameworks */,
+				1E936F451A475366004FE69A /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -663,6 +669,7 @@
 				1E7F11691A459FE800EA2767 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		1EFA993614D9288600A09F03 /* Build configuration list for PBXProject "qlImageSize" */ = {
 			isa = XCConfigurationList;
