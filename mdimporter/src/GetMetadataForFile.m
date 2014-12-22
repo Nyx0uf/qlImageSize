@@ -8,7 +8,6 @@
 //
 
 
-#import <CoreFoundation/CoreFoundation.h>
 #import <CoreData/CoreData.h>
 #import "decode.h"
 #import "libbpg.h"
@@ -28,26 +27,46 @@ Boolean GetMetadataForFile(__unused void* thisInterface, CFMutableDictionaryRef 
 			if ([urlExtension isEqualToString:@"webp"])
 			{
 				/* WebP */
-				NSData* data = [[NSData alloc] initWithContentsOfFile:filepath];
-				if (nil == data)
-					return FALSE;
-
-				const void* dataPtr = [data bytes];
-				const size_t size = [data length];
 				WebPDecoderConfig config;
 				if (!WebPInitDecoderConfig(&config))
 					return FALSE;
-				if (WebPGetFeatures(dataPtr, size, &config.input) != VP8_STATUS_OK)
+
+				// Open the file, get its size and read it
+				FILE* f = fopen([filepath UTF8String], "rb");
+				if (NULL == f)
 					return FALSE;
-				if (WebPDecode(dataPtr, size, &config) != VP8_STATUS_OK)
+
+				fseek(f, 0, SEEK_END);
+				const size_t size = (size_t)ftell(f);
+				fseek(f, 0, SEEK_SET);
+
+				uint8_t* buffer = (uint8_t*)malloc(size);
+				const size_t nb = fread(buffer, 1, size, f);
+				fclose(f);
+				if (nb != size)
+				{
+					free(buffer);
 					return FALSE;
-				WebPFreeDecBuffer(&config.output);
+				}
+
+				// Get file informations
+				if (WebPGetFeatures(buffer, size, &config.input) != VP8_STATUS_OK)
+				{
+					free(buffer);
+					return FALSE;
+				}
+				free(buffer);
 
 				NSMutableDictionary* attrs = (__bridge NSMutableDictionary*)attributes;
 				attrs[(NSString*)kMDItemPixelWidth] = @(config.input.width);
 				attrs[(NSString*)kMDItemPixelHeight] = @(config.input.height);
 				attrs[(NSString*)kMDItemPixelCount] = @(config.input.height * config.input.width);
 				attrs[(NSString*)kMDItemHasAlphaChannel] = (!config.input.has_alpha) ? @NO : @YES;
+				attrs[(NSString*)kMDItemBitsPerSample] = @8; // WebP is 8-bit
+				if (config.input.format == 2)
+					attrs[(NSString*)kMDItemColorSpace] = @"RGB"; // lossless WebP, always ARGB
+				else
+					attrs[(NSString*)kMDItemColorSpace] = @"Y'CbCr"; // lossy WebP, always YUV 4:2:0
 				return TRUE;
 			}
 			else if ([urlExtension isEqualToString:@"bpg"])
@@ -94,7 +113,7 @@ Boolean GetMetadataForFile(__unused void* thisInterface, CFMutableDictionaryRef 
 				switch (cs)
 				{
 					case BPG_CS_YCbCr:
-						css = @"YCbCr";
+						css = @"Y'CbCr";
 						break;
 					case BPG_CS_RGB:
 						css = @"RGB";
@@ -118,8 +137,9 @@ Boolean GetMetadataForFile(__unused void* thisInterface, CFMutableDictionaryRef 
 			
 				return TRUE;
 			}
-			else if ([urlExtension isEqualToString:@"pgm"] || [urlExtension isEqualToString:@"ppm"] || [urlExtension isEqualToString:@"pbm"])
+			else
 			{
+				/* Portable pixmap */
 				// Grab image data
 				NSData* data = [[NSData alloc] initWithContentsOfFile:filepath];
 				if (nil == data)
@@ -154,7 +174,6 @@ Boolean GetMetadataForFile(__unused void* thisInterface, CFMutableDictionaryRef 
 				attrs[(NSString*)kMDItemHasAlphaChannel] = @NO;
 				return TRUE;
 			}
-			return FALSE;
 		}
 	}
     
