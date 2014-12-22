@@ -10,12 +10,12 @@
 #import <Foundation/Foundation.h>
 
 
-void properties_for_file(CFURLRef url, size_t* width, size_t* height, size_t* fileSize);
+void properties_for_file(CFURLRef url, size_t* width, size_t* height, size_t* file_size);
 
 size_t read_file(const char* filepath, uint8_t** buffer);
 
-CF_RETURNS_RETAINED CGImageRef decode_webp(CFURLRef url, size_t* width, size_t* height, size_t* fileSize);
+CF_RETURNS_RETAINED CGImageRef decode_webp(CFURLRef url, size_t* width, size_t* height, size_t* file_size);
 
-CF_RETURNS_RETAINED CGImageRef decode_bpg(CFURLRef url, size_t* width, size_t* height, size_t* fileSize);
+CF_RETURNS_RETAINED CGImageRef decode_bpg(CFURLRef url, size_t* width, size_t* height, size_t* file_size);
 
-CF_RETURNS_RETAINED CGImageRef decode_portable_pixmap(CFURLRef url, size_t* width, size_t* height, size_t* fileSize);
+CF_RETURNS_RETAINED CGImageRef decode_portable_pixmap(CFURLRef url, size_t* width, size_t* height, size_t* file_size);

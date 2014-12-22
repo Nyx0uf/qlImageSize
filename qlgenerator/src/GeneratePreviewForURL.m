@@ -19,8 +19,8 @@ CF_RETURNS_RETAINED static CFDictionaryRef _create_properties(CFURLRef url, cons
 
 OSStatus GeneratePreviewForURL(__unused void* thisInterface, QLPreviewRequestRef preview, CFURLRef url, CFStringRef contentTypeUTI, __unused CFDictionaryRef options)
 {
-	NSString* urlExtension = [[(__bridge NSURL*)url pathExtension] lowercaseString];
-	if ([urlExtension isEqualToString:@"webp"] || [urlExtension isEqualToString:@"pgm"] || [urlExtension isEqualToString:@"ppm"] || [urlExtension isEqualToString:@"pbm"] || [urlExtension isEqualToString:@"bpg"])
+	NSString* extension = [[(__bridge NSURL*)url pathExtension] lowercaseString];
+	if ([extension isEqualToString:@"webp"] || [extension isEqualToString:@"pgm"] || [extension isEqualToString:@"ppm"] || [extension isEqualToString:@"pbm"] || [extension isEqualToString:@"bpg"])
 	{
 		// Non-standard images (not supported by the OS by default)
 		// Check by extension because it's highly unprobable that an UTI for these formats is declared
@@ -28,45 +28,45 @@ OSStatus GeneratePreviewForURL(__unused void* thisInterface, QLPreviewRequestRef
 		// 1. decode the image
 		if (!QLPreviewRequestIsCancelled(preview))
 		{
-			size_t width = 0, height = 0, fileSize = 0;
-			CGImageRef imgRef = NULL;
-			if ([urlExtension isEqualToString:@"webp"])
-				imgRef = decode_webp(url, &width, &height, &fileSize);
-			else if ([urlExtension isEqualToString:@"bpg"])
-				imgRef = decode_bpg(url, &width, &height, &fileSize);
+			size_t width = 0, height = 0, file_size = 0;
+			CGImageRef img_ref = NULL;
+			if ([extension isEqualToString:@"webp"])
+				img_ref = decode_webp(url, &width, &height, &file_size);
+			else if ([extension isEqualToString:@"bpg"])
+				img_ref = decode_bpg(url, &width, &height, &file_size);
 			else
-				imgRef = decode_portable_pixmap(url, &width, &height, &fileSize);
+				img_ref = decode_portable_pixmap(url, &width, &height, &file_size);
 
 			// 2. render it
-			if (imgRef != NULL)
+			CFDictionaryRef properties = _create_properties(url, file_size, width, height, true);
+			if (img_ref != NULL)
 			{
 				// Have to draw the image ourselves
-				CFDictionaryRef props = _create_properties(url, fileSize, width, height, true);
-				CGContextRef ctx = QLPreviewRequestCreateContext(preview, (CGSize){.width = width, .height = height}, YES, props);
-				CGContextDrawImage(ctx, (CGRect){.origin = CGPointZero, .size.width = width, .size.height = height}, imgRef);
+				CGContextRef ctx = QLPreviewRequestCreateContext(preview, (CGSize){.width = width, .height = height}, YES, properties);
+				CGContextDrawImage(ctx, (CGRect){.origin = CGPointZero, .size.width = width, .size.height = height}, img_ref);
 				QLPreviewRequestFlushContext(preview, ctx);
 				CGContextRelease(ctx);
-				if (props != NULL)
-					CFRelease(props);
-				CGImageRelease(imgRef);
+				CGImageRelease(img_ref);
 			}
 			else
-				QLPreviewRequestSetURLRepresentation(preview, url, contentTypeUTI, NULL);
+				QLPreviewRequestSetURLRepresentation(preview, url, contentTypeUTI, properties);
+			if (properties != NULL)
+				CFRelease(properties);
 		}
 	}
 	else
 	{
 		// Standard images (supported by the OS by default)
 
-		size_t width = 0, height = 0, fileSize = 0;
-		properties_for_file(url, &width, &height, &fileSize);
+		size_t width = 0, height = 0, file_size = 0;
+		properties_for_file(url, &width, &height, &file_size);
 
 		// Request preview with updated titlebar
-		CFDictionaryRef props = _create_properties(url, fileSize, width, height, false);
-		QLPreviewRequestSetURLRepresentation(preview, url, contentTypeUTI, props);
+		CFDictionaryRef properties = _create_properties(url, file_size, width, height, false);
+		QLPreviewRequestSetURLRepresentation(preview, url, contentTypeUTI, properties);
 
-		if (props != NULL)
-			CFRelease(props);
+		if (properties != NULL)
+			CFRelease(properties);
 	}
 
 	return kQLReturnNoError;
@@ -79,25 +79,25 @@ void CancelPreviewGeneration(__unused void* thisInterface, __unused QLPreviewReq
 CF_RETURNS_RETAINED static CFDictionaryRef _create_properties(CFURLRef url, const size_t size, const size_t width, const size_t height, const bool b)
 {
 	// Format file size
-	NSString* fmtSize = nil;
+	NSString* fmt = nil;
 	if (size > 1048576) // More than 1Mb
-		fmtSize = [[NSString alloc] initWithFormat:@"%.1fMb", (float)((float)size / 1048576.0f)];
+		fmt = [[NSString alloc] initWithFormat:@"%.1fMb", (float)((float)size / 1048576.0f)];
 	else if ((size < 1048576) && (size > 1024)) // 1Kb - 1Mb
-		fmtSize = [[NSString alloc] initWithFormat:@"%.2fKb", (float)((float)size / 1024.0f)];
+		fmt = [[NSString alloc] initWithFormat:@"%.2fKb", (float)((float)size / 1024.0f)];
 	else // Less than 1Kb
-		fmtSize = [[NSString alloc] initWithFormat:@"%zub", size];
+		fmt = [[NSString alloc] initWithFormat:@"%zub", size];
 
 	// Get filename
 	CFStringRef filename = CFURLCopyLastPathComponent(url);
 
 	// Create props
-	CFDictionaryRef props = NULL;
+	CFDictionaryRef properties = NULL;
 	if (b)
 	{
 		CFTypeRef keys[3] = {kQLPreviewPropertyDisplayNameKey, kQLPreviewPropertyWidthKey, kQLPreviewPropertyHeightKey};
 		// WIDTHxHEIGHT • 25.01Kb • filename
-		CFTypeRef values[3] = {CFStringCreateWithFormat(kCFAllocatorDefault, NULL, CFSTR("%dx%d • %@ • %@"), (int)width, (int)height, fmtSize, filename), CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt64Type, &width), CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt64Type, &height)};
-		props = CFDictionaryCreate(kCFAllocatorDefault, (const void**)keys, (const void**)values, 1, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+		CFTypeRef values[3] = {CFStringCreateWithFormat(kCFAllocatorDefault, NULL, CFSTR("%dx%d • %@ • %@"), (int)width, (int)height, fmt, filename), CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt64Type, &width), CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt64Type, &height)};
+		properties = CFDictionaryCreate(kCFAllocatorDefault, (const void**)keys, (const void**)values, 1, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
 		CFRelease(values[0]);
 		CFRelease(values[1]);
 		CFRelease(values[2]);
@@ -106,12 +106,12 @@ CF_RETURNS_RETAINED static CFDictionaryRef _create_properties(CFURLRef url, cons
 	{
 		CFTypeRef keys[1] = {kQLPreviewPropertyDisplayNameKey};
 		// WIDTHxHEIGHT • 25.01Kb • filename
-		CFTypeRef values[1] = {CFStringCreateWithFormat(kCFAllocatorDefault, NULL, CFSTR("%dx%d • %@ • %@"), (int)width, (int)height, fmtSize, filename)};
-		props = CFDictionaryCreate(kCFAllocatorDefault, (const void**)keys, (const void**)values, 1, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+		CFTypeRef values[1] = {CFStringCreateWithFormat(kCFAllocatorDefault, NULL, CFSTR("%dx%d • %@ • %@"), (int)width, (int)height, fmt, filename)};
+		properties = CFDictionaryCreate(kCFAllocatorDefault, (const void**)keys, (const void**)values, 1, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
 		CFRelease(values[0]);
 	}
 
 	CFRelease(filename);
 
-	return props;
+	return properties;
 }

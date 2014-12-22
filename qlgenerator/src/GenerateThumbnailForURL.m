@@ -19,11 +19,11 @@ void CancelThumbnailGeneration(void* thisInterface, QLThumbnailRequestRef thumbn
 OSStatus GenerateThumbnailForURL(__unused void* thisInterface, QLThumbnailRequestRef thumbnail, CFURLRef url, CFStringRef contentTypeUTI, __unused CFDictionaryRef options, __unused CGSize maxSize)
 {
 	// Get the UTI properties
-	NSDictionary* utiDeclarations = (__bridge_transfer NSDictionary*)UTTypeCopyDeclaration(contentTypeUTI);
+	NSDictionary* uti_declarations = (__bridge_transfer NSDictionary*)UTTypeCopyDeclaration(contentTypeUTI);
 
 	// Get the extensions corresponding to the image UTI, for some UTI there can be more than 1 extension (ex image.jpeg = jpeg, jpg...)
 	// If it fails for whatever reason fallback to the filename extension
-	id extensions = utiDeclarations[(__bridge NSString*)kUTTypeTagSpecificationKey][(__bridge NSString*)kUTTagClassFilenameExtension];
+	id extensions = uti_declarations[(__bridge NSString*)kUTTypeTagSpecificationKey][(__bridge NSString*)kUTTagClassFilenameExtension];
 	NSString* extension = ([extensions isKindOfClass:[NSArray class]]) ? extensions[0] : extensions;
 	if (nil == extension)
 		extension = ([(__bridge NSURL*)url pathExtension] != nil) ? [(__bridge NSURL*)url pathExtension] : @"";
@@ -41,20 +41,20 @@ OSStatus GenerateThumbnailForURL(__unused void* thisInterface, QLThumbnailReques
 		if (!QLThumbnailRequestIsCancelled(thumbnail))
 		{
 			// 1. decode the image
-			size_t width = 0, height = 0, fileSize = 0;
-			CGImageRef imgRef = NULL;
+			size_t width = 0, height = 0, file_size = 0;
+			CGImageRef img_ref = NULL;
 			if ([extension isEqualToString:@"webp"])
-				imgRef = decode_webp(url, &width, &height, &fileSize);
+				img_ref = decode_webp(url, &width, &height, &file_size);
 			else if ([extension isEqualToString:@"bpg"])
-				imgRef = decode_bpg(url, &width, &height, &fileSize);
+				img_ref = decode_bpg(url, &width, &height, &file_size);
 			else
-				imgRef = decode_portable_pixmap(url, &width, &height, &fileSize);
+				img_ref = decode_portable_pixmap(url, &width, &height, &file_size);
 
 			// 2. render it
-			if (imgRef != NULL)
+			if (img_ref != NULL)
 			{
-				QLThumbnailRequestSetImage(thumbnail, imgRef, properties);
-				CGImageRelease(imgRef);
+				QLThumbnailRequestSetImage(thumbnail, img_ref, properties);
+				CGImageRelease(img_ref);
 			}
 			else
 				QLThumbnailRequestSetImageAtURL(thumbnail, url, properties);

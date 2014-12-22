@@ -33,34 +33,34 @@ static size_t _get_file_size(CFURLRef url);
 
 
 #pragma mark - Public
-void properties_for_file(CFURLRef url, size_t* width, size_t* height, size_t* fileSize)
+void properties_for_file(CFURLRef url, size_t* width, size_t* height, size_t* file_size)
 {
 	// Create the image source
-	*width = 0, *height = 0, *fileSize = 0;
-	CGImageSourceRef imgSrc = CGImageSourceCreateWithURL(url, NULL);
-	if (NULL == imgSrc)
+	*width = 0, *height = 0, *file_size = 0;
+	CGImageSourceRef img_src = CGImageSourceCreateWithURL(url, NULL);
+	if (NULL == img_src)
 		return;
 
 	// Copy images properties
-	CFDictionaryRef imgProperties = CGImageSourceCopyPropertiesAtIndex(imgSrc, 0, NULL);
-	if (NULL == imgProperties)
+	CFDictionaryRef img_properties = CGImageSourceCopyPropertiesAtIndex(img_src, 0, NULL);
+	if (NULL == img_properties)
 	{
-		CFRelease(imgSrc);
+		CFRelease(img_src);
 		return;
 	}
 
 	// Get image width
-	CFNumberRef pWidth = CFDictionaryGetValue(imgProperties, kCGImagePropertyPixelWidth);
-	CFNumberGetValue(pWidth, kCFNumberSInt64Type, width);
+	CFNumberRef w = CFDictionaryGetValue(img_properties, kCGImagePropertyPixelWidth);
+	CFNumberGetValue(w, kCFNumberSInt64Type, width);
 	// Get image height
-	CFNumberRef pHeight = CFDictionaryGetValue(imgProperties, kCGImagePropertyPixelHeight);
-	CFNumberGetValue(pHeight, kCFNumberSInt64Type, height);
-	CFRelease(imgProperties);
+	CFNumberRef h = CFDictionaryGetValue(img_properties, kCGImagePropertyPixelHeight);
+	CFNumberGetValue(h, kCFNumberSInt64Type, height);
+	CFRelease(img_properties);
 
-	CFRelease(imgSrc);
+	CFRelease(img_src);
 
 	// Get the filesize, because it's not always present in the image properties dictionary :/
-	*fileSize = _get_file_size(url);
+	*file_size = _get_file_size(url);
 }
 
 size_t read_file(const char* filepath, uint8_t** buffer)
@@ -71,56 +71,56 @@ size_t read_file(const char* filepath, uint8_t** buffer)
 		return 0;
 
 	fseek(f, 0, SEEK_END);
-	const size_t size = (size_t)ftell(f);
+	const size_t file_size = (size_t)ftell(f);
 	fseek(f, 0, SEEK_SET);
 
-	*buffer = (uint8_t*)malloc(size);
+	*buffer = (uint8_t*)malloc(file_size);
 	if (NULL == (*buffer))
 	{
 		fclose(f);
 		return 0;
 	}
-	const size_t nb = fread(*buffer, 1, size, f);
+	const size_t read_size = fread(*buffer, 1, file_size, f);
 	fclose(f);
-	if (nb != size)
+	if (read_size != file_size)
 	{
 		free(*buffer), *buffer = NULL;
 		return 0;
 	}
 
-	return size;
+	return file_size;
 }
 
-CF_RETURNS_RETAINED CGImageRef decode_webp(CFURLRef url, size_t* width, size_t* height, size_t* fileSize)
+CF_RETURNS_RETAINED CGImageRef decode_webp(CFURLRef url, size_t* width, size_t* height, size_t* file_size)
 {
-	*width = 0, *height = 0, *fileSize = 0;
+	*width = 0, *height = 0, *file_size = 0;
 
 	// Init WebP decoder
-	WebPDecoderConfig config;
-	if (!WebPInitDecoderConfig(&config))
+	WebPDecoderConfig webp_cfg;
+	if (!WebPInitDecoderConfig(&webp_cfg))
 		return NULL;
 
 	// Read file
 	uint8_t* buffer = NULL;
-	*fileSize = read_file([[(__bridge NSURL*)url path] UTF8String], &buffer);
-	if (0 == (*fileSize))
+	*file_size = read_file([[(__bridge NSURL*)url path] UTF8String], &buffer);
+	if (0 == (*file_size))
 	{
 		free(buffer);
 		return NULL;
 	}
 
 	// Get image infos
-	if (WebPGetFeatures(buffer, *fileSize, &config.input) != VP8_STATUS_OK)
+	if (WebPGetFeatures(buffer, *file_size, &webp_cfg.input) != VP8_STATUS_OK)
 	{
 		free(buffer);
 		return NULL;
 	}
-	*width = (size_t)config.input.width;
-	*height = (size_t)config.input.height;
+	*width = (size_t)webp_cfg.input.width;
+	*height = (size_t)webp_cfg.input.height;
 
 	// Decode image, always RGBA
-	config.output.colorspace = MODE_rgbA;
-	if (WebPDecode(buffer, *fileSize, &config) != VP8_STATUS_OK)
+	webp_cfg.output.colorspace = MODE_rgbA;
+	if (WebPDecode(buffer, *file_size, &webp_cfg) != VP8_STATUS_OK)
 	{
 		free(buffer);
 		return NULL;
@@ -128,41 +128,41 @@ CF_RETURNS_RETAINED CGImageRef decode_webp(CFURLRef url, size_t* width, size_t* 
 	free(buffer);
 
 	// Create CGImage
-	CGColorSpaceRef cs = CGColorSpaceCreateDeviceRGB();
-	CGContextRef bmContext = CGBitmapContextCreate(config.output.u.RGBA.rgba, (size_t)config.input.width, (size_t)config.input.height, 8, 4 * (size_t)config.input.width, cs, kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedLast);
-	CGColorSpaceRelease(cs);
-	WebPFreeDecBuffer(&config.output);
-	CGImageRef imgRef = CGBitmapContextCreateImage(bmContext);
-	CGContextRelease(bmContext);
-	return imgRef;
+	CGColorSpaceRef color_space = CGColorSpaceCreateDeviceRGB();
+	CGContextRef ctx = CGBitmapContextCreate(webp_cfg.output.u.RGBA.rgba, (size_t)webp_cfg.input.width, (size_t)webp_cfg.input.height, 8, 4 * (size_t)webp_cfg.input.width, color_space, kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedLast);
+	CGColorSpaceRelease(color_space);
+	WebPFreeDecBuffer(&webp_cfg.output);
+	CGImageRef img_ref = CGBitmapContextCreateImage(ctx);
+	CGContextRelease(ctx);
+	return img_ref;
 }
 
-CF_RETURNS_RETAINED CGImageRef decode_bpg(CFURLRef url, size_t* width, size_t* height, size_t* fileSize)
+CF_RETURNS_RETAINED CGImageRef decode_bpg(CFURLRef url, size_t* width, size_t* height, size_t* file_size)
 {
-	*width = 0, *height = 0, *fileSize = 0;
+	*width = 0, *height = 0, *file_size = 0;
 
 	// Read file
 	uint8_t* buffer = NULL;
-	*fileSize = read_file([[(__bridge NSURL*)url path] UTF8String], &buffer);
-	if (0 == (*fileSize))
+	*file_size = read_file([[(__bridge NSURL*)url path] UTF8String], &buffer);
+	if (0 == (*file_size))
 	{
 		free(buffer);
 		return NULL;
 	}
 
 	// Decode image
-	BPGDecoderContext* img = bpg_decoder_open();
-	int ret = bpg_decoder_decode(img, buffer, (int)(*fileSize));
+	BPGDecoderContext* bpg_ctx = bpg_decoder_open();
+	int ret = bpg_decoder_decode(bpg_ctx, buffer, (int)(*file_size));
 	free(buffer);
 	if (ret < 0)
 	{
-		bpg_decoder_close(img);
+		bpg_decoder_close(bpg_ctx);
 		return NULL;
 	}
 
 	// Get image infos
 	BPGImageInfo img_info_s, *img_info = &img_info_s;
-	bpg_decoder_get_info(img, img_info);
+	bpg_decoder_get_info(bpg_ctx, img_info);
 	const size_t w = (size_t)img_info->width;
 	const size_t h = (size_t)img_info->height;
 	*width = w;
@@ -171,34 +171,34 @@ CF_RETURNS_RETAINED CGImageRef decode_bpg(CFURLRef url, size_t* width, size_t* h
 	// Always output in RGBA format
 	const size_t stride = 4 * w;
 	const size_t img_size = stride * h;
-	uint8_t* final = (uint8_t*)malloc(img_size);
+	uint8_t* rgb_buffer = (uint8_t*)malloc(img_size);
 	size_t idx = 0;
-	bpg_decoder_start(img, BPG_OUTPUT_FORMAT_RGBA32);
+	bpg_decoder_start(bpg_ctx, BPG_OUTPUT_FORMAT_RGBA32);
 	for (size_t y = 0; y < h; y++)
 	{
-		bpg_decoder_get_line(img, final + idx);
+		bpg_decoder_get_line(bpg_ctx, rgb_buffer + idx);
 		idx += stride;
 	}
-	bpg_decoder_close(img);
+	bpg_decoder_close(bpg_ctx);
 
 	// Create CGImage
-	CGDataProviderRef dp = CGDataProviderCreateWithCFData((__bridge CFDataRef)[[NSData alloc] initWithBytesNoCopy:final length:img_size freeWhenDone:NO]);
-	CGColorSpaceRef cs = CGColorSpaceCreateDeviceRGB();
-	CGImageRef imgRef = CGImageCreate(w, h, 8, 32, stride, cs, kCGBitmapByteOrderDefault | kCGImageAlphaNone, dp, NULL, true, kCGRenderingIntentDefault);
-	CGColorSpaceRelease(cs);
-	CGDataProviderRelease(dp);
-	free(final);
-	return imgRef;
+	CGDataProviderRef data_provider = CGDataProviderCreateWithCFData((__bridge CFDataRef)[[NSData alloc] initWithBytesNoCopy:rgb_buffer length:img_size freeWhenDone:NO]);
+	CGColorSpaceRef color_space = CGColorSpaceCreateDeviceRGB();
+	CGImageRef img_ref = CGImageCreate(w, h, 8, 32, stride, color_space, kCGBitmapByteOrderDefault | kCGImageAlphaNone, data_provider, NULL, true, kCGRenderingIntentDefault);
+	CGColorSpaceRelease(color_space);
+	CGDataProviderRelease(data_provider);
+	free(rgb_buffer);
+	return img_ref;
 }
 
-CF_RETURNS_RETAINED CGImageRef decode_portable_pixmap(CFURLRef url, size_t* width, size_t* height, size_t* fileSize)
+CF_RETURNS_RETAINED CGImageRef decode_portable_pixmap(CFURLRef url, size_t* width, size_t* height, size_t* file_size)
 {
-	*width = 0, *height = 0, *fileSize = 0;
+	*width = 0, *height = 0, *file_size = 0;
 
 	// Read file
 	uint8_t* buffer = NULL;
-	*fileSize = read_file([[(__bridge NSURL*)url path] UTF8String], &buffer);
-	if (0 == (*fileSize))
+	*file_size = read_file([[(__bridge NSURL*)url path] UTF8String], &buffer);
+	if (0 == (*file_size))
 	{
 		free(buffer);
 		return NULL;
@@ -209,14 +209,14 @@ CF_RETURNS_RETAINED CGImageRef decode_portable_pixmap(CFURLRef url, size_t* widt
 		return NULL;
 
 	// Only handle binary version for now
-	uint8_t* rgbBuffer = NULL;
+	uint8_t* rgb_buffer = NULL;
 	const char idd = (char)buffer[1];
 	if (idd == '4'/* || idd == '1'*/) // pbm
-		rgbBuffer = _decode_pbm(buffer, *fileSize, width, height);
+		rgb_buffer = _decode_pbm(buffer, *file_size, width, height);
 	else if (idd == '5'/* || idd == '2'*/) // pgm
-		rgbBuffer = _decode_pgm(buffer, *fileSize, width, height);
+		rgb_buffer = _decode_pgm(buffer, *file_size, width, height);
 	else if (idd == '6'/* || idd == '3'*/) // ppm
-		rgbBuffer = _decode_ppm(buffer, *fileSize, width, height);
+		rgb_buffer = _decode_ppm(buffer, *file_size, width, height);
 	else
 	{
 		free(buffer);
@@ -225,17 +225,17 @@ CF_RETURNS_RETAINED CGImageRef decode_portable_pixmap(CFURLRef url, size_t* widt
 	free(buffer);
 
 	// Create CGImage
-	CGDataProviderRef dp = CGDataProviderCreateWithCFData((__bridge CFDataRef)[[NSData alloc] initWithBytesNoCopy:rgbBuffer length:((*fileSize) * 3) freeWhenDone:NO]);
-	CGColorSpaceRef cs = CGColorSpaceCreateDeviceRGB();
-	CGImageRef imgRef = CGImageCreate(*width, *height, 8, 24, 3 * *width, cs, kCGBitmapByteOrderDefault | kCGImageAlphaNone, dp, NULL, true, kCGRenderingIntentDefault);
-	CGColorSpaceRelease(cs);
-	CGDataProviderRelease(dp);
-	free(rgbBuffer);
-	return imgRef;
+	CGDataProviderRef data_provider = CGDataProviderCreateWithCFData((__bridge CFDataRef)[[NSData alloc] initWithBytesNoCopy:rgb_buffer length:((*file_size) * 3) freeWhenDone:NO]);
+	CGColorSpaceRef color_space = CGColorSpaceCreateDeviceRGB();
+	CGImageRef img_ref = CGImageCreate(*width, *height, 8, 24, 3 * *width, color_space, kCGBitmapByteOrderDefault | kCGImageAlphaNone, data_provider, NULL, true, kCGRenderingIntentDefault);
+	CGColorSpaceRelease(color_space);
+	CGDataProviderRelease(data_provider);
+	free(rgb_buffer);
+	return img_ref;
 }
 
 #pragma mark - Private
-static void* _decode_pbm(const uint8_t* bytes, __unused const size_t size, __unused size_t* width, __unused size_t* height)
+static void* _decode_pbm(const uint8_t* bytes, const size_t size, size_t* width, size_t* height)
 {
 	// TODO: FIX cause it's bugged :>
 	// format, where • is a separator (space, tab, newline)
@@ -257,7 +257,7 @@ static void* _decode_pbm(const uint8_t* bytes, __unused const size_t size, __unu
 	*height = (size_t)atol(ctmp);
 
 	// 1 byte = 8 px
-	rgb_pixel* buf = (rgb_pixel*)malloc(((size - index + 1) * 8) * 3);
+	rgb_pixel* rgb_buffer = (rgb_pixel*)malloc(((size - index + 1) * 8) * 3);
 	i = 0;
 	while (index < size)
 	{
@@ -266,11 +266,11 @@ static void* _decode_pbm(const uint8_t* bytes, __unused const size_t size, __unu
 		{
 			uint8_t tmp = ((b >> a) & 0x01);
 			tmp = (0 == tmp) ? 255 : 0;
-			buf[i++] = (rgb_pixel){tmp, tmp, tmp};
+			rgb_buffer[i++] = (rgb_pixel){tmp, tmp, tmp};
 		}
 	}
 
-	return buf;
+	return rgb_buffer;
 }
 
 static void* _decode_pgm(const uint8_t* bytes, const size_t size, size_t* width, size_t* height)
@@ -298,21 +298,21 @@ static void* _decode_pgm(const uint8_t* bytes, const size_t size, size_t* width,
 	memset(ctmp, 0x00, 8);
 	while ((c = (char)bytes[index++]) && (c != ' ' && c != '\r' && c != '\n' && c != '\t'))
 		ctmp[i++] = c;
-	const size_t maxVal = (size_t)atol(ctmp);
-	if (maxVal > 255)
+	const size_t max_val = (size_t)atol(ctmp);
+	if (max_val > 255)
 		return NULL; // 16-bit, ignore.
 
 	// Convert to RGB
-	const size_t acutalSize = (size - index + 1);
-	rgb_pixel* buf = (rgb_pixel*)malloc(sizeof(rgb_pixel) * acutalSize);
-	const float ratio = (float)maxVal / 255.0f;
+	const size_t acutal_size = (size - index + 1);
+	rgb_pixel* rgb_buffer = (rgb_pixel*)malloc(sizeof(rgb_pixel) * acutal_size);
+	const float ratio = (float)max_val / 255.0f;
 	i = 0;
 	if ((int)ratio == 1)
 	{
 		while (index < size)
 		{
 			const uint8_t b = bytes[index++];
-			buf[i++] = (rgb_pixel){b, b, b};
+			rgb_buffer[i++] = (rgb_pixel){b, b, b};
 		}
 	}
 	else
@@ -320,11 +320,11 @@ static void* _decode_pgm(const uint8_t* bytes, const size_t size, size_t* width,
 		while (index < size)
 		{
 			const uint8_t b = (uint8_t)((float)bytes[index++] / ratio);
-			buf[i++] = (rgb_pixel){b, b, b};
+			rgb_buffer[i++] = (rgb_pixel){b, b, b};
 		}
 	}
 
-	return buf;
+	return rgb_buffer;
 }
 
 static void* _decode_ppm(const uint8_t* bytes, const size_t size, size_t* width, size_t* height)
@@ -352,28 +352,28 @@ static void* _decode_ppm(const uint8_t* bytes, const size_t size, size_t* width,
 	memset(ctmp, 0x00, 8);
 	while ((c = (char)bytes[index++]) && (c != ' ' && c != '\r' && c != '\n' && c != '\t'))
 		ctmp[i++] = c;
-	const size_t maxVal = (size_t)atol(ctmp);
-	if (maxVal > 255)
+	const size_t max_val = (size_t)atol(ctmp);
+	if (max_val > 255)
 		return NULL; // 16-bit, ignore.
 
-	void* buf = NULL;
-	const size_t acutalSize = (size - index + 1);
-	const float ratio = (float)maxVal / 255.0f;
+	void* buffer = NULL;
+	const size_t acutal_size = (size - index + 1);
+	const float ratio = (float)max_val / 255.0f;
 	if ((int)ratio == 1)
 	{
 		// Got the same ratio, just have to make a copy
-		buf = (uint8_t*)malloc(sizeof(uint8_t) * acutalSize);
-		memcpy(buf, &(bytes[index]), acutalSize);
+		buffer = (uint8_t*)malloc(sizeof(uint8_t) * acutal_size);
+		memcpy(buffer, &(bytes[index]), acutal_size);
 	}
 	else
 	{
 		// Moronic case, whoever does this deserve to die
-		float* dataAsFloat = (float*)malloc(sizeof(float) * acutalSize);
-		buf = (uint8_t*)malloc(sizeof(uint8_t) * acutalSize);
-		vDSP_vfltu8(&(bytes[index]), 1, dataAsFloat, 1, acutalSize);
-		vDSP_vsdiv(dataAsFloat, 1, &ratio, dataAsFloat, 1, acutalSize);
-		vDSP_vfixu8(dataAsFloat, 1, buf, 1, acutalSize);
-		free(dataAsFloat);
+		float* data_as_float = (float*)malloc(sizeof(float) * acutal_size);
+		buffer = (uint8_t*)malloc(sizeof(uint8_t) * acutal_size);
+		vDSP_vfltu8(&(bytes[index]), 1, data_as_float, 1, acutal_size);
+		vDSP_vsdiv(data_as_float, 1, &ratio, data_as_float, 1, acutal_size);
+		vDSP_vfixu8(data_as_float, 1, buffer, 1, acutal_size);
+		free(data_as_float);
 		/*buf = (rgb_pixel*)malloc(siz);
 		i = 0;
 		for (size_t j = index; j < size; j += 3)
@@ -385,7 +385,7 @@ static void* _decode_ppm(const uint8_t* bytes, const size_t size, size_t* width,
 		}*/
 	}
 
-	return buf;
+	return buffer;
 }
 
 static size_t _get_file_size(CFURLRef url)
