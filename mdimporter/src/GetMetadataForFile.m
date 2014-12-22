@@ -9,6 +9,7 @@
 
 
 #import <CoreData/CoreData.h>
+#import "Tools.h"
 #import "decode.h"
 #import "libbpg.h"
 
@@ -27,23 +28,15 @@ Boolean GetMetadataForFile(__unused void* thisInterface, CFMutableDictionaryRef 
 			if ([urlExtension isEqualToString:@"webp"])
 			{
 				/* WebP */
+
 				WebPDecoderConfig config;
 				if (!WebPInitDecoderConfig(&config))
 					return FALSE;
 
-				// Open the file, get its size and read it
-				FILE* f = fopen([filepath UTF8String], "rb");
-				if (NULL == f)
-					return FALSE;
-
-				fseek(f, 0, SEEK_END);
-				const size_t size = (size_t)ftell(f);
-				fseek(f, 0, SEEK_SET);
-
-				uint8_t* buffer = (uint8_t*)malloc(size);
-				const size_t nb = fread(buffer, 1, size, f);
-				fclose(f);
-				if (nb != size)
+				// Read file
+				uint8_t* buffer = NULL;
+				const size_t size = read_file([filepath UTF8String], &buffer);
+				if (0 == size)
 				{
 					free(buffer);
 					return FALSE;
@@ -72,19 +65,11 @@ Boolean GetMetadataForFile(__unused void* thisInterface, CFMutableDictionaryRef 
 			else if ([urlExtension isEqualToString:@"bpg"])
 			{
 				/* bpg */
-				// Open the file, get its size and read it
-				FILE* f = fopen([filepath UTF8String], "rb");
-				if (NULL == f)
-					return FALSE;
 
-				fseek(f, 0, SEEK_END);
-				const size_t size = (size_t)ftell(f);
-				fseek(f, 0, SEEK_SET);
-
-				uint8_t* buffer = (uint8_t*)malloc(size);
-				const size_t nb = fread(buffer, 1, size, f);
-				fclose(f);
-				if (nb != size)
+				// Read file
+				uint8_t* buffer = NULL;
+				const size_t size = read_file([filepath UTF8String], &buffer);
+				if (0 == size)
 				{
 					free(buffer);
 					return FALSE;
@@ -140,19 +125,11 @@ Boolean GetMetadataForFile(__unused void* thisInterface, CFMutableDictionaryRef 
 			else
 			{
 				/* Portable Pixmap */
-				// Open the file, get its size and read it
-				FILE* f = fopen([filepath UTF8String], "rb");
-				if (NULL == f)
-					return FALSE;
 
-				fseek(f, 0, SEEK_END);
-				const size_t size = (size_t)ftell(f);
-				fseek(f, 0, SEEK_SET);
-
-				uint8_t* buffer = (uint8_t*)malloc(size);
-				const size_t nb = fread(buffer, 1, size, f);
-				fclose(f);
-				if (nb != size)
+				// Read file
+				uint8_t* buffer = NULL;
+				const size_t size = read_file([filepath UTF8String], &buffer);
+				if (0 == size)
 				{
 					free(buffer);
 					return FALSE;

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1E15211A1A48483A00CFA094 /* Tools.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E7F11991A45B5C300EA2767 /* Tools.m */; };
 		1E1559D414D96C2500268030 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E1559D314D96C2500268030 /* Foundation.framework */; };
 		1E45F05219ADC94F00139309 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E45F05119ADC94F00139309 /* Accelerate.framework */; };
 		1E7F116A1A45A56300EA2767 /* libwebp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EB0E7251A42D0D3005F0A92 /* libwebp.a */; };
@@ -326,6 +327,7 @@
 			files = (
 				1E7F11A21A45B65B00EA2767 /* GetMetadataForFile.m in Sources */,
 				1E7F11A31A45B65D00EA2767 /* main.c in Sources */,
+				1E15211A1A48483A00CFA094 /* Tools.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -353,7 +355,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
-				CLANG_WARN_ASSIGN_ENUM = YES;
+				CLANG_WARN_ASSIGN_ENUM = NO;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
@@ -418,7 +420,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
-				CLANG_WARN_ASSIGN_ENUM = YES;
+				CLANG_WARN_ASSIGN_ENUM = NO;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;

@@ -63,6 +63,34 @@ void properties_for_file(CFURLRef url, size_t* width, size_t* height, size_t* fi
 	*fileSize = _get_file_size(url);
 }
 
+size_t read_file(const char* filepath, uint8_t** buffer)
+{
+	// Open the file, get its size and read it
+	FILE* f = fopen(filepath, "rb");
+	if (NULL == f)
+		return 0;
+
+	fseek(f, 0, SEEK_END);
+	const size_t size = (size_t)ftell(f);
+	fseek(f, 0, SEEK_SET);
+
+	*buffer = (uint8_t*)malloc(size);
+	if (NULL == (*buffer))
+	{
+		fclose(f);
+		return 0;
+	}
+	const size_t nb = fread(*buffer, 1, size, f);
+	fclose(f);
+	if (nb != size)
+	{
+		free(*buffer), *buffer = NULL;
+		return 0;
+	}
+
+	return size;
+}
+
 CF_RETURNS_RETAINED CGImageRef decode_webp(CFURLRef url, size_t* width, size_t* height, size_t* fileSize)
 {
 	*width = 0, *height = 0, *fileSize = 0;
@@ -72,19 +100,10 @@ CF_RETURNS_RETAINED CGImageRef decode_webp(CFURLRef url, size_t* width, size_t* 
 	if (!WebPInitDecoderConfig(&config))
 		return NULL;
 
-	// Open the file, get its size and read it
-	FILE* f = fopen([[(__bridge NSURL*)url path] UTF8String], "rb");
-	if (NULL == f)
-		return NULL;
-
-	fseek(f, 0, SEEK_END);
-	const size_t size = (size_t)ftell(f);
-	fseek(f, 0, SEEK_SET);
-
-	uint8_t* buffer = (uint8_t*)malloc(size);
-	const size_t nb = fread(buffer, 1, size, f);
-	fclose(f);
-	if (nb != size)
+	// Read file
+	uint8_t* buffer = NULL;
+	const size_t size = read_file([[(__bridge NSURL*)url path] UTF8String], &buffer);
+	if (0 == size)
 	{
 		free(buffer);
 		return NULL;
@@ -123,20 +142,10 @@ CF_RETURNS_RETAINED CGImageRef decode_bpg(CFURLRef url, size_t* width, size_t* h
 {
 	*width = 0, *height = 0, *fileSize = 0;
 
-	// Open the file, get its size and read it
-	FILE* f = fopen([[(__bridge NSURL*)url path] UTF8String], "rb");
-	if (NULL == f)
-		return NULL;
-
-	fseek(f, 0, SEEK_END);
-	const size_t buf_len = (size_t)ftell(f);
-	*fileSize = buf_len;
-	fseek(f, 0, SEEK_SET);
-
-	uint8_t* buffer = (uint8_t*)malloc(buf_len);
-	const size_t nb = fread(buffer, 1, buf_len, f);
-	fclose(f);
-	if (nb != buf_len)
+	// Read file
+	uint8_t* buffer = NULL;
+	const size_t size = read_file([[(__bridge NSURL*)url path] UTF8String], &buffer);
+	if (0 == size)
 	{
 		free(buffer);
 		return NULL;
@@ -144,7 +153,7 @@ CF_RETURNS_RETAINED CGImageRef decode_bpg(CFURLRef url, size_t* width, size_t* h
 
 	// Decode image
 	BPGDecoderContext* img = bpg_decoder_open();
-	int ret = bpg_decoder_decode(img, buffer, (int)buf_len);
+	int ret = bpg_decoder_decode(img, buffer, (int)size);
 	free(buffer);
 	if (ret < 0)
 	{
@@ -162,8 +171,8 @@ CF_RETURNS_RETAINED CGImageRef decode_bpg(CFURLRef url, size_t* width, size_t* h
 
 	// Always output in RGBA format
 	const size_t stride = 4 * w;
-	const size_t size = stride * h;
-	uint8_t* final = (uint8_t*)malloc(size);
+	const size_t img_size = stride * h;
+	uint8_t* final = (uint8_t*)malloc(img_size);
 	size_t idx = 0;
 	bpg_decoder_start(img, BPG_OUTPUT_FORMAT_RGBA32);
 	for (size_t y = 0; y < h; y++)
@@ -174,7 +183,7 @@ CF_RETURNS_RETAINED CGImageRef decode_bpg(CFURLRef url, size_t* width, size_t* h
 	bpg_decoder_close(img);
 
 	// Create CGImage
-	CGDataProviderRef dp = CGDataProviderCreateWithCFData((__bridge CFDataRef)[[NSData alloc] initWithBytesNoCopy:final length:size freeWhenDone:NO]);
+	CGDataProviderRef dp = CGDataProviderCreateWithCFData((__bridge CFDataRef)[[NSData alloc] initWithBytesNoCopy:final length:img_size freeWhenDone:NO]);
 	CGColorSpaceRef cs = CGColorSpaceCreateDeviceRGB();
 	CGImageRef imgRef = CGImageCreate(w, h, 8, 32, stride, cs, kCGBitmapByteOrderDefault | kCGImageAlphaNone, dp, NULL, true, kCGRenderingIntentDefault);
 	CGColorSpaceRelease(cs);
@@ -185,24 +194,17 @@ CF_RETURNS_RETAINED CGImageRef decode_bpg(CFURLRef url, size_t* width, size_t* h
 
 CF_RETURNS_RETAINED CGImageRef decode_portable_pixmap(CFURLRef url, size_t* width, size_t* height, size_t* fileSize)
 {
-	// Open the file, get its size and read it
-	FILE* f = fopen([[(__bridge NSURL*)url path] UTF8String], "rb");
-	if (NULL == f)
-		return FALSE;
+	*width = 0, *height = 0, *fileSize = 0;
 
-	fseek(f, 0, SEEK_END);
-	const size_t size = (size_t)ftell(f);
-	*fileSize = size;
-	fseek(f, 0, SEEK_SET);
-
-	uint8_t* buffer = (uint8_t*)malloc(size);
-	const size_t nb = fread(buffer, 1, size, f);
-	fclose(f);
-	if (nb != size)
+	// Read file
+	uint8_t* buffer = NULL;
+	const size_t size = read_file([[(__bridge NSURL*)url path] UTF8String], &buffer);
+	if (0 == size)
 	{
 		free(buffer);
-		return FALSE;
+		return NULL;
 	}
+	*fileSize = size;
 
 	// Identify type (handle binary only)
 	if ((char)buffer[0] != 'P')
