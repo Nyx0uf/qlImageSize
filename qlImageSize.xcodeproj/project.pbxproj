@@ -35,22 +35,7 @@
 		1EFA994414D9288600A09F03 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EFA994314D9288600A09F03 /* ApplicationServices.framework */; };
 		1EFA994614D9288600A09F03 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EFA994514D9288600A09F03 /* CoreServices.framework */; };
 		1EFA994814D9288600A09F03 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EFA994714D9288600A09F03 /* CoreFoundation.framework */; };
-		1EFA995C14D941AD00A09F03 /* qlImageSize.qlgenerator in Install plugin */ = {isa = PBXBuildFile; fileRef = 1EFA993E14D9288600A09F03 /* qlImageSize.qlgenerator */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		1EFA995B14D9418B00A09F03 /* Install plugin */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "~/Library/QuickLook";
-			dstSubfolderSpec = 0;
-			files = (
-				1EFA995C14D941AD00A09F03 /* qlImageSize.qlgenerator in Install plugin */,
-			);
-			name = "Install plugin";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		1E1559D314D96C2500268030 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -282,7 +267,6 @@
 				1EFA993814D9288600A09F03 /* Sources */,
 				1EFA993914D9288600A09F03 /* Frameworks */,
 				1EFA993A14D9288600A09F03 /* Headers */,
-				1EFA995B14D9418B00A09F03 /* Install plugin */,
 			);
 			buildRules = (
 			);
