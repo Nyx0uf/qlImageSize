@@ -22,10 +22,11 @@ OSStatus GenerateThumbnailForURL(__unused void* thisInterface, QLThumbnailReques
 	NSDictionary* utiDeclarations = (__bridge_transfer NSDictionary*)UTTypeCopyDeclaration(contentTypeUTI);
 
 	// Get the extensions corresponding to the image UTI, for some UTI there can be more than 1 extension (ex image.jpeg = jpeg, jpg...)
+	// If it fails for whatever reason fallback to the filename extension
 	id extensions = utiDeclarations[(__bridge NSString*)kUTTypeTagSpecificationKey][(__bridge NSString*)kUTTagClassFilenameExtension];
 	NSString* extension = ([extensions isKindOfClass:[NSArray class]]) ? extensions[0] : extensions;
 	if (nil == extension)
-		extension = [(__bridge NSURL*)url pathExtension];
+		extension = ([(__bridge NSURL*)url pathExtension] != nil) ? [(__bridge NSURL*)url pathExtension] : @"";
 	extension = [extension lowercaseString];
 
 	// Create the properties dic
