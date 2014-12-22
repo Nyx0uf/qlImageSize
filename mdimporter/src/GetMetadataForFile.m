@@ -78,28 +78,28 @@ Boolean GetMetadataForFile(__unused void* thisInterface, CFMutableDictionaryRef 
 					return FALSE;
 
 				fseek(f, 0, SEEK_END);
-				const size_t buf_len = (size_t)ftell(f);
+				const size_t size = (size_t)ftell(f);
 				fseek(f, 0, SEEK_SET);
 
-				uint8_t* buffer = (uint8_t*)malloc(buf_len);
-				const size_t nb = fread(buffer, 1, buf_len, f);
+				uint8_t* buffer = (uint8_t*)malloc(size);
+				const size_t nb = fread(buffer, 1, size, f);
 				fclose(f);
-				if (nb != buf_len)
+				if (nb != size)
 				{
 					free(buffer);
 					return FALSE;
 				}
-			
+
 				// Decode image
 				BPGDecoderContext* img = bpg_decoder_open();
-				int ret = bpg_decoder_decode(img, buffer, (int)buf_len);
+				int ret = bpg_decoder_decode(img, buffer, (int)size);
 				free(buffer);
 				if (ret < 0)
 				{
 					bpg_decoder_close(img);
 					return FALSE;
 				}
-			
+
 				// Get image infos
 				BPGImageInfo img_info_s, *img_info = &img_info_s;
 				bpg_decoder_get_info(img, img_info);
@@ -107,6 +107,7 @@ Boolean GetMetadataForFile(__unused void* thisInterface, CFMutableDictionaryRef 
 				attrs[(NSString*)kMDItemPixelWidth] = @(img_info->width);
 				attrs[(NSString*)kMDItemPixelHeight] = @(img_info->height);
 				attrs[(NSString*)kMDItemPixelCount] = @(img_info->height * img_info->width);
+				attrs[(NSString*)kMDItemHasAlphaChannel] = (!img_info->has_alpha) ? @NO : @YES;
 				attrs[(NSString*)kMDItemBitsPerSample] = @(img_info->bit_depth);
 				const BPGColorSpaceEnum cs = (BPGColorSpaceEnum)img_info->color_space;
 				NSString* css = @"Undefined";
@@ -119,7 +120,7 @@ Boolean GetMetadataForFile(__unused void* thisInterface, CFMutableDictionaryRef 
 						css = @"RGB";
 						break;
 					case BPG_CS_YCgCo:
-						css = @"YCgCo";
+						css = @"Y'CgCo";
 						break;
 					case BPG_CS_YCbCr_BT709:
 						css = @"BT.709";
@@ -132,9 +133,8 @@ Boolean GetMetadataForFile(__unused void* thisInterface, CFMutableDictionaryRef 
 						break;
 				}
 				attrs[(NSString*)kMDItemColorSpace] = css;
-				attrs[(NSString*)kMDItemHasAlphaChannel] = (!img_info->has_alpha) ? @NO : @YES;
 				bpg_decoder_close(img);
-			
+
 				return TRUE;
 			}
 			else
