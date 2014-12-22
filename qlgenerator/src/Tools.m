@@ -66,28 +66,48 @@ void properties_for_file(CFURLRef url, size_t* width, size_t* height, size_t* fi
 CF_RETURNS_RETAINED CGImageRef decode_webp(CFURLRef url, size_t* width, size_t* height, size_t* fileSize)
 {
 	*width = 0, *height = 0, *fileSize = 0;
-	NSData* data = [[NSData alloc] initWithContentsOfURL:(__bridge NSURL*)url];
-	if (nil == data)
-		return NULL;
 
-	// Decode image
-	const void* dataPtr = [data bytes];
-	const size_t size = [data length];
+	// Init WebP decoder
 	WebPDecoderConfig config;
 	if (!WebPInitDecoderConfig(&config))
 		return NULL;
 
-	if (WebPGetFeatures(dataPtr, size, &config.input) != VP8_STATUS_OK)
+	// Open the file, get its size and read it
+	FILE* f = fopen([[(__bridge NSURL*)url path] UTF8String], "rb");
+	if (NULL == f)
 		return NULL;
 
-	config.output.colorspace = MODE_rgbA;
-	if (WebPDecode(dataPtr, size, &config) != VP8_STATUS_OK)
-		return NULL;
+	fseek(f, 0, SEEK_END);
+	const size_t size = (size_t)ftell(f);
+	fseek(f, 0, SEEK_SET);
 
-	// Get properties
+	uint8_t* buffer = (uint8_t*)malloc(size);
+	const size_t nb = fread(buffer, 1, size, f);
+	fclose(f);
+	if (nb != size)
+	{
+		free(buffer);
+		return NULL;
+	}
+
+	// Get image infos
+	if (WebPGetFeatures(buffer, size, &config.input) != VP8_STATUS_OK)
+	{
+		free(buffer);
+		return NULL;
+	}
 	*width = (size_t)config.input.width;
 	*height = (size_t)config.input.height;
-	*fileSize = _get_file_size(url);
+	*fileSize = size;
+
+	// Decode image, always RGBA
+	config.output.colorspace = MODE_rgbA;
+	if (WebPDecode(buffer, size, &config) != VP8_STATUS_OK)
+	{
+		free(buffer);
+		return NULL;
+	}
+	free(buffer);
 
 	// Create CGImage
 	CGColorSpaceRef cs = CGColorSpaceCreateDeviceRGB();
