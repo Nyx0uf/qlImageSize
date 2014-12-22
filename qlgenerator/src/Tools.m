@@ -185,35 +185,43 @@ CF_RETURNS_RETAINED CGImageRef decode_bpg(CFURLRef url, size_t* width, size_t* h
 
 CF_RETURNS_RETAINED CGImageRef decode_portable_pixmap(CFURLRef url, size_t* width, size_t* height, size_t* fileSize)
 {
-	// Grab image data
-	NSData* data = [[NSData alloc] initWithContentsOfURL:(__bridge NSURL*)url];
-	if (nil == data)
-		return NULL;
-	const uint8_t* bytes = (uint8_t*)[data bytes];
-	if (NULL == bytes)
-		return NULL;
+	// Open the file, get its size and read it
+	FILE* f = fopen([[(__bridge NSURL*)url path] UTF8String], "rb");
+	if (NULL == f)
+		return FALSE;
+
+	fseek(f, 0, SEEK_END);
+	const size_t size = (size_t)ftell(f);
+	*fileSize = size;
+	fseek(f, 0, SEEK_SET);
+
+	uint8_t* buffer = (uint8_t*)malloc(size);
+	const size_t nb = fread(buffer, 1, size, f);
+	fclose(f);
+	if (nb != size)
+	{
+		free(buffer);
+		return FALSE;
+	}
 
 	// Identify type (handle binary only)
-	if ((char)bytes[0] != 'P')
+	if ((char)buffer[0] != 'P')
 		return NULL;
 
 	// Only handle binary version for now
 	uint8_t* rgbBuffer = NULL;
-	const char idd = (char)bytes[1];
+	const char idd = (char)buffer[1];
 	if (idd == '4'/* || idd == '1'*/) // pbm
-		rgbBuffer = _decode_pbm(bytes, [data length], width, height);
+		rgbBuffer = _decode_pbm(buffer, size, width, height);
 	else if (idd == '5'/* || idd == '2'*/) // pgm
-		rgbBuffer = _decode_pgm(bytes, [data length], width, height);
+		rgbBuffer = _decode_pgm(buffer, size, width, height);
 	else if (idd == '6'/* || idd == '3'*/) // ppm
-		rgbBuffer = _decode_ppm(bytes, [data length], width, height);
+		rgbBuffer = _decode_ppm(buffer, size, width, height);
 	else
 		return NULL;
 
-	// Get the filesize
-	*fileSize = _get_file_size(url);
-
 	// Create CGImage
-	CGDataProviderRef dp = CGDataProviderCreateWithCFData((__bridge CFDataRef)[[NSData alloc] initWithBytesNoCopy:rgbBuffer length:[data length] * 3 freeWhenDone:NO]);
+	CGDataProviderRef dp = CGDataProviderCreateWithCFData((__bridge CFDataRef)[[NSData alloc] initWithBytesNoCopy:rgbBuffer length:size * 3 freeWhenDone:NO]);
 	CGColorSpaceRef cs = CGColorSpaceCreateDeviceRGB();
 	CGImageRef imgRef = CGImageCreate(*width, *height, 8, 24, 3 * *width, cs, kCGBitmapByteOrderDefault | kCGImageAlphaNone, dp, NULL, true, kCGRenderingIntentDefault);
 	CGColorSpaceRelease(cs);
