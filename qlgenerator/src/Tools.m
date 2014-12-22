@@ -13,7 +13,6 @@
 #import <sys/types.h>
 #import <ImageIO/ImageIO.h>
 #import <Accelerate/Accelerate.h>
-#import <CommonCrypto/CommonDigest.h>
 #import "libbpg.h"
 #import "decode.h"
 
