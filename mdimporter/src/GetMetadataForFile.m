@@ -139,39 +139,56 @@ Boolean GetMetadataForFile(__unused void* thisInterface, CFMutableDictionaryRef 
 			}
 			else
 			{
-				/* Portable pixmap */
-				// Grab image data
-				NSData* data = [[NSData alloc] initWithContentsOfFile:filepath];
-				if (nil == data)
+				/* Portable Pixmap */
+				// Open the file, get its size and read it
+				FILE* f = fopen([filepath UTF8String], "rb");
+				if (NULL == f)
 					return FALSE;
-				const uint8_t* bytes = (uint8_t*)[data bytes];
-				if (NULL == bytes)
+
+				fseek(f, 0, SEEK_END);
+				const size_t size = (size_t)ftell(f);
+				fseek(f, 0, SEEK_SET);
+
+				uint8_t* buffer = (uint8_t*)malloc(size);
+				const size_t nb = fread(buffer, 1, size, f);
+				fclose(f);
+				if (nb != size)
+				{
+					free(buffer);
 					return FALSE;
-			
-				// Identify type (handle binary only)
-				if ((char)bytes[0] != 'P')
+				}
+
+				// Check if Portable Pixmap
+				if ((char)buffer[0] != 'P')
+				{
+					free(buffer);
 					return FALSE;
-			
+				}
+
 				// Get width
 				size_t index = 3, i = 0;
 				char ctmp[8] = {0x00};
 				char c = 0x00;
-				while ((c = (char)bytes[index++]) && (c != ' ' && c != '\r' && c != '\n' && c != '\t'))
+				while ((c = (char)buffer[index++]) && (c != ' ' && c != '\r' && c != '\n' && c != '\t'))
 					ctmp[i++] = c;
-				size_t width = (size_t)atol(ctmp);
-			
+				const size_t width = (size_t)atol(ctmp);
+
 				// Get height
 				i = 0;
 				memset(ctmp, 0x00, 8);
-				while ((c = (char)bytes[index++]) && (c != ' ' && c != '\r' && c != '\n' && c != '\t'))
+				while ((c = (char)buffer[index++]) && (c != ' ' && c != '\r' && c != '\n' && c != '\t'))
 					ctmp[i++] = c;
-				size_t height = (size_t)atol(ctmp);
+				const size_t height = (size_t)atol(ctmp);
+
+				free(buffer);
 
 				NSMutableDictionary* attrs = (__bridge NSMutableDictionary*)attributes;
 				attrs[(NSString*)kMDItemPixelWidth] = @(width);
 				attrs[(NSString*)kMDItemPixelHeight] = @(height);
 				attrs[(NSString*)kMDItemPixelCount] = @(height * width);
 				attrs[(NSString*)kMDItemHasAlphaChannel] = @NO;
+				attrs[(NSString*)kMDItemBitsPerSample] = @8;
+				attrs[(NSString*)kMDItemColorSpace] = @"RGB";
 				return TRUE;
 			}
 		}
