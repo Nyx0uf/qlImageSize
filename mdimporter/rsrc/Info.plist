@@ -30,7 +30,7 @@
 	<key>CFBundleSignature</key>
 	<string>NYXM</string>
 	<key>CFBundleVersion</key>
-	<string>1.0</string>
+	<string>1.1</string>
 	<key>CFPlugInDynamicRegisterFunction</key>
 	<string></string>
 	<key>CFPlugInDynamicRegistration</key>
@@ -53,30 +53,5 @@
 	<string>$(MACOSX_DEPLOYMENT_TARGET)</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2014 Nyx0uf. All rights reserved.</string>
-	<key>UTExportedTypeDeclarations</key>
-	<array>
-		<dict>
-			<key>UTTypeConformsTo</key>
-			<array>
-				<string>public.data</string>
-				<string>public.content</string>
-			</array>
-			<key>UTTypeDescription</key>
-			<string>Your Document Kind String</string>
-			<key>UTTypeIdentifier</key>
-			<string>YOUR_EXTERNAL_RECORD_UTI</string>
-			<key>UTTypeReferenceURL</key>
-			<string>http://www.company.com/yourproduct</string>
-			<key>UTTypeTagSpecification</key>
-			<dict>
-				<key>com.apple.ostype</key>
-				<string>XXXX</string>
-				<key>public.filename-extension</key>
-				<array>
-					<string>YOUR_EXTERNAL_RECORD_EXTENSION</string>
-				</array>
-			</dict>
-		</dict>
-	</array>
 </dict>
 </plist>
