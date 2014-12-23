@@ -19,56 +19,58 @@ CF_RETURNS_RETAINED static CFDictionaryRef _create_properties(CFURLRef url, cons
 
 OSStatus GeneratePreviewForURL(__unused void* thisInterface, QLPreviewRequestRef preview, CFURLRef url, CFStringRef contentTypeUTI, __unused CFDictionaryRef options)
 {
-	NSString* extension = [[(__bridge NSURL*)url pathExtension] lowercaseString];
-	if ([extension isEqualToString:@"webp"] || [extension isEqualToString:@"pgm"] || [extension isEqualToString:@"ppm"] || [extension isEqualToString:@"pbm"] || [extension isEqualToString:@"bpg"])
+	@autoreleasepool
 	{
-		// Non-standard images (not supported by the OS by default)
-		// Check by extension because it's highly unprobable that an UTI for these formats is declared
-
-		// 1. decode the image
-		if (!QLPreviewRequestIsCancelled(preview))
+		NSString* extension = [[(__bridge NSURL*)url pathExtension] lowercaseString];
+		if ([extension isEqualToString:@"webp"] || [extension isEqualToString:@"pgm"] || [extension isEqualToString:@"ppm"] || [extension isEqualToString:@"pbm"] || [extension isEqualToString:@"bpg"])
 		{
-			size_t width = 0, height = 0, file_size = 0;
-			CGImageRef img_ref = NULL;
-			if ([extension isEqualToString:@"webp"])
-				img_ref = decode_webp(url, &width, &height, &file_size);
-			else if ([extension isEqualToString:@"bpg"])
-				img_ref = decode_bpg(url, &width, &height, &file_size);
-			else
-				img_ref = decode_portable_pixmap(url, &width, &height, &file_size);
+			// Non-standard images (not supported by the OS by default)
+			// Check by extension because it's highly unprobable that an UTI for these formats is declared
 
-			// 2. render it
-			CFDictionaryRef properties = _create_properties(url, file_size, width, height, true);
-			if (img_ref != NULL)
+			// 1. decode the image
+			if (!QLPreviewRequestIsCancelled(preview))
 			{
-				// Have to draw the image ourselves
-				CGContextRef ctx = QLPreviewRequestCreateContext(preview, (CGSize){.width = width, .height = height}, YES, properties);
-				CGContextDrawImage(ctx, (CGRect){.origin = CGPointZero, .size.width = width, .size.height = height}, img_ref);
-				QLPreviewRequestFlushContext(preview, ctx);
-				CGContextRelease(ctx);
-				CGImageRelease(img_ref);
+				size_t width = 0, height = 0, file_size = 0;
+				CGImageRef img_ref = NULL;
+				if ([extension isEqualToString:@"webp"])
+					img_ref = decode_webp(url, &width, &height, &file_size);
+				else if ([extension isEqualToString:@"bpg"])
+					img_ref = decode_bpg(url, &width, &height, &file_size);
+				else
+					img_ref = decode_portable_pixmap(url, &width, &height, &file_size);
+
+				// 2. render it
+				CFDictionaryRef properties = _create_properties(url, file_size, width, height, true);
+				if (img_ref != NULL)
+				{
+					// Have to draw the image ourselves
+					CGContextRef ctx = QLPreviewRequestCreateContext(preview, (CGSize){.width = width, .height = height}, YES, properties);
+					CGContextDrawImage(ctx, (CGRect){.origin = CGPointZero, .size.width = width, .size.height = height}, img_ref);
+					QLPreviewRequestFlushContext(preview, ctx);
+					CGContextRelease(ctx);
+					CGImageRelease(img_ref);
+				}
+				else
+					QLPreviewRequestSetURLRepresentation(preview, url, contentTypeUTI, properties);
+				if (properties != NULL)
+					CFRelease(properties);
 			}
-			else
-				QLPreviewRequestSetURLRepresentation(preview, url, contentTypeUTI, properties);
+		}
+		else
+		{
+			// Standard images (supported by the OS by default)
+
+			size_t width = 0, height = 0, file_size = 0;
+			properties_for_file(url, &width, &height, &file_size);
+
+			// Request preview with updated titlebar
+			CFDictionaryRef properties = _create_properties(url, file_size, width, height, false);
+			QLPreviewRequestSetURLRepresentation(preview, url, contentTypeUTI, properties);
+
 			if (properties != NULL)
 				CFRelease(properties);
 		}
 	}
-	else
-	{
-		// Standard images (supported by the OS by default)
-
-		size_t width = 0, height = 0, file_size = 0;
-		properties_for_file(url, &width, &height, &file_size);
-
-		// Request preview with updated titlebar
-		CFDictionaryRef properties = _create_properties(url, file_size, width, height, false);
-		QLPreviewRequestSetURLRepresentation(preview, url, contentTypeUTI, properties);
-
-		if (properties != NULL)
-			CFRelease(properties);
-	}
-
 	return kQLReturnNoError;
 }
 
