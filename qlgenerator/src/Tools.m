@@ -205,7 +205,10 @@ CF_RETURNS_RETAINED CGImageRef decode_portable_pixmap(CFURLRef url, size_t* widt
 
 	// Identify type (handle binary only)
 	if ((char)buffer[0] != 'P')
+	{
+		free(buffer);
 		return NULL;
+	}
 
 	// Only handle binary version for now
 	uint8_t* rgb_buffer = NULL;
