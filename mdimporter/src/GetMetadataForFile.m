@@ -136,7 +136,7 @@ Boolean GetMetadataForFile(__unused void* thisInterface, CFMutableDictionaryRef 
 				}
 
 				// Check if Portable Pixmap
-				if ((char)buffer[0] != 'P')
+				if ((char)buffer[0] != 'P' && ((char)buffer[1] != '1' || (char)buffer[1] != '2' || (char)buffer[1] != '3' || (char)buffer[1] != '4' || (char)buffer[1] != '5' || (char)buffer[1] != '6'))
 				{
 					free(buffer);
 					return FALSE;
