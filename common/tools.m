@@ -85,13 +85,13 @@ const char* colorspace_string(const colorspace_t cs)
 		case colorspace_rgb:
 			return "RGB";
 		case colorspace_ycbcr:
-			return "";
+			return "Y'CbCr";
 		case colorspace_ycgco:
-			return "Unknown";
+			return "Y'CgCo";
 		case colorspace_bt709:
-			return "Unknown";
+			return "BT.709";
 		case colorspace_bt2020:
-			return "Unknown";
+			return "BT.2020";
 		default:
 			return "Unknown";
 	}
