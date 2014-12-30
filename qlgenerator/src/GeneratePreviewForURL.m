@@ -9,9 +9,13 @@
 
 
 #import <QuickLook/QuickLook.h>
-#import "Tools.h"
+#import "tools.h"
+#import "bpg_decode.h"
+#import "webp_decode.h"
+#import "netpbm_decode.h"
 
 
+// To enable logging --> defaults write -g QLEnableLogging NO
 OSStatus GeneratePreviewForURL(void* thisInterface, QLPreviewRequestRef preview, CFURLRef url, CFStringRef contentTypeUTI, CFDictionaryRef options);
 void CancelPreviewGeneration(void* thisInterface, QLPreviewRequestRef preview);
 CF_RETURNS_RETAINED static CFDictionaryRef _create_properties(CFURLRef url, const size_t size, const size_t width, const size_t height, const bool b);
@@ -32,12 +36,15 @@ OSStatus GeneratePreviewForURL(__unused void* thisInterface, QLPreviewRequestRef
 			{
 				size_t width = 0, height = 0, file_size = 0;
 				CGImageRef img_ref = NULL;
+				CFStringRef filepath = CFURLCopyPath(url);
 				if ([extension isEqualToString:@"webp"])
-					img_ref = decode_webp(url, &width, &height, &file_size);
+					img_ref = decode_webp_at_path(filepath, &width, &height, &file_size);
 				else if ([extension isEqualToString:@"bpg"])
-					img_ref = decode_bpg(url, &width, &height, &file_size);
+					img_ref = decode_bpg_at_path(filepath, &width, &height, &file_size);
 				else
-					img_ref = decode_portable_pixmap(url, &width, &height, &file_size);
+					img_ref = decode_netpbm_at_path(filepath, &width, &height, &file_size);
+				if (filepath != NULL)
+					CFRelease(filepath);
 
 				// 2. render it
 				CFDictionaryRef properties = _create_properties(url, file_size, width, height, true);

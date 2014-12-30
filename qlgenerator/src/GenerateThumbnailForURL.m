@@ -9,7 +9,9 @@
 
 
 #import <QuickLook/QuickLook.h>
-#import "Tools.h"
+#import "bpg_decode.h"
+#import "webp_decode.h"
+#import "netpbm_decode.h"
 
 
 OSStatus GenerateThumbnailForURL(void* thisInterface, QLThumbnailRequestRef thumbnail, CFURLRef url, CFStringRef contentTypeUTI, CFDictionaryRef options, CGSize maxSize);
@@ -45,12 +47,15 @@ OSStatus GenerateThumbnailForURL(__unused void* thisInterface, QLThumbnailReques
 				// 1. decode the image
 				size_t width = 0, height = 0, file_size = 0;
 				CGImageRef img_ref = NULL;
+				CFStringRef filepath = CFURLCopyPath(url);
 				if ([extension isEqualToString:@"webp"])
-					img_ref = decode_webp(url, &width, &height, &file_size);
+					img_ref = decode_webp_at_path(filepath, &width, &height, &file_size);
 				else if ([extension isEqualToString:@"bpg"])
-					img_ref = decode_bpg(url, &width, &height, &file_size);
+					img_ref = decode_bpg_at_path(filepath, &width, &height, &file_size);
 				else
-					img_ref = decode_portable_pixmap(url, &width, &height, &file_size);
+					img_ref = decode_netpbm_at_path(filepath, &width, &height, &file_size);
+				if (filepath != NULL)
+					CFRelease(filepath);
 
 				// 2. render it
 				if (img_ref != NULL)
