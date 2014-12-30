@@ -227,7 +227,7 @@ CF_RETURNS_RETAINED CGImageRef decode_portable_pixmap(CFURLRef url, size_t* widt
 	free(buffer);
 
 	// Create CGImage
-	CGDataProviderRef data_provider = CGDataProviderCreateWithData(NULL, rgb_buffer, ((*file_size) * 3), NULL);
+	CGDataProviderRef data_provider = CGDataProviderCreateWithData(NULL, rgb_buffer, (*width) * (*height) * 3, NULL);
 	CGColorSpaceRef color_space = CGColorSpaceCreateDeviceRGB();
 	CGImageRef img_ref = CGImageCreate(*width, *height, 8, 24, 3 * *width, color_space, kCGBitmapByteOrderDefault | kCGImageAlphaNone, data_provider, NULL, true, kCGRenderingIntentDefault);
 	CGColorSpaceRelease(color_space);
@@ -247,19 +247,20 @@ static void* _decode_pbm(const uint8_t* bytes, const size_t size, size_t* width,
 	size_t index = 3, i = 0;
 	char ctmp[8] = {0x00};
 	char c = 0x00;
-	while ((c = (char)bytes[index++]) && (c != ' ' && c != '\r' && c != '\n' && c != '\t'))
+	while ((c = (char)bytes[index++]) && !isspace(c))
 		ctmp[i++] = c;
 	*width = (size_t)atol(ctmp);
 
 	// Get height
 	i = 0;
 	memset(ctmp, 0x00, 8);
-	while ((c = (char)bytes[index++]) && (c != ' ' && c != '\r' && c != '\n' && c != '\t'))
+	while ((c = (char)bytes[index++]) && !isspace(c))
 		ctmp[i++] = c;
 	*height = (size_t)atol(ctmp);
 
 	// 1 byte = 8 px
-	rgb_pixel* rgb_buffer = (rgb_pixel*)malloc(((size - index + 1) * 8) * 3);
+	//rgb_pixel* rgb_buffer = (rgb_pixel*)malloc(((size - index + 1) * 8) * 3);
+	rgb_pixel* rgb_buffer = (rgb_pixel*)malloc((*width) * (*height) * 3);
 	i = 0;
 	while (index < size)
 	{
@@ -284,21 +285,21 @@ static void* _decode_pgm(const uint8_t* bytes, const size_t size, size_t* width,
 	size_t index = 3, i = 0;
 	char ctmp[8] = {0x00};
 	char c = 0x00;
-	while ((c = (char)bytes[index++]) && (c != ' ' && c != '\r' && c != '\n' && c != '\t'))
+	while ((c = (char)bytes[index++]) && !isspace(c))
 		ctmp[i++] = c;
 	*width = (size_t)atol(ctmp);
 
 	// Get height
 	i = 0;
 	memset(ctmp, 0x00, 8);
-	while ((c = (char)bytes[index++]) && (c != ' ' && c != '\r' && c != '\n' && c != '\t'))
+	while ((c = (char)bytes[index++]) && !isspace(c))
 		ctmp[i++] = c;
 	*height = (size_t)atol(ctmp);
 
 	// Get max gray value (max is 65535), but we only handle 8-bit so over 255 is a no-no
 	i = 0;
 	memset(ctmp, 0x00, 8);
-	while ((c = (char)bytes[index++]) && (c != ' ' && c != '\r' && c != '\n' && c != '\t'))
+	while ((c = (char)bytes[index++]) && !isspace(c))
 		ctmp[i++] = c;
 	const size_t max_val = (size_t)atol(ctmp);
 	if (max_val > 255)
@@ -338,21 +339,21 @@ static void* _decode_ppm(const uint8_t* bytes, const size_t size, size_t* width,
 	size_t index = 3, i = 0;
 	char ctmp[8] = {0x00};
 	char c = 0x00;
-	while ((c = (char)bytes[index++]) && (c != ' ' && c != '\r' && c != '\n' && c != '\t'))
+	while ((c = (char)bytes[index++]) && !isspace(c))
 		ctmp[i++] = c;
 	*width = (size_t)atol(ctmp);
 
 	// Get height
 	i = 0;
 	memset(ctmp, 0x00, 8);
-	while ((c = (char)bytes[index++]) && (c != ' ' && c != '\r' && c != '\n' && c != '\t'))
+	while ((c = (char)bytes[index++]) && !isspace(c))
 		ctmp[i++] = c;
 	*height = (size_t)atol(ctmp);
 
 	// Get max component value (max is 65535), but we only handle 8-bit so over 255 is a no-no
 	i = 0;
 	memset(ctmp, 0x00, 8);
-	while ((c = (char)bytes[index++]) && (c != ' ' && c != '\r' && c != '\n' && c != '\t'))
+	while ((c = (char)bytes[index++]) && !isspace(c))
 		ctmp[i++] = c;
 	const size_t max_val = (size_t)atol(ctmp);
 	if (max_val > 255)
