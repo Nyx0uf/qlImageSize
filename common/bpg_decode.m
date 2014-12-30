@@ -62,7 +62,7 @@ CF_RETURNS_RETAINED CGImageRef decode_bpg_at_path(CFStringRef filepath, image_in
 	// Create CGImage
 	CGDataProviderRef data_provider = CGDataProviderCreateWithData(NULL, rgb_buffer, img_size, NULL);
 	CGColorSpaceRef color_space = CGColorSpaceCreateDeviceRGB();
-	CGImageRef img_ref = CGImageCreate(w, h, 8, 32, stride, color_space, kCGBitmapByteOrderDefault | kCGImageAlphaNone, data_provider, NULL, true, kCGRenderingIntentDefault);
+	CGImageRef img_ref = CGImageCreate(w, h, 8, 32, stride, color_space, kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedLast, data_provider, NULL, true, kCGRenderingIntentDefault);
 	CGColorSpaceRelease(color_space);
 	CGDataProviderRelease(data_provider);
 	free(rgb_buffer);
