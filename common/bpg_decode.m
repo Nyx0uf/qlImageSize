@@ -12,14 +12,12 @@
 #import "libbpg.h"
 
 
-CF_RETURNS_RETAINED CGImageRef decode_bpg_at_path(CFStringRef filepath, size_t* width, size_t* height, size_t* file_size)
+CF_RETURNS_RETAINED CGImageRef decode_bpg_at_path(CFStringRef filepath, image_infos* infos)
 {
-	*width = 0, *height = 0, *file_size = 0;
-
 	// Read file
 	uint8_t* buffer = NULL;
-	*file_size = read_file(filepath, &buffer);
-	if (0 == (*file_size))
+	const size_t file_size = read_file(filepath, &buffer);
+	if (0 == file_size)
 	{
 		free(buffer);
 		return NULL;
@@ -27,7 +25,7 @@ CF_RETURNS_RETAINED CGImageRef decode_bpg_at_path(CFStringRef filepath, size_t* 
 
 	// Decode image
 	BPGDecoderContext* bpg_ctx = bpg_decoder_open();
-	int ret = bpg_decoder_decode(bpg_ctx, buffer, (int)(*file_size));
+	int ret = bpg_decoder_decode(bpg_ctx, buffer, (int)file_size);
 	free(buffer);
 	if (ret < 0)
 	{
@@ -40,8 +38,6 @@ CF_RETURNS_RETAINED CGImageRef decode_bpg_at_path(CFStringRef filepath, size_t* 
 	bpg_decoder_get_info(bpg_ctx, img_info);
 	const size_t w = (size_t)img_info->width;
 	const size_t h = (size_t)img_info->height;
-	*width = w;
-	*height = h;
 
 	// Always output in RGBA format
 	const size_t stride = 4 * w;
@@ -55,6 +51,13 @@ CF_RETURNS_RETAINED CGImageRef decode_bpg_at_path(CFStringRef filepath, size_t* 
 		idx += stride;
 	}
 	bpg_decoder_close(bpg_ctx);
+
+	if (infos != NULL)
+	{
+		infos->width = w;
+		infos->height = h;
+		infos->filesize = file_size;
+	}
 
 	// Create CGImage
 	CGDataProviderRef data_provider = CGDataProviderCreateWithData(NULL, rgb_buffer, img_size, NULL);

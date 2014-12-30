@@ -12,10 +12,8 @@
 #import "decode.h"
 
 
-CF_RETURNS_RETAINED CGImageRef decode_webp_at_path(CFStringRef filepath, size_t* width, size_t* height, size_t* file_size)
+CF_RETURNS_RETAINED CGImageRef decode_webp_at_path(CFStringRef filepath, image_infos* infos)
 {
-	*width = 0, *height = 0, *file_size = 0;
-
 	// Init WebP decoder
 	WebPDecoderConfig webp_cfg;
 	if (!WebPInitDecoderConfig(&webp_cfg))
@@ -23,30 +21,35 @@ CF_RETURNS_RETAINED CGImageRef decode_webp_at_path(CFStringRef filepath, size_t*
 
 	// Read file
 	uint8_t* buffer = NULL;
-	*file_size = read_file(filepath, &buffer);
-	if (0 == (*file_size))
+	const size_t file_size = read_file(filepath, &buffer);
+	if (0 == file_size)
 	{
 		free(buffer);
 		return NULL;
 	}
 
 	// Get image infos
-	if (WebPGetFeatures(buffer, *file_size, &webp_cfg.input) != VP8_STATUS_OK)
+	if (WebPGetFeatures(buffer, file_size, &webp_cfg.input) != VP8_STATUS_OK)
 	{
 		free(buffer);
 		return NULL;
 	}
-	*width = (size_t)webp_cfg.input.width;
-	*height = (size_t)webp_cfg.input.height;
 
 	// Decode image, always RGBA
 	webp_cfg.output.colorspace = MODE_rgbA;
-	if (WebPDecode(buffer, *file_size, &webp_cfg) != VP8_STATUS_OK)
+	if (WebPDecode(buffer, file_size, &webp_cfg) != VP8_STATUS_OK)
 	{
 		free(buffer);
 		return NULL;
 	}
 	free(buffer);
+
+	if (infos != NULL)
+	{
+		infos->width = (size_t)webp_cfg.input.width;
+		infos->height = (size_t)webp_cfg.input.height;
+		infos->filesize = (size_t)file_size;
+	}
 
 	// Create CGImage
 	CGColorSpaceRef color_space = CGColorSpaceCreateDeviceRGB();

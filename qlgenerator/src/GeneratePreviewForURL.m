@@ -34,25 +34,26 @@ OSStatus GeneratePreviewForURL(__unused void* thisInterface, QLPreviewRequestRef
 			// 1. decode the image
 			if (!QLPreviewRequestIsCancelled(preview))
 			{
-				size_t width = 0, height = 0, file_size = 0;
+				image_infos infos;
+				memset(&infos, 0, sizeof(image_infos));
 				CGImageRef img_ref = NULL;
 				CFStringRef filepath = CFURLCopyPath(url);
 				if ([extension isEqualToString:@"webp"])
-					img_ref = decode_webp_at_path(filepath, &width, &height, &file_size);
+					img_ref = decode_webp_at_path(filepath, &infos);
 				else if ([extension isEqualToString:@"bpg"])
-					img_ref = decode_bpg_at_path(filepath, &width, &height, &file_size);
+					img_ref = decode_bpg_at_path(filepath, &infos);
 				else
-					img_ref = decode_netpbm_at_path(filepath, &width, &height, &file_size);
+					img_ref = decode_netpbm_at_path(filepath, &infos);
 				if (filepath != NULL)
 					CFRelease(filepath);
 
 				// 2. render it
-				CFDictionaryRef properties = _create_properties(url, file_size, width, height, true);
+				CFDictionaryRef properties = _create_properties(url, infos.filesize, infos.width, infos.height, true);
 				if (img_ref != NULL)
 				{
 					// Have to draw the image ourselves
-					CGContextRef ctx = QLPreviewRequestCreateContext(preview, (CGSize){.width = width, .height = height}, YES, properties);
-					CGContextDrawImage(ctx, (CGRect){.origin = CGPointZero, .size.width = width, .size.height = height}, img_ref);
+					CGContextRef ctx = QLPreviewRequestCreateContext(preview, (CGSize){.width = infos.width, .height = infos.height}, YES, properties);
+					CGContextDrawImage(ctx, (CGRect){.origin = CGPointZero, .size.width = infos.width, .size.height = infos.height}, img_ref);
 					QLPreviewRequestFlushContext(preview, ctx);
 					CGContextRelease(ctx);
 					CGImageRelease(img_ref);

@@ -45,15 +45,14 @@ OSStatus GenerateThumbnailForURL(__unused void* thisInterface, QLThumbnailReques
 			if (!QLThumbnailRequestIsCancelled(thumbnail))
 			{
 				// 1. decode the image
-				size_t width = 0, height = 0, file_size = 0;
 				CGImageRef img_ref = NULL;
 				CFStringRef filepath = CFURLCopyPath(url);
 				if ([extension isEqualToString:@"webp"])
-					img_ref = decode_webp_at_path(filepath, &width, &height, &file_size);
+					img_ref = decode_webp_at_path(filepath, NULL);
 				else if ([extension isEqualToString:@"bpg"])
-					img_ref = decode_bpg_at_path(filepath, &width, &height, &file_size);
+					img_ref = decode_bpg_at_path(filepath, NULL);
 				else
-					img_ref = decode_netpbm_at_path(filepath, &width, &height, &file_size);
+					img_ref = decode_netpbm_at_path(filepath, NULL);
 				if (filepath != NULL)
 					CFRelease(filepath);
 

@@ -11,6 +11,6 @@
 #import "tools.h"
 
 
-CF_RETURNS_RETAINED CGImageRef decode_bpg_at_path(CFStringRef filepath, size_t* width, size_t* height, size_t* file_size);
+CF_RETURNS_RETAINED CGImageRef decode_bpg_at_path(CFStringRef filepath, image_infos* infos);
 
 bool get_bpg_informations_for_filepath(CFStringRef filepath, image_infos* infos);

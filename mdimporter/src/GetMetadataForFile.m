@@ -24,6 +24,7 @@ Boolean GetMetadataForFile(__unused void* thisInterface, CFMutableDictionaryRef 
 		if ([extension isEqualToString:@"webp"] || [extension isEqualToString:@"pgm"] || [extension isEqualToString:@"ppm"] || [extension isEqualToString:@"pbm"] || [extension isEqualToString:@"bpg"])
 		{
 			image_infos infos;
+			memset(&infos, 0, sizeof(image_infos));
 			bool ret = FALSE;
 
 			if ([extension isEqualToString:@"webp"])

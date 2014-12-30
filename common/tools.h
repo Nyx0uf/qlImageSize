@@ -26,6 +26,7 @@ typedef struct _nyx_image_infos_struct {
 	size_t height;
 	uint8_t has_alpha;
 	uint8_t bit_depth;
+	size_t filesize;
 	colorspace_t colorspace;
 } image_infos;
 

@@ -25,14 +25,12 @@ static void* _decode_pgm(const uint8_t* bytes, const size_t size, size_t* width,
 static void* _decode_ppm(const uint8_t* bytes, const size_t size, size_t* width, size_t* height);
 
 
-CF_RETURNS_RETAINED CGImageRef decode_netpbm_at_path(CFStringRef filepath, size_t* width, size_t* height, size_t* file_size)
+CF_RETURNS_RETAINED CGImageRef decode_netpbm_at_path(CFStringRef filepath,  image_infos* infos)
 {
-	*width = 0, *height = 0, *file_size = 0;
-
 	// Read file
 	uint8_t* buffer = NULL;
-	*file_size = read_file(filepath, &buffer);
-	if (0 == (*file_size))
+	const size_t file_size = read_file(filepath, &buffer);
+	if (0 == file_size)
 	{
 		free(buffer);
 		return NULL;
@@ -47,13 +45,14 @@ CF_RETURNS_RETAINED CGImageRef decode_netpbm_at_path(CFStringRef filepath, size_
 
 	// Only handle binary version for now
 	uint8_t* rgb_buffer = NULL;
+	size_t width = 0, height = 0;
 	const char idd = (char)buffer[1];
 	if (idd == '4'/* || idd == '1'*/) // pbm
-		rgb_buffer = _decode_pbm(buffer, *file_size, width, height);
+		rgb_buffer = _decode_pbm(buffer, file_size, &width, &height);
 	else if (idd == '5'/* || idd == '2'*/) // pgm
-		rgb_buffer = _decode_pgm(buffer, *file_size, width, height);
+		rgb_buffer = _decode_pgm(buffer, file_size, &width, &height);
 	else if (idd == '6'/* || idd == '3'*/) // ppm
-		rgb_buffer = _decode_ppm(buffer, *file_size, width, height);
+		rgb_buffer = _decode_ppm(buffer, file_size, &width, &height);
 	else
 	{
 		free(buffer);
@@ -61,10 +60,17 @@ CF_RETURNS_RETAINED CGImageRef decode_netpbm_at_path(CFStringRef filepath, size_
 	}
 	free(buffer);
 
+	if (infos != NULL)
+	{
+		infos->width = width;
+		infos->height = height;
+		infos->filesize = file_size;
+	}
+
 	// Create CGImage
-	CGDataProviderRef data_provider = CGDataProviderCreateWithData(NULL, rgb_buffer, (*width) * (*height) * 3, NULL);
+	CGDataProviderRef data_provider = CGDataProviderCreateWithData(NULL, rgb_buffer, width * height * 3, NULL);
 	CGColorSpaceRef color_space = CGColorSpaceCreateDeviceRGB();
-	CGImageRef img_ref = CGImageCreate(*width, *height, 8, 24, 3 * *width, color_space, kCGBitmapByteOrderDefault | kCGImageAlphaNone, data_provider, NULL, true, kCGRenderingIntentDefault);
+	CGImageRef img_ref = CGImageCreate(width, height, 8, 24, 3 * width, color_space, kCGBitmapByteOrderDefault | kCGImageAlphaNone, data_provider, NULL, true, kCGRenderingIntentDefault);
 	CGColorSpaceRelease(color_space);
 	CGDataProviderRelease(data_provider);
 	free(rgb_buffer);
