@@ -40,11 +40,12 @@ CF_RETURNS_RETAINED CGImageRef decode_bpg_at_path(CFStringRef filepath, image_in
 	const size_t h = (size_t)img_info->height;
 
 	// Always output in RGBA format
-	const size_t stride = 4 * w;
+	const size_t num_c = img_info->has_alpha ? 4 : 3;
+	const size_t stride = num_c * w;
 	const size_t img_size = stride * h;
 	uint8_t* rgb_buffer = (uint8_t*)malloc(img_size);
 	size_t idx = 0;
-	bpg_decoder_start(bpg_ctx, BPG_OUTPUT_FORMAT_RGBA32);
+	bpg_decoder_start(bpg_ctx, img_info->has_alpha ? BPG_OUTPUT_FORMAT_RGBA32 : BPG_OUTPUT_FORMAT_RGB24);
 	for (size_t y = 0; y < h; y++)
 	{
 		bpg_decoder_get_line(bpg_ctx, rgb_buffer + idx);
@@ -62,7 +63,7 @@ CF_RETURNS_RETAINED CGImageRef decode_bpg_at_path(CFStringRef filepath, image_in
 	// Create CGImage
 	CGDataProviderRef data_provider = CGDataProviderCreateWithData(NULL, rgb_buffer, img_size, NULL);
 	CGColorSpaceRef color_space = CGColorSpaceCreateDeviceRGB();
-	CGImageRef img_ref = CGImageCreate(w, h, 8, 32, stride, color_space, kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedLast, data_provider, NULL, true, kCGRenderingIntentDefault);
+	CGImageRef img_ref = CGImageCreate(w, h, 8, 8 * num_c, stride, color_space, kCGBitmapByteOrderDefault | ((img_info->has_alpha) ? kCGImageAlphaPremultipliedLast : kCGImageAlphaNone), data_provider, NULL, true, kCGRenderingIntentDefault);
 	CGColorSpaceRelease(color_space);
 	CGDataProviderRelease(data_provider);
 	free(rgb_buffer);
