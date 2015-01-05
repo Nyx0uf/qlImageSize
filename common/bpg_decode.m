@@ -39,7 +39,7 @@ CF_RETURNS_RETAINED CGImageRef decode_bpg_at_path(CFStringRef filepath, image_in
 	const size_t w = (size_t)img_info->width;
 	const size_t h = (size_t)img_info->height;
 
-	// Always output in RGBA format
+	// Choose output colorspace (RGB / RGBA)
 	const size_t num_c = img_info->has_alpha ? 4 : 3;
 	const size_t stride = num_c * w;
 	const size_t img_size = stride * h;
