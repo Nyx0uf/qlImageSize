@@ -46,15 +46,17 @@ typedef enum {
 } BPGColorSpaceEnum;
 
 typedef struct {
-    int width;
-    int height;
-    int format; /* see BPGImageFormatEnum */
-    int has_alpha; /* TRUE if an alpha plane is present */
-    int color_space; /* see BPGColorSpaceEnum */
-    int bit_depth;
-    int premultiplied_alpha; /* TRUE if the color is alpha premultiplied */
-    int has_w_plane; /* TRUE if a W plane is present (for CMYK encoding) */
-    int limited_range; /* TRUE if limited range for the color */
+    uint32_t width;
+    uint32_t height;
+    uint8_t format; /* see BPGImageFormatEnum */
+    uint8_t has_alpha; /* TRUE if an alpha plane is present */
+    uint8_t color_space; /* see BPGColorSpaceEnum */
+    uint8_t bit_depth;
+    uint8_t premultiplied_alpha; /* TRUE if the color is alpha premultiplied */
+    uint8_t has_w_plane; /* TRUE if a W plane is present (for CMYK encoding) */
+    uint8_t limited_range; /* TRUE if limited range for the color */
+    uint8_t has_animation; /* TRUE if the image contains animations */
+    uint16_t loop_count; /* animations: number of loop, 0 = infinity */
 } BPGImageInfo;
 
 typedef enum {
@@ -62,6 +64,7 @@ typedef enum {
     BPG_EXTENSION_TAG_ICCP = 2,
     BPG_EXTENSION_TAG_XMP = 3,
     BPG_EXTENSION_TAG_THUMBNAIL = 4,
+    BPG_EXTENSION_TAG_ANIM_CONTROL = 5,
 } BPGExtensionTagEnum;
 
 typedef struct BPGExtensionData {
@@ -76,6 +79,8 @@ typedef enum {
     BPG_OUTPUT_FORMAT_RGBA32, /* not premultiplied alpha */
     BPG_OUTPUT_FORMAT_RGB48,
     BPG_OUTPUT_FORMAT_RGBA64, /* not premultiplied alpha */
+    BPG_OUTPUT_FORMAT_CMYK32,
+    BPG_OUTPUT_FORMAT_CMYK64,
 } BPGDecoderOutputFormat;
 
 #define BPG_DECODER_INFO_BUF_SIZE 16
@@ -100,6 +105,10 @@ int bpg_decoder_get_info(BPGDecoderContext *s, BPGImageInfo *p);
 /* return 0 if 0K, < 0 if error */
 int bpg_decoder_start(BPGDecoderContext *s, BPGDecoderOutputFormat out_fmt);
 
+/* return the frame delay for animations as a fraction (*pnum) / (*pden)
+   in seconds. In case there is no animation, 0 / 1 is returned. */
+void bpg_decoder_get_frame_duration(BPGDecoderContext *s, int *pnum, int *pden);
+
 /* return 0 if 0K, < 0 if error */
 int bpg_decoder_get_line(BPGDecoderContext *s, void *buf);
 
@@ -114,6 +123,8 @@ uint8_t *bpg_decoder_get_data(BPGDecoderContext *s, int *pline_size, int plane);
    If pfirst_md != NULL, the extension data are also parsed and the
    first element of the list is returned in *pfirst_md. The list must
    be freed with bpg_decoder_free_extension_data().
+
+   BPGImageInfo.loop_count is only set if extension data are parsed.
 
    Return 0 if OK, < 0 if unrecognized data. */
 int bpg_decoder_get_info_from_buf(BPGImageInfo *p, 
