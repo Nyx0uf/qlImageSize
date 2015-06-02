@@ -160,6 +160,26 @@
 				</array>
 			</dict>
 		</dict>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.image</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>WebP</string>
+			<key>UTTypeIdentifier</key>
+			<string>io.whine.webp</string>
+			<key>UTTypeReferenceURL</key>
+			<string>https://developers.google.com/speed/webp/docs/riff_container</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>webp</string>
+					<string>WEBP</string>
+				</array>
+			</dict>
+		</dict>
 	</array>
 	<key>UTImportedTypeDeclarations</key>
 	<array>
@@ -240,6 +260,26 @@
 				<array>
 					<string>bpg</string>
 					<string>BPG</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.image</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>WebP</string>
+			<key>UTTypeIdentifier</key>
+			<string>io.whine.webp</string>
+			<key>UTTypeReferenceURL</key>
+			<string>https://developers.google.com/speed/webp/docs/riff_container</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>webp</string>
+					<string>WEBP</string>
 				</array>
 			</dict>
 		</dict>
