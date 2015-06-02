@@ -14,6 +14,11 @@
 				<string>public.image</string>
 				<string>public.webp</string>
 				<string>com.google.webp</string>
+				<string>io.whine.webp</string>
+				<string>io.whine.bpg</string>
+				<string>io.whine.ppm</string>
+				<string>io.whine.pbm</string>
+				<string>io.whine.pgm</string>
 			</array>
 		</dict>
 	</array>
@@ -30,7 +35,7 @@
 	<key>CFBundleSignature</key>
 	<string>NYXM</string>
 	<key>CFBundleVersion</key>
-	<string>1.2</string>
+	<string>1.2.1</string>
 	<key>CFPlugInDynamicRegisterFunction</key>
 	<string></string>
 	<key>CFPlugInDynamicRegistration</key>
