@@ -180,26 +180,6 @@
 				</array>
 			</dict>
 		</dict>
-		<dict>
-			<key>UTTypeConformsTo</key>
-			<array>
-				<string>public.font</string>
-			</array>
-			<key>UTTypeDescription</key>
-			<string>Web Open Font Format</string>
-			<key>UTTypeIdentifier</key>
-			<string>io.whine.woff</string>
-			<key>UTTypeReferenceURL</key>
-			<string>http://www.w3.org/TR/WOFF/</string>
-			<key>UTTypeTagSpecification</key>
-			<dict>
-				<key>public.filename-extension</key>
-				<array>
-					<string>woff</string>
-					<string>WOFF</string>
-				</array>
-			</dict>
-		</dict>
 	</array>
 	<key>UTImportedTypeDeclarations</key>
 	<array>
@@ -260,26 +240,6 @@
 				<array>
 					<string>ppm</string>
 					<string>PPM</string>
-				</array>
-			</dict>
-		</dict>
-		<dict>
-			<key>UTTypeConformsTo</key>
-			<array>
-				<string>public.font</string>
-			</array>
-			<key>UTTypeDescription</key>
-			<string>Web Open Font Format</string>
-			<key>UTTypeIdentifier</key>
-			<string>io.whine.woff</string>
-			<key>UTTypeReferenceURL</key>
-			<string>http://www.w3.org/TR/WOFF/</string>
-			<key>UTTypeTagSpecification</key>
-			<dict>
-				<key>public.filename-extension</key>
-				<array>
-					<string>woff</string>
-					<string>WOFF</string>
 				</array>
 			</dict>
 		</dict>
