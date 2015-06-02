@@ -189,8 +189,8 @@ static void* _decode_pgm(const uint8_t* bytes, const size_t size, size_t* width,
 		return NULL; // 16-bit, ignore.
 
 	// Convert to RGB
-	const size_t acutal_size = (size - index + 1);
-	rgb_pixel* rgb_buffer = (rgb_pixel*)malloc(sizeof(rgb_pixel) * acutal_size);
+	const size_t actual_size = (size - index + 1);
+	rgb_pixel* rgb_buffer = (rgb_pixel*)malloc(sizeof(rgb_pixel) * actual_size);
 	const float ratio = (float)max_val / 255.0f;
 	i = 0;
 	if ((int)ratio == 1)
@@ -243,32 +243,23 @@ static void* _decode_ppm(const uint8_t* bytes, const size_t size, size_t* width,
 		return NULL; // 16-bit, ignore.
 
 	void* buffer = NULL;
-	const size_t acutal_size = (size - index + 1);
+	const size_t actual_size = (size - index + 1);
 	const float ratio = (float)max_val / 255.0f;
 	if ((int)ratio == 1)
 	{
 		// Got the same ratio, just have to make a copy
-		buffer = (uint8_t*)malloc(sizeof(uint8_t) * acutal_size);
-		memcpy(buffer, &(bytes[index]), acutal_size);
+		buffer = (uint8_t*)malloc(sizeof(uint8_t) * actual_size);
+		memcpy(buffer, &(bytes[index]), actual_size);
 	}
 	else
 	{
 		// Moronic case, whoever does this deserve to die
-		float* data_as_float = (float*)malloc(sizeof(float) * acutal_size);
-		buffer = (uint8_t*)malloc(sizeof(uint8_t) * acutal_size);
-		vDSP_vfltu8(&(bytes[index]), 1, data_as_float, 1, acutal_size);
-		vDSP_vsdiv(data_as_float, 1, &ratio, data_as_float, 1, acutal_size);
-		vDSP_vfixu8(data_as_float, 1, buffer, 1, acutal_size);
+		float* data_as_float = (float*)malloc(sizeof(float) * actual_size);
+		buffer = (uint8_t*)malloc(sizeof(uint8_t) * actual_size);
+		vDSP_vfltu8(&(bytes[index]), 1, data_as_float, 1, actual_size);
+		vDSP_vsdiv(data_as_float, 1, &ratio, data_as_float, 1, actual_size);
+		vDSP_vfixu8(data_as_float, 1, buffer, 1, actual_size);
 		free(data_as_float);
-		/*buf = (rgb_pixel*)malloc(siz);
-		 i = 0;
-		 for (size_t j = index; j < size; j += 3)
-		 {
-			const uint8_t r = (uint8_t)((float)bytes[j] / ratio);
-			const uint8_t g = (uint8_t)((float)bytes[j + 1] / ratio);
-			const uint8_t b = (uint8_t)((float)bytes[j + 2] / ratio);
-			((rgb_pixel*)buf)[i++] = (rgb_pixel){.r = r, .g = g, .b = b};
-		 }*/
 	}
 
 	return buffer;
