@@ -49,8 +49,6 @@ If you are a **Pixelmator** user, its own QuickLook plugin might get in the way 
 
 ***qlImageSize*** is released under the *Simplified BSD license*, see **LICENSE**.
 
-Blog : [Cocoa in the Shell](http://cocoaintheshell.com "Cocoa in the Shell")
-
 Twitter : [@Nyx0uf](https://twitter.com/Nyx0uf "Nyx0uf on Twitter")
 
 ---
