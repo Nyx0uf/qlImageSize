@@ -46,7 +46,7 @@ OSStatus GenerateThumbnailForURL(__unused void* thisInterface, QLThumbnailReques
 			{
 				// 1. decode the image
 				CGImageRef img_ref = NULL;
-				CFStringRef filepath = CFURLCopyPath(url);
+				CFStringRef filepath = CFURLCopyFileSystemPath(url, kCFURLPOSIXPathStyle);
 				if ([extension isEqualToString:@"webp"])
 					img_ref = decode_webp_at_path(filepath, NULL);
 				else if ([extension isEqualToString:@"bpg"])

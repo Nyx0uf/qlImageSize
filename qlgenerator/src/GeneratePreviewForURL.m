@@ -37,7 +37,7 @@ OSStatus GeneratePreviewForURL(__unused void* thisInterface, QLPreviewRequestRef
 				image_infos infos;
 				memset(&infos, 0, sizeof(image_infos));
 				CGImageRef img_ref = NULL;
-				CFStringRef filepath = CFURLCopyPath(url);
+				CFStringRef filepath = CFURLCopyFileSystemPath(url, kCFURLPOSIXPathStyle);
 				if ([extension isEqualToString:@"webp"])
 					img_ref = decode_webp_at_path(filepath, &infos);
 				else if ([extension isEqualToString:@"bpg"])
