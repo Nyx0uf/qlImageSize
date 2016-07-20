@@ -41,7 +41,6 @@ void properties_for_file(CFURLRef url, size_t* width, size_t* height, size_t* fi
 	CFNumberRef h = CFDictionaryGetValue(img_properties, kCGImagePropertyPixelHeight);
 	CFNumberGetValue(h, kCFNumberSInt64Type, height);
 	CFRelease(img_properties);
-
 	CFRelease(img_src);
 
 	// Get the filesize, because it's not always present in the image properties dictionary :/

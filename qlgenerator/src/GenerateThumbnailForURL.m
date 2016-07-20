@@ -53,8 +53,7 @@ OSStatus GenerateThumbnailForURL(__unused void* thisInterface, QLThumbnailReques
 					img_ref = decode_bpg_at_path(filepath, NULL);
 				else
 					img_ref = decode_netpbm_at_path(filepath, NULL);
-				if (filepath != NULL)
-					CFRelease(filepath);
+				SAFE_CFRelease(filepath);
 
 				// 2. render it
 				if (img_ref != NULL)
@@ -71,8 +70,7 @@ OSStatus GenerateThumbnailForURL(__unused void* thisInterface, QLThumbnailReques
 		else
 			QLThumbnailRequestSetImageAtURL(thumbnail, url, properties);
 
-		if (properties != NULL)
-			CFRelease(properties);
+		SAFE_CFRelease(properties);
 	}
 	return kQLReturnNoError;
 }

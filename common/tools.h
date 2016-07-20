@@ -11,6 +11,9 @@
 #import <Foundation/Foundation.h>
 
 
+#define SAFE_CFRelease(ptr) do { if (ptr != NULL){ CFRelease(ptr); ptr = NULL;}} while(0)
+
+
 typedef enum _nyx_colorspace_t {
 	colorspace_unknown = 0,
 	colorspace_rgb = 1,

@@ -44,8 +44,7 @@ OSStatus GeneratePreviewForURL(__unused void* thisInterface, QLPreviewRequestRef
 					img_ref = decode_bpg_at_path(filepath, &infos);
 				else
 					img_ref = decode_netpbm_at_path(filepath, &infos);
-				if (filepath != NULL)
-					CFRelease(filepath);
+				SAFE_CFRelease(filepath);
 
 				// 2. render it
 				CFDictionaryRef properties = _create_properties(url, infos.filesize, infos.width, infos.height, true);
@@ -60,8 +59,7 @@ OSStatus GeneratePreviewForURL(__unused void* thisInterface, QLPreviewRequestRef
 				}
 				else
 					QLPreviewRequestSetURLRepresentation(preview, url, contentTypeUTI, properties);
-				if (properties != NULL)
-					CFRelease(properties);
+				SAFE_CFRelease(properties);
 			}
 		}
 		else
@@ -75,8 +73,7 @@ OSStatus GeneratePreviewForURL(__unused void* thisInterface, QLPreviewRequestRef
 			CFDictionaryRef properties = _create_properties(url, file_size, width, height, false);
 			QLPreviewRequestSetURLRepresentation(preview, url, contentTypeUTI, properties);
 
-			if (properties != NULL)
-				CFRelease(properties);
+			SAFE_CFRelease(properties);
 		}
 	}
 	return kQLReturnNoError;
@@ -108,9 +105,9 @@ CF_RETURNS_RETAINED static CFDictionaryRef _create_properties(CFURLRef url, cons
 		// WIDTHxHEIGHT • 25.01Kb • filename
 		CFTypeRef values[3] = {CFStringCreateWithFormat(kCFAllocatorDefault, NULL, CFSTR("%dx%d • %@ • %@"), (int)width, (int)height, fmt, filename), CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt64Type, &width), CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt64Type, &height)};
 		properties = CFDictionaryCreate(kCFAllocatorDefault, (const void**)keys, (const void**)values, 1, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
-		CFRelease(values[0]);
-		CFRelease(values[1]);
-		CFRelease(values[2]);
+		SAFE_CFRelease(values[0]);
+		SAFE_CFRelease(values[1]);
+		SAFE_CFRelease(values[2]);
 	}
 	else
 	{
@@ -118,10 +115,10 @@ CF_RETURNS_RETAINED static CFDictionaryRef _create_properties(CFURLRef url, cons
 		// WIDTHxHEIGHT • 25.01Kb • filename
 		CFTypeRef values[1] = {CFStringCreateWithFormat(kCFAllocatorDefault, NULL, CFSTR("%dx%d • %@ • %@"), (int)width, (int)height, fmt, filename)};
 		properties = CFDictionaryCreate(kCFAllocatorDefault, (const void**)keys, (const void**)values, 1, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
-		CFRelease(values[0]);
+		SAFE_CFRelease(values[0]);
 	}
 
-	CFRelease(filename);
+	SAFE_CFRelease(filename);
 
 	return properties;
 }
