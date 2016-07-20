@@ -18,28 +18,14 @@ OSStatus GenerateThumbnailForURL(void* thisInterface, QLThumbnailRequestRef thum
 void CancelThumbnailGeneration(void* thisInterface, QLThumbnailRequestRef thumbnail);
 
 
-OSStatus GenerateThumbnailForURL(__unused void* thisInterface, QLThumbnailRequestRef thumbnail, CFURLRef url, CFStringRef contentTypeUTI, __unused CFDictionaryRef options, __unused CGSize maxSize)
+OSStatus GenerateThumbnailForURL(__unused void* thisInterface, QLThumbnailRequestRef thumbnail, CFURLRef url, __unused CFStringRef contentTypeUTI, __unused CFDictionaryRef options, __unused CGSize maxSize)
 {
 	@autoreleasepool
 	{
-		// Get the UTI properties
-		NSDictionary* uti_declarations = (__bridge_transfer NSDictionary*)UTTypeCopyDeclaration(contentTypeUTI);
-
-		// Get the extensions corresponding to the image UTI, for some UTI there can be more than 1 extension (ex image.jpeg = jpeg, jpg...)
-		// If it fails for whatever reason fallback to the filename extension
-		id extensions = uti_declarations[(__bridge NSString*)kUTTypeTagSpecificationKey][(__bridge NSString*)kUTTagClassFilenameExtension];
-		NSString* extension = ([extensions isKindOfClass:[NSArray class]]) ? extensions[0] : extensions;
-		if (nil == extension)
-			extension = ([(__bridge NSURL*)url pathExtension] != nil) ? [(__bridge NSURL*)url pathExtension] : @"";
-		extension = [extension lowercaseString];
-
-		// Create the properties dic
-		CFTypeRef keys[1] = {kQLThumbnailPropertyExtensionKey};
-		CFTypeRef values[1] = {(__bridge CFStringRef)extension};
-		CFDictionaryRef properties = CFDictionaryCreate(kCFAllocatorDefault, (const void**)keys, (const void**)values, 1, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
-
 		// Check by extension because it's highly unprobable that an UTI for these formats is declared
 		// the simplest way to declare one is creating a dummy automator app and adding imported/exported UTI conforming to public.image
+		NSString* extension = [[(__bridge NSURL*)url pathExtension] lowercaseString];
+		CFDictionaryRef properties = NULL;
 		if ([extension isEqualToString:@"webp"] || [extension isEqualToString:@"pgm"] || [extension isEqualToString:@"ppm"] || [extension isEqualToString:@"pbm"] || [extension isEqualToString:@"bpg"])
 		{
 			if (!QLThumbnailRequestIsCancelled(thumbnail))
@@ -70,7 +56,7 @@ OSStatus GenerateThumbnailForURL(__unused void* thisInterface, QLThumbnailReques
 		else
 			QLThumbnailRequestSetImageAtURL(thumbnail, url, properties);
 
-		SAFE_CFRelease(properties);
+		//SAFE_CFRelease(properties);
 	}
 	return kQLReturnNoError;
 }
