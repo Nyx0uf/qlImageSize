@@ -1,6 +1,6 @@
 # qlImageSize
 
-This is a **QuickLook** plugin for OS X *10.8+* to display the dimensions of an image and its file size in the title bar.
+This is a **QuickLook** plugin for OS X *10.9+* to display the dimensions of an image and its file size in the title bar.
 
 ![https://static.whine.fr/images/2014/qlimagesize4.jpg](https://static.whine.fr/images/2014/qlimagesize4.jpg)
 
@@ -24,7 +24,7 @@ It's a **Spotlight** plugin to display informations of unsupported images (**Web
 
 ### Installation
 
-- Download the `.pkg` installer [here](https://repo.whine.fr/qlImageSize.pkg "qlImageSize for 10.8+").
+- Download the `.pkg` installer [here](https://repo.whine.fr/qlImageSize.pkg "qlImageSize for 10.9+").
 - Open it.
 - Follow the steps. (you will be asked for an admin password)
 
