@@ -1,13 +1,12 @@
 # qlImageSize
 
-This is a **QuickLook** plugin for OS X *10.9+* to display the dimensions of an image and its file size in the title bar.
+This is a **QuickLook** plugin for OS X *10.11+* to display the dimensions of an image and its file size in the title bar.
 
 ![https://static.whine.fr/images/2014/qlimagesize4.jpg](https://static.whine.fr/images/2014/qlimagesize4.jpg)
 
 This plugin can also preview and generate Finder thumbnails for unsupported images formats like :
 
 - [bpg](http://bellard.org/bpg/ "bpg")
-- [Portable Pixmap](http://en.wikipedia.org/wiki/Netpbm_format "Netpbm")
 - [WebP](https://developers.google.com/speed/webp/ "WebP")
 
 ![https://static.whine.fr/images/2014/qlimagesize3.jpg](https://static.whine.fr/images/2014/qlimagesize3.jpg)
@@ -50,13 +49,3 @@ If you are a **Pixelmator** user, its own QuickLook plugin might get in the way 
 ***qlImageSize*** is released under the *Simplified BSD license*, see **LICENSE**.
 
 Twitter : [@Nyx0uf](https://twitter.com/Nyx0uf "Nyx0uf on Twitter")
-
----
-
-### About Mavericks (OS X 10.9)
-
-***qlImageSize*** doesn't fully work on 10.9. By fully, I mean it works for certain types of images like *tga*, *bmp*, *psd*, *tif* but not for the common ones *jpg*, *png*, *gif*.
-
-It is a known bug in the OS and I can't do anything about it, Apple never fixed it and won't. The best way is to update to this ugly as fuck 10.10, how sad.
-
-For more informations, see [issue 4](https://github.com/Nyx0uf/qlImageSize/issues/4 "issue 4").

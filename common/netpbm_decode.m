@@ -4,13 +4,59 @@
 //
 //  Created by @Nyx0uf on 30/12/14.
 //  Copyright (c) 2014 Nyx0uf. All rights reserved.
-//  www.cocoaintheshell.com
 //
 
 
 #import "netpbm_decode.h"
-#import <Accelerate/Accelerate.h>
 
+
+#ifdef NYX_MD_SUPPORT_NETPBM_DECODE
+bool get_netpbm_informations_for_filepath(CFStringRef filepath, image_infos* infos)
+{
+	// Read file
+	uint8_t* buffer = NULL;
+	const size_t size = read_file(filepath, &buffer);
+	if (0 == size)
+	{
+		free(buffer);
+		return false;
+	}
+
+	// Check if Portable Pixmap
+	if ((char)buffer[0] != 'P' && ((char)buffer[1] != '1' || (char)buffer[1] != '2' || (char)buffer[1] != '3' || (char)buffer[1] != '4' || (char)buffer[1] != '5' || (char)buffer[1] != '6'))
+	{
+		free(buffer);
+		return false;
+	}
+
+	// Get width
+	size_t index = 3, i = 0;
+	char ctmp[8] = {0x00};
+	char c = 0x00;
+	while ((c = (char)buffer[index++]) && (!isspace(c)))
+		ctmp[i++] = c;
+	infos->width = (size_t)atol(ctmp);
+
+	// Get height
+	i = 0;
+	memset(ctmp, 0x00, 8);
+	while ((c = (char)buffer[index++]) && (!isspace(c)))
+		ctmp[i++] = c;
+	infos->height = (size_t)atol(ctmp);
+
+	infos->has_alpha = 0;
+	infos->bit_depth = 8;
+	infos->colorspace = colorspace_rgb;
+
+	free(buffer);
+
+	return true;
+}
+#endif /* NYX_MD_SUPPORT_NETPBM_DECODE */
+
+#ifdef NYX_QL_SUPPORT_NETPBM_DECODE
+
+#import <Accelerate/Accelerate.h>
 
 typedef struct _nyx_rgb_pixel_struct {
 	uint8_t r;
@@ -18,12 +64,10 @@ typedef struct _nyx_rgb_pixel_struct {
 	uint8_t b;
 } rgb_pixel;
 
-
 /* Private functions declarations */
 static void* _decode_pbm(const uint8_t* bytes, const size_t size, size_t* width, size_t* height);
 static void* _decode_pgm(const uint8_t* bytes, const size_t size, size_t* width, size_t* height);
 static void* _decode_ppm(const uint8_t* bytes, const size_t size, size_t* width, size_t* height);
-
 
 CF_RETURNS_RETAINED CGImageRef decode_netpbm_at_path(CFStringRef filepath,  image_infos* infos)
 {
@@ -75,48 +119,6 @@ CF_RETURNS_RETAINED CGImageRef decode_netpbm_at_path(CFStringRef filepath,  imag
 	CGDataProviderRelease(data_provider);
 	free(rgb_buffer);
 	return img_ref;
-}
-
-bool get_netpbm_informations_for_filepath(CFStringRef filepath, image_infos* infos)
-{
-	// Read file
-	uint8_t* buffer = NULL;
-	const size_t size = read_file(filepath, &buffer);
-	if (0 == size)
-	{
-		free(buffer);
-		return false;
-	}
-
-	// Check if Portable Pixmap
-	if ((char)buffer[0] != 'P' && ((char)buffer[1] != '1' || (char)buffer[1] != '2' || (char)buffer[1] != '3' || (char)buffer[1] != '4' || (char)buffer[1] != '5' || (char)buffer[1] != '6'))
-	{
-		free(buffer);
-		return false;
-	}
-
-	// Get width
-	size_t index = 3, i = 0;
-	char ctmp[8] = {0x00};
-	char c = 0x00;
-	while ((c = (char)buffer[index++]) && (!isspace(c)))
-		ctmp[i++] = c;
-	infos->width = (size_t)atol(ctmp);
-
-	// Get height
-	i = 0;
-	memset(ctmp, 0x00, 8);
-	while ((c = (char)buffer[index++]) && (!isspace(c)))
-		ctmp[i++] = c;
-	infos->height = (size_t)atol(ctmp);
-
-	infos->has_alpha = 0;
-	infos->bit_depth = 8;
-	infos->colorspace = colorspace_rgb;
-
-	free(buffer);
-
-	return true;
 }
 
 #pragma mark - Private
@@ -264,3 +266,5 @@ static void* _decode_ppm(const uint8_t* bytes, const size_t size, size_t* width,
 
 	return buffer;
 }
+
+#endif /* NYX_QL_SUPPORT_NETPBM_DECODE */

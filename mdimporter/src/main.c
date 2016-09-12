@@ -4,7 +4,6 @@
 //
 //  Created by @Nyx0uf on 20/12/14.
 //  Copyright (c) 2014 Nyx0uf. All rights reserved.
-//  www.cocoaintheshell.com
 //
 
 

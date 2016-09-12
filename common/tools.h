@@ -4,12 +4,17 @@
 //
 //  Created by @Nyx0uf on 02/02/12.
 //  Copyright (c) 2012 Nyx0uf. All rights reserved.
-//  www.cocoaintheshell.com
 //
 
 
 #import <Foundation/Foundation.h>
 
+#define NYX_QL_SUPPORT_BPG_DECODE
+#define NYX_MD_SUPPORT_BPG_DECODE
+#define NYX_QL_SUPPORT_WEBP_DECODE
+#define NYX_MD_SUPPORT_WEBP_DECODE
+//#define NYX_QL_SUPPORT_NETPBM_DECODE
+#define NYX_MD_SUPPORT_NETPBM_DECODE
 
 #define SAFE_CFRelease(ptr) do { if (ptr != NULL){ CFRelease(ptr); ptr = NULL;}} while(0)
 
