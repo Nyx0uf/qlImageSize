@@ -42,6 +42,7 @@
 		1EFA994214D9288600A09F03 /* QuickLook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EFA994114D9288600A09F03 /* QuickLook.framework */; };
 		1EFA994414D9288600A09F03 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EFA994314D9288600A09F03 /* ApplicationServices.framework */; };
 		1EFA994614D9288600A09F03 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EFA994514D9288600A09F03 /* CoreServices.framework */; };
+		4326367F1E5B3AC800677DA0 /* format_constants.h in Headers */ = {isa = PBXBuildFile; fileRef = 4326367E1E5B3AC800677DA0 /* format_constants.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -77,6 +78,7 @@
 		1EFA994114D9288600A09F03 /* QuickLook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickLook.framework; path = System/Library/Frameworks/QuickLook.framework; sourceTree = SDKROOT; };
 		1EFA994314D9288600A09F03 /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = System/Library/Frameworks/ApplicationServices.framework; sourceTree = SDKROOT; };
 		1EFA994514D9288600A09F03 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
+		4326367E1E5B3AC800677DA0 /* format_constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = format_constants.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -188,6 +190,7 @@
 		1EB0E7211A42D0D3005F0A92 /* libwebp */ = {
 			isa = PBXGroup;
 			children = (
+				4326367E1E5B3AC800677DA0 /* format_constants.h */,
 				1EB0E7221A42D0D3005F0A92 /* decode.h */,
 				1EB0E7231A42D0D3005F0A92 /* demux.h */,
 				1EB0E7241A42D0D3005F0A92 /* encode.h */,
@@ -250,6 +253,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1E93195D1A52E687001E8818 /* netpbm_decode.h in Headers */,
+				4326367F1E5B3AC800677DA0 /* format_constants.h in Headers */,
 				1E93195F1A52E687001E8818 /* tools.h in Headers */,
 				1E93195B1A52E687001E8818 /* bpg_decode.h in Headers */,
 				1EB0E72A1A42D0D3005F0A92 /* libbpg.h in Headers */,
