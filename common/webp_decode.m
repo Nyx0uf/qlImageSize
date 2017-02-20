@@ -37,6 +37,7 @@ CF_RETURNS_RETAINED CGImageRef decode_webp_at_path(CFStringRef filepath, image_i
 
 	// Decode image, always RGBA
 	webp_cfg.output.colorspace = MODE_rgbA;
+	webp_cfg.options.use_threads = 1;
 	if (WebPDecode(buffer, file_size, &webp_cfg) != VP8_STATUS_OK)
 	{
 		free(buffer);
@@ -52,12 +53,17 @@ CF_RETURNS_RETAINED CGImageRef decode_webp_at_path(CFStringRef filepath, image_i
 	}
 
 	// Create CGImage
+	CGDataProviderRef data_provider = CGDataProviderCreateWithData(NULL, webp_cfg.output.u.RGBA.rgba, webp_cfg.output.u.RGBA.size, NULL);
+	if (data_provider == NULL)
+		return NULL;
 	CGColorSpaceRef color_space = CGColorSpaceCreateDeviceRGB();
-	CGContextRef ctx = CGBitmapContextCreate(webp_cfg.output.u.RGBA.rgba, (size_t)webp_cfg.input.width, (size_t)webp_cfg.input.height, 8, 4 * (size_t)webp_cfg.input.width, color_space, kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedLast);
+	CGBitmapInfo bitmapInfo = kCGBitmapByteOrder32Big | kCGImageAlphaPremultipliedLast;
+	const size_t components = 4;
+	CGImageRef img_ref = CGImageCreate((size_t)webp_cfg.input.width, (size_t)webp_cfg.input.height, 8, components * 8, components * (size_t)webp_cfg.input.width, color_space, bitmapInfo, data_provider, NULL, NO, kCGRenderingIntentDefault);
+
 	CGColorSpaceRelease(color_space);
-	WebPFreeDecBuffer(&webp_cfg.output);
-	CGImageRef img_ref = CGBitmapContextCreateImage(ctx);
-	CGContextRelease(ctx);
+	CGDataProviderRelease(data_provider);
+
 	return img_ref;
 }
 #endif /* NYX_QL_SUPPORT_WEBP_DECODE */
