@@ -36,19 +36,39 @@ CF_RETURNS_RETAINED CGImageRef decode_webp_at_path(CFStringRef filepath, image_i
 	}
 
 	// Decode image, always RGBA
-	webp_cfg.output.colorspace = MODE_rgbA;
+	webp_cfg.output.colorspace = webp_cfg.input.has_alpha ? MODE_rgbA : MODE_RGB;
 	webp_cfg.options.use_threads = 1;
-	if (WebPDecode(buffer, file_size, &webp_cfg) != VP8_STATUS_OK)
+	WebPIDecoder* const idec = WebPIDecode(buffer, file_size, &webp_cfg);
+	if (idec == NULL)
 	{
 		free(buffer);
 		return NULL;
 	}
+	else
+	{
+		VP8StatusCode status = VP8_STATUS_OK;
+		size_t done_size = 0;
+		const size_t incr = 25165824; // 24MB, arbitrary chosen
+		while (done_size < file_size)
+		{
+			size_t next_size = done_size + incr;
+			if (next_size > file_size)
+				next_size = file_size;
+			status = WebPIUpdate(idec, buffer, next_size);
+			if (status != VP8_STATUS_OK && status != VP8_STATUS_SUSPENDED)
+				break;
+			done_size = next_size;
+		}
+		WebPIDelete(idec);
+	}
 	free(buffer);
 
+	const size_t width = (size_t)webp_cfg.input.width;
+	const size_t height = (size_t)webp_cfg.input.height;
 	if (infos != NULL)
 	{
-		infos->width = (size_t)webp_cfg.input.width;
-		infos->height = (size_t)webp_cfg.input.height;
+		infos->width = width;
+		infos->height = height;
 		infos->filesize = (size_t)file_size;
 	}
 
@@ -57,9 +77,9 @@ CF_RETURNS_RETAINED CGImageRef decode_webp_at_path(CFStringRef filepath, image_i
 	if (data_provider == NULL)
 		return NULL;
 	CGColorSpaceRef color_space = CGColorSpaceCreateDeviceRGB();
-	CGBitmapInfo bitmapInfo = kCGBitmapByteOrder32Big | kCGImageAlphaPremultipliedLast;
-	const size_t components = 4;
-	CGImageRef img_ref = CGImageCreate((size_t)webp_cfg.input.width, (size_t)webp_cfg.input.height, 8, components * 8, components * (size_t)webp_cfg.input.width, color_space, bitmapInfo, data_provider, NULL, NO, kCGRenderingIntentDefault);
+	CGBitmapInfo bitmapInfo = kCGBitmapByteOrder32Big | (webp_cfg.input.has_alpha ? kCGImageAlphaPremultipliedLast : kCGImageAlphaNoneSkipLast);
+	const size_t components = webp_cfg.input.has_alpha ? 4 : 3;
+	CGImageRef img_ref = CGImageCreate(width, height, 8, components * 8, components * width, color_space, bitmapInfo, data_provider, NULL, false, kCGRenderingIntentDefault);
 
 	CGColorSpaceRelease(color_space);
 	CGDataProviderRelease(data_provider);
