@@ -9,40 +9,68 @@
 
 #import "netpbm_decode.h"
 
-
 #ifdef NYX_MD_SUPPORT_NETPBM_DECODE
 bool get_netpbm_informations_for_filepath(CFStringRef filepath, image_infos* infos)
 {
 	// Read file
 	uint8_t* buffer = NULL;
 	const size_t size = read_file(filepath, &buffer);
-	if (0 == size)
+	if (size <= 2)
 	{
 		free(buffer);
 		return false;
 	}
 
 	// Check if Portable Pixmap
-	if ((char)buffer[0] != 'P' && ((char)buffer[1] != '1' || (char)buffer[1] != '2' || (char)buffer[1] != '3' || (char)buffer[1] != '4' || (char)buffer[1] != '5' || (char)buffer[1] != '6'))
+	// Luckily '0'-'9' are always sequential in C, so the code below should work
+	if ((char)buffer[0] != 'P' && ((char)buffer[1] < '1' || (char)buffer[1] > '6'))
 	{
 		free(buffer);
 		return false;
 	}
 
-	// Get width
+	// Get width and height
 	size_t index = 3, i = 0;
 	char ctmp[8] = {0x00};
-	char c = 0x00;
-	while ((c = (char)buffer[index++]) && (!isspace(c)))
-		ctmp[i++] = c;
-	infos->width = (size_t)atol(ctmp);
-
-	// Get height
-	i = 0;
-	memset(ctmp, 0x00, 8);
-	while ((c = (char)buffer[index++]) && (!isspace(c)))
-		ctmp[i++] = c;
-	infos->height = (size_t)atol(ctmp);
+	char c;
+	// The dimension we're finished reading; 0 if width, 1 if height, 2 if done
+	int status = 0;
+	while (status < 2 && index < size)
+	{
+		c = (char)buffer[index++];
+		
+		// Ignore whitespace
+		if (isblank(c)) continue;
+		
+		// Ignore comments, which are from a '#' to the end of the line
+		if (c == '#')
+		{
+			while (buffer[index++] != '\n');
+			continue;
+		}
+		
+		// Read width/height
+		if (isnumber(c))
+		{
+			index--; // Push back number
+			while (isnumber(c = (char)buffer[index++]))
+			{
+				ctmp[i++] = c;
+			}
+			switch (status)
+			{
+				case 0: // width
+					infos->width = (size_t)atol(ctmp);
+				case 1: // height
+					infos->height = (size_t)atol(ctmp);
+			}
+			
+			// Clean up
+			status++;
+			i = 0;
+			memset(ctmp, 0x00, 8);
+		}
+	}
 
 	infos->has_alpha = 0;
 	infos->bit_depth = 8;
