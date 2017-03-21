@@ -14,10 +14,10 @@
 				<string>public.image</string>
 				<string>public.webp</string>
 				<string>com.google.webp</string>
-				<string>io.whine.bpg</string>
-				<string>io.whine.ppm</string>
-				<string>io.whine.pbm</string>
-				<string>io.whine.pgm</string>
+				<string>fr.whine.bpg</string>
+				<string>fr.whine.ppm</string>
+				<string>fr.whine.pbm</string>
+				<string>fr.whine.pgm</string>
 			</array>
 		</dict>
 	</array>

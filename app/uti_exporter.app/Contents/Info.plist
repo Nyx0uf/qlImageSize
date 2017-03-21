@@ -88,7 +88,7 @@
 			<key>UTTypeDescription</key>
 			<string>Netpbm bi-level image format</string>
 			<key>UTTypeIdentifier</key>
-			<string>io.whine.pbm</string>
+			<string>fr.whine.pbm</string>
 			<key>UTTypeReferenceURL</key>
 			<string>http://netpbm.sourceforge.net/doc/pbm.html</string>
 			<key>UTTypeTagSpecification</key>
@@ -108,7 +108,7 @@
 			<key>UTTypeDescription</key>
 			<string>Netpbm grayscale image format</string>
 			<key>UTTypeIdentifier</key>
-			<string>io.whine.pgm</string>
+			<string>fr.whine.pgm</string>
 			<key>UTTypeReferenceURL</key>
 			<string>http://netpbm.sourceforge.net/doc/pgm.html</string>
 			<key>UTTypeTagSpecification</key>
@@ -128,7 +128,7 @@
 			<key>UTTypeDescription</key>
 			<string>Netpbm color image format</string>
 			<key>UTTypeIdentifier</key>
-			<string>io.whine.ppm</string>
+			<string>fr.whine.ppm</string>
 			<key>UTTypeReferenceURL</key>
 			<string>http://netpbm.sourceforge.net/doc/ppm.html</string>
 			<key>UTTypeTagSpecification</key>
@@ -148,7 +148,7 @@
 			<key>UTTypeDescription</key>
 			<string>BPG</string>
 			<key>UTTypeIdentifier</key>
-			<string>io.whine.bpg</string>
+			<string>fr.whine.bpg</string>
 			<key>UTTypeReferenceURL</key>
 			<string>http://bellard.org/bpg/</string>
 			<key>UTTypeTagSpecification</key>
@@ -168,7 +168,7 @@
 			<key>UTTypeDescription</key>
 			<string>WebP</string>
 			<key>UTTypeIdentifier</key>
-			<string>io.whine.webp</string>
+			<string>fr.whine.webp</string>
 			<key>UTTypeReferenceURL</key>
 			<string>https://developers.google.com/speed/webp/docs/riff_container</string>
 			<key>UTTypeTagSpecification</key>
@@ -191,7 +191,7 @@
 			<key>UTTypeDescription</key>
 			<string>Netpbm bi-level image format</string>
 			<key>UTTypeIdentifier</key>
-			<string>io.whine.pbm</string>
+			<string>fr.whine.pbm</string>
 			<key>UTTypeReferenceURL</key>
 			<string>http://netpbm.sourceforge.net/doc/pbm.html</string>
 			<key>UTTypeTagSpecification</key>
@@ -211,7 +211,7 @@
 			<key>UTTypeDescription</key>
 			<string>Netpbm grayscale image format</string>
 			<key>UTTypeIdentifier</key>
-			<string>io.whine.pgm</string>
+			<string>fr.whine.pgm</string>
 			<key>UTTypeReferenceURL</key>
 			<string>http://netpbm.sourceforge.net/doc/pgm.html</string>
 			<key>UTTypeTagSpecification</key>
@@ -231,7 +231,7 @@
 			<key>UTTypeDescription</key>
 			<string>Netpbm color image format</string>
 			<key>UTTypeIdentifier</key>
-			<string>io.whine.ppm</string>
+			<string>fr.whine.ppm</string>
 			<key>UTTypeReferenceURL</key>
 			<string>http://netpbm.sourceforge.net/doc/ppm.html</string>
 			<key>UTTypeTagSpecification</key>
@@ -251,7 +251,7 @@
 			<key>UTTypeDescription</key>
 			<string>BPG</string>
 			<key>UTTypeIdentifier</key>
-			<string>io.whine.bpg</string>
+			<string>fr.whine.bpg</string>
 			<key>UTTypeReferenceURL</key>
 			<string>http://bellard.org/bpg/</string>
 			<key>UTTypeTagSpecification</key>
@@ -271,7 +271,7 @@
 			<key>UTTypeDescription</key>
 			<string>WebP</string>
 			<key>UTTypeIdentifier</key>
-			<string>io.whine.webp</string>
+			<string>fr.whine.webp</string>
 			<key>UTTypeReferenceURL</key>
 			<string>https://developers.google.com/speed/webp/docs/riff_container</string>
 			<key>UTTypeTagSpecification</key>
