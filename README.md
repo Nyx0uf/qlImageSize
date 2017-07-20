@@ -43,6 +43,9 @@ It's a **Spotlight** plugin to display informations of unsupported images (**Web
 
 If you are a **Pixelmator** user, its own QuickLook plugin might get in the way when previewing **WebP** files. To fix this you need to edit the file `/Applications/Pixelmator.app/Contents/Library/QuickLook/PixelmatorLook.qlgenerator/Contents/Info.plist` and remove the dict entry that handles **webp**.
 
+After editing the `Info.plist`, the QuickLook for Pixelmator file format (such as `.pxm`) might not work due to Code Signing, you can unsign the Pixelmator's QuickLook binary using this tool, [unsign](https://github.com/steakknife/unsign). After downloading and `make` the tool, unsign the binary inside `MacOS/` , it will create another binary with the extension `unsigned`, rename the orignal binary for backup then remove the extension for the unsigned binary.
+
+`./unsign /Applications/Pixelmator.app/Contents/Library/QuickLook/PixelmatorLook.qlgenerator/Contents/MacOS/PixelmatorLook`
 
 ### License
 
