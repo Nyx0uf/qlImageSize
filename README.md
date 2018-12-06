@@ -50,5 +50,3 @@ After editing the `Info.plist`, the QuickLook for Pixelmator file format (such a
 ### License
 
 ***qlImageSize*** is released under the *Simplified BSD license*, see **LICENSE**.
-
-Twitter : [@Nyx0uf](https://twitter.com/Nyx0uf "Nyx0uf on Twitter")
