@@ -23,9 +23,7 @@ It's a **Spotlight** plugin to display informations of unsupported images (**Web
 
 ### Installation
 
-- Download the `.pkg` installer [here](https://repo.whine.fr/qlImageSize.pkg "qlImageSize for 10.9+").
-- Open it.
-- Follow the steps. (you will be asked for an admin password)
+- Build from sources.
 
 
 ### Uninstall
