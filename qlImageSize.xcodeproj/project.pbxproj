@@ -433,7 +433,7 @@
 					"$(PROJECT_DIR)/deps/libbpg",
 				);
 				LIBRARY_STYLE = BUNDLE;
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = fr.whine.mdimagesize;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -500,7 +500,7 @@
 					"$(PROJECT_DIR)/deps/libbpg",
 				);
 				LIBRARY_STYLE = BUNDLE;
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = fr.whine.mdimagesize;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -638,7 +638,7 @@
 					"$(PROJECT_DIR)/deps/libbpg",
 					"$(PROJECT_DIR)/deps/libwebp",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = fr.whine.qlimagesize;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -700,7 +700,7 @@
 					"$(PROJECT_DIR)/deps/libbpg",
 					"$(PROJECT_DIR)/deps/libwebp",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = fr.whine.qlimagesize;
 				PRODUCT_NAME = "$(TARGET_NAME)";

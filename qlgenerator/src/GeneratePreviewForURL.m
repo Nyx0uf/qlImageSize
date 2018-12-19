@@ -26,7 +26,7 @@
 OSStatus GeneratePreviewForURL(void* thisInterface, QLPreviewRequestRef preview, CFURLRef url, CFStringRef contentTypeUTI, CFDictionaryRef options);
 void CancelPreviewGeneration(void* thisInterface, QLPreviewRequestRef preview);
 void HandleFileForPreview(CFURLRef url, CGImageRef (*decode_fn_ptr)(CFStringRef, image_infos*), QLPreviewRequestRef preview, CFStringRef contentTypeUTI);
-CF_RETURNS_RETAINED static CFDictionaryRef _create_properties(CFURLRef url, const size_t size, const size_t width, const size_t height, const bool b);
+CF_RETURNS_RETAINED static CFDictionaryRef _create_properties(CFURLRef url, const size_t size, const size_t width, const size_t height, const size_t dpi, const bool b);
 
 
 OSStatus GeneratePreviewForURL(__unused void* thisInterface, QLPreviewRequestRef preview, CFURLRef url, CFStringRef contentTypeUTI, __unused CFDictionaryRef options)
@@ -59,11 +59,11 @@ OSStatus GeneratePreviewForURL(__unused void* thisInterface, QLPreviewRequestRef
 		}
 #endif
 		// Standard images (supported by the OS by default)
-		size_t width = 0, height = 0, file_size = 0;
-		properties_for_file(url, &width, &height, &file_size);
+		size_t width = 0, height = 0, dpi = 0, file_size = 0;
+		properties_for_file(url, &width, &height, &dpi, &file_size);
 
 		// Request preview with updated titlebar
-		CFDictionaryRef properties = _create_properties(url, file_size, width, height, false);
+		CFDictionaryRef properties = _create_properties(url, file_size, width, height, dpi, false);
 		QLPreviewRequestSetURLRepresentation(preview, url, contentTypeUTI, properties);
 
 		SAFE_CFRelease(properties);
@@ -83,7 +83,7 @@ void HandleFileForPreview(CFURLRef url, CGImageRef (*decode_fn_ptr)(CFStringRef,
 		SAFE_CFRelease(filepath);
 
 		// 2. render it
-		CFDictionaryRef properties = _create_properties(url, infos.filesize, infos.width, infos.height, true);
+		CFDictionaryRef properties = _create_properties(url, infos.filesize, infos.width, infos.height, infos.dpi, true);
 		if (img_ref != NULL)
 		{
 			// Have to draw the image ourselves
@@ -103,7 +103,7 @@ void CancelPreviewGeneration(__unused void* thisInterface, __unused QLPreviewReq
 {
 }
 
-CF_RETURNS_RETAINED static CFDictionaryRef _create_properties(CFURLRef url, const size_t size, const size_t width, const size_t height, const bool b)
+CF_RETURNS_RETAINED static CFDictionaryRef _create_properties(CFURLRef url, const size_t size, const size_t width, const size_t height, const size_t dpi, const bool b)
 {
 	// Format file size
 	NSString* fmt = nil;
@@ -123,7 +123,8 @@ CF_RETURNS_RETAINED static CFDictionaryRef _create_properties(CFURLRef url, cons
 	{
 		CFTypeRef keys[3] = {kQLPreviewPropertyDisplayNameKey, kQLPreviewPropertyWidthKey, kQLPreviewPropertyHeightKey};
 		// WIDTHxHEIGHT • 25.01Kb • filename
-		CFTypeRef values[3] = {CFStringCreateWithFormat(kCFAllocatorDefault, NULL, CFSTR("%dx%d • %@ • %@"), (int)width, (int)height, fmt, filename), CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt64Type, &width), CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt64Type, &height)};
+		CFStringRef title = dpi > 0 ? CFStringCreateWithFormat(kCFAllocatorDefault, NULL, CFSTR("%dx%d (%ddpi) • %@ • %@"), (int)width, (int)height, (int)dpi, fmt, filename) : CFStringCreateWithFormat(kCFAllocatorDefault, NULL, CFSTR("%dx%d • %@ • %@"), (int)width, (int)height, fmt, filename);
+		CFTypeRef values[3] = {title, CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt64Type, &width), CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt64Type, &height)};
 		properties = CFDictionaryCreate(kCFAllocatorDefault, (const void**)keys, (const void**)values, 1, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
 		SAFE_CFRelease(values[0]);
 		SAFE_CFRelease(values[1]);
@@ -133,7 +134,8 @@ CF_RETURNS_RETAINED static CFDictionaryRef _create_properties(CFURLRef url, cons
 	{
 		CFTypeRef keys[1] = {kQLPreviewPropertyDisplayNameKey};
 		// WIDTHxHEIGHT • 25.01Kb • filename
-		CFTypeRef values[1] = {CFStringCreateWithFormat(kCFAllocatorDefault, NULL, CFSTR("%dx%d • %@ • %@"), (int)width, (int)height, fmt, filename)};
+		CFStringRef title = dpi > 0 ? CFStringCreateWithFormat(kCFAllocatorDefault, NULL, CFSTR("%dx%d (%ddpi) • %@ • %@"), (int)width, (int)height, (int)dpi, fmt, filename) : CFStringCreateWithFormat(kCFAllocatorDefault, NULL, CFSTR("%dx%d • %@ • %@"), (int)width, (int)height, fmt, filename);
+		CFTypeRef values[1] = {title};
 		properties = CFDictionaryCreate(kCFAllocatorDefault, (const void**)keys, (const void**)values, 1, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
 		SAFE_CFRelease(values[0]);
 	}

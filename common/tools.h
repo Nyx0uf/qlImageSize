@@ -36,10 +36,11 @@ typedef struct _nyx_image_infos_struct {
 	uint8_t bit_depth;
 	size_t filesize;
 	colorspace_t colorspace;
+	size_t dpi;
 } image_infos;
 
 
-void properties_for_file(CFURLRef url, size_t* width, size_t* height, size_t* file_size);
+void properties_for_file(CFURLRef url, size_t* width, size_t* height, size_t* dpi, size_t* file_size);
 
 size_t read_file(CFStringRef filepath, uint8_t** buffer);
 

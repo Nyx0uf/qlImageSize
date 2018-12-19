@@ -17,10 +17,10 @@ static size_t _get_file_size(CFURLRef url);
 
 
 #pragma mark - Public
-void properties_for_file(CFURLRef url, size_t* width, size_t* height, size_t* file_size)
+void properties_for_file(CFURLRef url, size_t* width, size_t* height, size_t* dpi, size_t* file_size)
 {
 	// Create the image source
-	*width = 0, *height = 0, *file_size = 0;
+	*width = 0, *height = 0, *dpi = 0, *file_size = 0;
 	CGImageSourceRef img_src = CGImageSourceCreateWithURL(url, NULL);
 	if (NULL == img_src)
 		return;
@@ -39,6 +39,10 @@ void properties_for_file(CFURLRef url, size_t* width, size_t* height, size_t* fi
 	// Get image height
 	CFNumberRef h = CFDictionaryGetValue(img_properties, kCGImagePropertyPixelHeight);
 	CFNumberGetValue(h, kCFNumberSInt64Type, height);
+	// Get DPI
+	CFNumberRef d = CFDictionaryGetValue(img_properties, kCGImagePropertyDPIWidth);
+	if (d != NULL)
+		CFNumberGetValue(d, kCFNumberSInt64Type, dpi);
 	CFRelease(img_properties);
 	CFRelease(img_src);
 
