@@ -440,6 +440,7 @@
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;
 				SKIP_INSTALL = YES;
+				VALID_ARCHS = x86_64;
 				WRAPPER_EXTENSION = mdimporter;
 			};
 			name = Debug;
@@ -507,6 +508,7 @@
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;
 				SKIP_INSTALL = YES;
+				VALID_ARCHS = x86_64;
 				WRAPPER_EXTENSION = mdimporter;
 			};
 			name = Release;
@@ -644,6 +646,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;
+				VALID_ARCHS = x86_64;
 				WRAPPER_EXTENSION = qlgenerator;
 			};
 			name = Debug;
@@ -706,6 +709,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;
+				VALID_ARCHS = x86_64;
 				WRAPPER_EXTENSION = qlgenerator;
 			};
 			name = Release;
