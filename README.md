@@ -23,7 +23,10 @@ It's a **Spotlight** plugin to display informations of unsupported images (**Web
 
 ### Installation
 
-- Build from sources.
+2 choices : 
+
+- Build from sources using Xcode. (just have to hit the build button)
+- L1cardo forked the project and offers a built version : https://github.com/L1cardo/qlImageSize
 
 
 ### Uninstall
