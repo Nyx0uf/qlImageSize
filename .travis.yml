@@ -3,6 +3,8 @@ script:
   - xcodebuild -project qlImageSize.xcodeproj
   - cd build/Release
   - zip -r qlImageSize.qlgenerator.zip qlImageSize.qlgenerator
+  - pwd
+  - ls -l
 deploy:
   provider: releases
   api_key:
