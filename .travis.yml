@@ -2,7 +2,6 @@ language: objective-c
 script:
   - xcodebuild -project qlImageSize.xcodeproj
   - zip -r qlImageSize.qlgenerator.zip build/Release/qlImageSize.qlgenerator
-  - ls -l
 deploy:
   provider: release
   api_key:
