@@ -1,3 +1,6 @@
+[![License: BSD](https://img.shields.io/badge/license-BSD-blue.svg?style=flat)]
+[![Build Status](https://travis-ci.com/Nyx0uf/qlImageSize.svg?branch=master)](https://travis-ci.com/Nyx0uf/qlImageSize)
+
 # qlImageSize
 
 This is a **QuickLook** plugin for OS X *10.11+* to display the dimensions of an image and its file size in the title bar.
