@@ -3,7 +3,7 @@ script:
   - xcodebuild -project qlImageSize.xcodeproj
   - zip -r qlImageSize.qlgenerator.zip build/Release/qlImageSize.qlgenerator
 deploy:
-  provider: release
+  provider: releases
   api_key:
     secure: "ColXPiymcBv39/MwEel57FHWvcD++ys3divGDKiZ5whtS1FZidgWpQJKqtcw8pl2Yhum6LAHs1GYVpmDsNML8hzoyNip7lmBWezqpCXR/Def29zqFTknUb6SpO4oxjlNzVnke5/BBJGaR0gqfswiavr6v1Gmq0h5SnHHLZ75+gcC5APrtBDMAH534wet3k3YyXxFNHOpU6+KerEkd3wt+0CX43qSnOxRjdJ0HTh1Oeb+8FsJup+zd3zX32PpfhQ4O0nkenksswVRuTkyveh2l/45oLqt8dWrYAPrzMkX1cqLoJS4mDSvQJEox7Ih5vvr6EUZvwFmaf+jxsFmWTGr6hZm9ue+NoSEVS4/Z2IEgzbHx8aa4cG/uV2sk7ON1q41ZNYdko2mALjyLCiCBkhjDop9zGahIP5yLraLWe5T/RhR6IiXFVfo0TpBq9RrsuXKBxinsLkaR9+ESNK8dUUjcf9uDSyUrAp+7TAfmImfcKh9QcxiULvkM7b9YoKb1ewuqXtpY18DzhotVIPEsqU9W4iYxnkYJaq3eEBDl2FLy8BT65kaC+3NKySVkYGCm5WD5Aa3BqVUSGqy3sYEo2Ey6+AneEyrVpcxy+txbk7o8aik9DEmeFpBjU3z248jIbkb6UbNL4/Y6c8J6UrfdruiW5V2h7KvUQLVd/vViQlmFAI="
   file: qlImageSize.qlgenerator.zip
