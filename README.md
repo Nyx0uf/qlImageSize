@@ -1,5 +1,4 @@
-[![License: BSD](https://img.shields.io/badge/license-BSD-blue.svg?style=flat)]
-[![Build Status](https://travis-ci.com/Nyx0uf/qlImageSize.svg?branch=master)](https://travis-ci.com/Nyx0uf/qlImageSize)
+![License: BSD](https://img.shields.io/badge/license-BSD-blue.svg?style=flat) [![Build Status](https://travis-ci.com/Nyx0uf/qlImageSize.svg?branch=master)](https://travis-ci.com/Nyx0uf/qlImageSize)
 
 # qlImageSize
 
