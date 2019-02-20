@@ -28,20 +28,19 @@ It's a **Spotlight** plugin to display informations of unsupported images (**Web
 3 choices : 
 
 - Via [Homebrew Cask](https://brew.sh/): `brew cask install qlimagesize`
-- Download manually the latest build from https://github.com/Nyx0uf/qlImageSize/releases/tag/1.6.1 and save it to the `~/Library/QuickLook` folder
+- Download manually the latest build from https://github.com/Nyx0uf/qlImageSize/releases/latest and save it to the `~/Library/QuickLook` folder
 - Build from sources using Xcode. (just have to hit the build button)
 
 ### Uninstall
 
-- Via [Homebrew Cask](https://brew.sh/): `brew cask install qlimagesize`
+- Via [Homebrew Cask](https://brew.sh/): `brew cask uninstall qlimagesize`
 - Manually:
   - Launch Terminal.app (in `/Applications/Utilities`)
   - Copy and paste the following line into the Terminal :
 
-    `sudo rm -rf "/Library/Application Support/qlimagesize" "~/Library/QuickLook/qlImageSize.qlgenerator" "~/Library/Spotlight/mdImageSize.mdimporter"`
+    `rm -rf "~/Library/QuickLook/qlImageSize.qlgenerator" "~/Library/Spotlight/mdImageSize.mdimporter"`
 
   - Press Enter.
-  - Type your password and press Enter.
 
 ### Limitations
 
