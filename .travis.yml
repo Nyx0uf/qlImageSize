@@ -1,13 +1,17 @@
 language: objective-c
 script:
-  - xcodebuild -project qlImageSize.xcodeproj
+  - xcodebuild -project qlImageSize.xcodeproj -target qlImageSize -target mdImageSize
   - mv build/Release/qlImageSize.qlgenerator .
+  - mv build/Release/mdImageSize.mdimporter .
   - zip -r qlImageSize.qlgenerator.zip qlImageSize.qlgenerator
+  - zip -r mdImageSize.mdimporter.zip mdImageSize.mdimporter
 deploy:
   provider: releases
   api_key:
     secure: "M2Y26YDsPqMt5MERoMHIVojR/lwp6dnvnKbqg37nT+74InQ/SNpxDbYg0weOdPm/ostV4a7YYGoTwlE5VrA3VOIPwVWUC5jcGB3H7VwENO1brBXUEM2DI6X/2Kr0bRzcL6Qnoqw8i8hD892bbsVyqE1teEpaTOuGUXXRE3lnB4EdfLVb4Jbl1k96rQGpUPpXr2d2OpusFeK0no2ysjdW50dR39yrwEqca9uKhRk3FwacbYahnujGnzWW/sMvnoh75n32ZWFdgiGTRoetJ2zHdh158wAWrWgLkBlr0WnqQDkQBoVeZ1K+iZtoXkpcuqdGa8mGABl1pEQTsVMlyriG6bZ67BLvJIzMZhwD2jgKoWpQSRiu42UnmKR9zBG5zUfpmOvVw79QKl5DBRt6hwQI+mKvDwHv68Q9pC3/eMKKCbmxU0tsXOyR3mDQzB1Nr2b4KJVyj/vRe1YhTORzTXIxL/cJz3mUdG3WYHFdBmFNLIutsnl4Xm/qDS0nxL0H6HcYGNddHkcMGfkIJYo5gZozyo6GeF9hu0EEUZ4DvG6gGl0KeW1DGA9ASDyrcHvmkiuiM8xtmMND9NCbH1kLWvgrqJpTUG48w1UWC+M4YL/MLK1NNdogSNiPs+07aHF8m9mPLYwGf4Aag9971D1oWaiiYvoQGLZDnUepD3791i/ow0E="
-  file: qlImageSize.qlgenerator.zip
+  file:
+    - qlImageSize.qlgenerator.zip
+    - mdImageSize.mdimporter.zip
   skip_cleanup: true
   on:
     tags: true
