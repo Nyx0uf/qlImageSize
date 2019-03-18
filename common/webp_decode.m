@@ -77,7 +77,7 @@ CF_RETURNS_RETAINED CGImageRef decode_webp_at_path(CFStringRef filepath, image_i
 	if (data_provider == NULL)
 		return NULL;
 	CGColorSpaceRef color_space = CGColorSpaceCreateDeviceRGB();
-	CGBitmapInfo bitmapInfo = kCGBitmapByteOrder32Big | (webp_cfg.input.has_alpha ? kCGImageAlphaPremultipliedLast : kCGImageAlphaNoneSkipLast);
+	CGBitmapInfo bitmapInfo = kCGBitmapByteOrder32Big | (webp_cfg.input.has_alpha ? kCGImageAlphaPremultipliedLast : kCGImageAlphaNone);
 	const size_t components = webp_cfg.input.has_alpha ? 4 : 3;
 	CGImageRef img_ref = CGImageCreate(width, height, 8, components * 8, components * width, color_space, bitmapInfo, data_provider, NULL, false, kCGRenderingIntentDefault);
 
