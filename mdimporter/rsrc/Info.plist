@@ -34,7 +34,7 @@
 	<key>CFBundleSignature</key>
 	<string>NYXM</string>
 	<key>CFBundleVersion</key>
-	<string>2.6</string>
+	<string>2.6.1</string>
 	<key>CFPlugInDynamicRegisterFunction</key>
 	<string></string>
 	<key>CFPlugInDynamicRegistration</key>
