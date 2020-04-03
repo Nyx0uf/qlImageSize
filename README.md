@@ -27,8 +27,11 @@ This is the **Spotlight** plugin, it displays informations of unsupported images
 
 3 choices :
 
-1. Using [Homebrew Cask](https://brew.sh/) : `brew cask install qlimagesize`.
-2. Download the latest build from https://github.com/Nyx0uf/qlImageSize/releases/latest and save it to your `~/Library/QuickLook` folder.
+1. Using [Homebrew Cask](https://brew.sh/): 
+    ```
+    brew cask install qlimagesize mdimagesizemdimporter
+    ```
+2. Download the latest build from https://github.com/Nyx0uf/qlImageSize/releases/latest and save it to your `~/Library/QuickLook` and/or `~/Library/Spotlight` folder.
 3. Build from sources using Xcode. (just have to hit the build button).
 
 
@@ -36,11 +39,17 @@ This is the **Spotlight** plugin, it displays informations of unsupported images
 
 2 choices :
 
-1. Using [Homebrew Cask](https://brew.sh/) : `brew cask uninstall qlimagesize`
+1. Using [Homebrew Cask](https://brew.sh/):
+    ```
+    brew cask uninstall qlimagesize mdimagesizemdimporter
+    ```
 2. Manually :
-  - Launch *Terminal.app* in `/Applications/Utilities`
-  - Copy and paste the following line : `rm -rf "~/Library/QuickLook/qlImageSize.qlgenerator" "~/Library/Spotlight/mdImageSize.mdimporter"`
-  - Press Enter.
+    - Launch *Terminal.app* in `/Applications/Utilities`
+    - Copy and paste the following line:
+		```
+		rm -rf ~/Library/QuickLook/qlImageSize.qlgenerator ~/Library/Spotlight/mdImageSize.mdimporter
+		```
+    - Press <kbd>Enter</kbd>.
 
 
 # Limitations
