@@ -1,3 +1,5 @@
+# This project is not maintained anymore, it has been killed by macOS 10.15, see issues for details.
+
 ![License: BSD](https://img.shields.io/badge/license-BSD-blue.svg?style=flat) [![Build Status](https://travis-ci.com/Nyx0uf/qlImageSize.svg?branch=master)](https://travis-ci.com/Nyx0uf/qlImageSize)
 
 This project is composed of both a **QuickLook** plugin and a **Spotlight** plugin. Both are independant and can be built separately.
