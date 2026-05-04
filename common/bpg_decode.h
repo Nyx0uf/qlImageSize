@@ -6,9 +6,9 @@
 //  Copyright (c) 2014 Nyx0uf. All rights reserved.
 //
 
+@import CoreGraphics;
 
 #import "tools.h"
-
 
 #ifdef NYX_QL_SUPPORT_BPG_DECODE
 CF_RETURNS_RETAINED CGImageRef decode_bpg_at_path(CFStringRef filepath, image_infos* infos);
